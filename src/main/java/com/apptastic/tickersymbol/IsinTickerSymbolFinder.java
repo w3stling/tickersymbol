@@ -28,6 +28,8 @@ import com.apptastic.tickersymbol.provider.TickerSymbolProvider;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -57,7 +59,11 @@ public class IsinTickerSymbolFinder implements Callable<List<TickerSymbol>> {
             return provider.searchByIsin(isin);
         }
         catch (Exception e) {
-            e.printStackTrace();
+            Logger logger = Logger.getLogger("com.apptastic.tickersymbol");
+
+            if (logger.isLoggable(Level.WARNING))
+                logger.log(Level.WARNING, "Failed to get response. ", e);
+
             return Collections.emptyList();
         }
     }
