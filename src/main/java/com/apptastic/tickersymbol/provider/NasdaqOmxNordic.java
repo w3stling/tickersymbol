@@ -121,23 +121,7 @@ public class NasdaqOmxNordic extends AbstractHttpsPostConnection implements Tick
             ticker.setSource(Source.NASDAQ_OMX_NORDIC);
 
             while (reader.hasNext()) {
-                String name = reader.nextName();
-
-                if ("@nm".equals(name))
-                    ticker.setSymbol(reader.nextString());
-                else if ("@fnm".equals(name))
-                    ticker.setName(reader.nextString());
-                else if ("@isin".equals(name))
-                    ticker.setIsin(reader.nextString());
-                else if ("@cr".equals(name))
-                    ticker.setCurrency(reader.nextString());
-                else if ("@mkt".equals(name)) {
-                    ticker.setMic(getMic(reader.nextString()));
-                }
-                else if ("@st".equals(name))
-                    ticker.setDescription(nextOptString(reader, ""));
-                else
-                    reader.skipValue();
+                parseTicker(reader, ticker);
             }
 
             reader.endObject();
@@ -150,6 +134,28 @@ public class NasdaqOmxNordic extends AbstractHttpsPostConnection implements Tick
             reader.endArray();
     }
 
+
+    private void parseTicker(JsonReader reader, TickerSymbol ticker) throws IOException {
+        String name = reader.nextName();
+
+        if ("@nm".equals(name))
+            ticker.setSymbol(reader.nextString());
+        else if ("@fnm".equals(name))
+            ticker.setName(reader.nextString());
+        else if ("@isin".equals(name))
+            ticker.setIsin(reader.nextString());
+        else if ("@cr".equals(name))
+            ticker.setCurrency(reader.nextString());
+        else if ("@mkt".equals(name)) {
+            ticker.setMic(getMic(reader.nextString()));
+        }
+        else if ("@st".equals(name))
+            ticker.setDescription(nextOptString(reader, ""));
+        else
+            reader.skipValue();
+    }
+
+
     private String getMic(String text) {
         String[] mkt = text.split(":");
         if (mkt.length <= 2)
@@ -157,6 +163,7 @@ public class NasdaqOmxNordic extends AbstractHttpsPostConnection implements Tick
 
         return mkt[2];
     }
+
 
     private String nextOptString(JsonReader reader, String pDefaultValue) throws IOException {
         String tValue;
