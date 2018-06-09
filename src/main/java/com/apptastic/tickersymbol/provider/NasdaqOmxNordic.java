@@ -26,7 +26,6 @@ package com.apptastic.tickersymbol.provider;
 import com.apptastic.tickersymbol.Source;
 import com.apptastic.tickersymbol.TickerSymbol;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 
 import java.io.*;
 import java.net.URLConnection;
@@ -88,9 +87,7 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
 
     private List<TickerSymbol> handleResponse(JsonReader reader) throws IOException {
         List<TickerSymbol> tickers = new ArrayList<>();
-
-        if (reader.peek() == JsonToken.BEGIN_OBJECT)
-            reader.beginObject();
+        JsonUtil.optBeginObject(reader);
 
         while (reader.hasNext()) {
             String name = reader.nextName();
@@ -101,9 +98,7 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
                 reader.skipValue();
         }
 
-        if (reader.peek() == JsonToken.END_OBJECT)
-            reader.endObject();
-
+        JsonUtil.optEndObject(reader);
         return tickers;
     }
 
@@ -133,6 +128,7 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
 
     private String getMic(String text) {
         String[] mkt = text.split(":");
+
         if (mkt.length <= 2)
             return null;
 

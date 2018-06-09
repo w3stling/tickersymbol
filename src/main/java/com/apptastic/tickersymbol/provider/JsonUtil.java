@@ -12,6 +12,7 @@ public class JsonUtil {
 
     }
 
+
     public static String nextOptString(JsonReader reader, String pDefaultValue) throws IOException {
         String tValue;
         JsonToken tToken = reader.peek();
@@ -26,4 +27,27 @@ public class JsonUtil {
 
         return tValue;
     }
+
+    public static void optBeginObject(JsonReader reader) throws IOException {
+        if (reader.peek() == JsonToken.BEGIN_OBJECT)
+            reader.beginObject();
+    }
+
+
+    public static void optEndObject(JsonReader reader) throws IOException {
+        if (reader.peek() == JsonToken.END_OBJECT)
+            reader.endObject();
+    }
+
+    public static void optBeginArray(JsonReader reader) throws IOException {
+        if (reader.peek() == JsonToken.BEGIN_ARRAY)
+            reader.beginArray();
+    }
+
+
+    public static void optEndArray(JsonReader reader) throws IOException {
+        if (reader.peek() == JsonToken.END_ARRAY)
+            reader.endArray();
+    }
+
 }

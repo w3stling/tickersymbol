@@ -26,7 +26,6 @@ package com.apptastic.tickersymbol.provider;
 import com.apptastic.tickersymbol.Source;
 import com.apptastic.tickersymbol.TickerSymbol;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -59,46 +58,34 @@ public class MorningStar extends AbstractHttpsConnection implements TickerSymbol
 
     private List<TickerSymbol> handleResponse(JsonReader reader) throws IOException {
         List<TickerSymbol> tickers = new ArrayList<>();
-
-        if (reader.peek() == JsonToken.BEGIN_OBJECT)
-            reader.beginObject();
+        reader.beginObject();
 
         while (reader.hasNext()) {
             String name = reader.nextName();
 
-            if ("m".equals(name))
-                parseM(reader, tickers);
-            else
+            if ("m".equals(name)) {
+                JsonUtil.optBeginArray(reader);
+                reader.beginObject();
+
+                while (reader.hasNext()) {
+                    String fieldName = reader.nextName();
+
+                    if ("r".equals(fieldName))
+                        parseTickers(reader, tickers);
+                    else
+                        reader.skipValue();
+                }
+
+                reader.endObject();
+                JsonUtil.optEndArray(reader);
+            }
+            else {
                 reader.skipValue();
+            }
         }
 
-        if (reader.peek() == JsonToken.END_OBJECT)
-            reader.endObject();
-
+        reader.endObject();
         return tickers;
-    }
-
-
-    private void parseM(JsonReader reader, List<TickerSymbol> tickers) throws IOException {
-        if (reader.peek() == JsonToken.BEGIN_ARRAY)
-            reader.beginArray();
-
-        if (reader.peek() == JsonToken.BEGIN_OBJECT)
-            reader.beginObject();
-
-        while (reader.hasNext()) {
-            String name = reader.nextName();
-            if ("r".equals(name))
-                parseTickers(reader, tickers);
-            else
-                reader.skipValue();
-        }
-
-        if (reader.peek() == JsonToken.END_OBJECT)
-            reader.endObject();
-
-        if (reader.peek() == JsonToken.END_ARRAY)
-            reader.endArray();
     }
 
 

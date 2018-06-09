@@ -2,7 +2,6 @@ package com.apptastic.tickersymbol.provider;
 
 import com.apptastic.tickersymbol.TickerSymbol;
 import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonToken;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -10,6 +9,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
+
 
 public abstract class AbstractHttpsConnection {
     private static final String HTTP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36";
@@ -63,14 +63,11 @@ public abstract class AbstractHttpsConnection {
     }
 
     protected void parseTickers(JsonReader reader, List<TickerSymbol> tickers) throws IOException {
-        if (reader.peek() == JsonToken.BEGIN_ARRAY)
-            reader.beginArray();
+        JsonUtil.optBeginArray(reader);
 
         while (reader.hasNext()) {
             reader.beginObject();
-
             TickerSymbol ticker = new TickerSymbol();
-
 
             while (reader.hasNext()) {
                 parseTicker(reader, ticker);
@@ -82,8 +79,7 @@ public abstract class AbstractHttpsConnection {
             reader.endObject();
         }
 
-        if (reader.peek() == JsonToken.END_ARRAY)
-            reader.endArray();
+        JsonUtil.optEndArray(reader);
     }
 
 
