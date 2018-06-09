@@ -115,8 +115,7 @@ public class NasdaqOmxNordic extends AbstractHttpsPostConnection implements Tick
             reader.beginArray();
 
         while (reader.hasNext()) {
-            if (reader.peek() == JsonToken.BEGIN_OBJECT)
-                reader.beginObject();
+            reader.beginObject();
 
             TickerSymbol ticker = new TickerSymbol();
             ticker.setSource(Source.NASDAQ_OMX_NORDIC);
@@ -133,9 +132,7 @@ public class NasdaqOmxNordic extends AbstractHttpsPostConnection implements Tick
                 else if ("@cr".equals(name))
                     ticker.setCurrency(reader.nextString());
                 else if ("@mkt".equals(name)) {
-                    String[] mkt = reader.nextString().split(":");
-                    if (mkt.length > 2)
-                        ticker.setMic(mkt[2]);
+                    ticker.setMic(getMic(reader.nextString()));
                 }
                 else if ("@st".equals(name))
                     ticker.setDescription(nextOptString(reader, ""));
@@ -143,8 +140,7 @@ public class NasdaqOmxNordic extends AbstractHttpsPostConnection implements Tick
                     reader.skipValue();
             }
 
-            if (reader.peek() == JsonToken.END_OBJECT)
-                reader.endObject();
+            reader.endObject();
 
             if (isValid(ticker))
                 tickers.add(ticker);
@@ -154,6 +150,13 @@ public class NasdaqOmxNordic extends AbstractHttpsPostConnection implements Tick
             reader.endArray();
     }
 
+    private String getMic(String text) {
+        String[] mkt = text.split(":");
+        if (mkt.length <= 2)
+            return null;
+
+        return mkt[2];
+    }
 
     private String nextOptString(JsonReader reader, String pDefaultValue) throws IOException {
         String tValue;

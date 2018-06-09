@@ -112,12 +112,10 @@ public class MorningStar extends AbstractHttpsGetConnection implements TickerSym
 
 
     private void parseTickers(JsonReader reader, List<TickerSymbol> tickers) throws IOException {
-        if (reader.peek() == JsonToken.BEGIN_ARRAY)
-            reader.beginArray();
+        reader.beginArray();
 
         while (reader.hasNext()) {
-            if (reader.peek() == JsonToken.BEGIN_OBJECT)
-                reader.beginObject();
+            reader.beginObject();
 
             TickerSymbol ticker = new TickerSymbol();
             ticker.setSource(Source.MORNING_STAR);
@@ -144,12 +142,10 @@ public class MorningStar extends AbstractHttpsGetConnection implements TickerSym
             if (isValid(ticker))
                 tickers.add(ticker);
 
-            if (reader.peek() == JsonToken.END_OBJECT)
-                reader.endObject();
+            reader.endObject();
         }
 
-        if (reader.peek() == JsonToken.END_ARRAY)
-            reader.endArray();
+        reader.endArray();
     }
 
     private boolean isValid(TickerSymbol ticker) {
