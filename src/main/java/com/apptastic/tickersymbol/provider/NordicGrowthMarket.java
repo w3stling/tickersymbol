@@ -36,7 +36,7 @@ import java.util.List;
  * Ticker provider implementation that fetches ticker information from Nordic Growth Market (NGM).
  * NGM is a small swedish market place.
  */
-public class NordicGrowthMarket extends AbstractHttpsPostConnection implements TickerSymbolProvider {
+public class NordicGrowthMarket extends AbstractHttpsConnection implements TickerSymbolProvider {
     private static final String URL = "http://turing.ngm.se/MDWebFront/quotes/service";
     private static final String HTTP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36";
     private static final String HTTP_POST_BODY = "7|0|6|http://turing.ngm.se/MDWebFront/quotes/|F30BB935BF060E376C44B6B85A44C503|se.ngm.mdweb.front.client.rpc.SearchRPCService|getCompletionResult|com.google.gwt.user.client.ui.SuggestOracle$Request/3707347745|{\"query\":\"%1$s\", \"segment\":[\"NMTF:MST\",\"XNGM:AIFS\",\"XNGM:EQST\",\"NMTF:MOS\",\"NMTF:EDEX\",\"XNGM:DNCE\",\"XNGM:DNKO\",\"XNGM:DDEX\",\"XNGM:DSKO\",\"XNGM:DDCE\",\"XNGM:DFCE\",\"NMTF:EFKO\",\"NMTF:ETPF\",\"NMTF:EDKO\",\"NMTF:ESCE\",\"NMTF:ESKO\",\"NMTF:EDPV\",\"NMTF:ETPN\",\"NMTF:ENCE\",\"XNGM:DSPV\",\"NMTF:EDCE\",\"NMTF:ENKO\",\"NMTF:ESPV\",\"NMTF:EFEX\",\"NMTF:ENPV\",\"XNGM:DFEX\",\"NMTF:ESEX\",\"XNGM:DDKO\",\"NMTF:EFCE\",\"NMTF:ETPS\",\"XNGM:DDPV\",\"XNGM:DNEX\",\"XNGM:DSEX\",\"XNGM:DFPV\",\"XNGM:DSCE\",\"NMTF:EFPV\",\"XNGM:DFKO\",\"XNGM:DNPV\",\"NMTF:ENEX\",\"NMTF:ETPD\",\"NMTF:IPMD\",\"NMTF:IPMF\",\"NMTF:IPMN\",\"XNGM:DSBO\",\"NMTF:IPMS\",\"XNGM:DDMP\",\"XNGM:DNBO\",\"NMTF:IPMDMP\",\"XNGM:DNMP\",\"NMTF:IPMSMP\",\"XNGM:DSSP\",\"XNGM:DDSP\",\"NMTF:IPMDSP\",\"NMTF:IPMNMP\",\"XNGM:DSMP\",\"XNGM:DFBO\",\"NMTF:IPMNSP\",\"XNGM:DFSP\",\"NMTF:IPMFMP\",\"XNGM:DNSP\",\"NMTF:IPMSSP\",\"XNGM:DFMP\",\"NMTF:IPMFSP\",\"NMTF:MDSM\",\"XNGM:MDSS\",\"NMTF:CBSM\",\"XNGM:CBOS\",\"XNGM:DEBS\"], \"timeStamp\":\"%2$d\", \"putCall\":\"\", \"category\":[], \"subCategory\":[], \"issuer\":[], \"arranger\":[], \"instrumentTypes\":[], \"fromEndDate\":\"\", \"toEndDate\":\"\", \"firstTradedDate\":\"0\"}|1|2|3|4|1|5|5|15|6|";
@@ -98,7 +98,7 @@ public class NordicGrowthMarket extends AbstractHttpsPostConnection implements T
 
 
     @Override
-    protected void setRequestHeaders(URLConnection connection, byte[] postBody) {
+    protected void setPostRequestHeaders(URLConnection connection, byte[] postBody) {
         connection.setRequestProperty("Accept", "*/*");
         connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
         connection.setRequestProperty("Accept-Language", "en-GB,en;q=0.9,en-US;q=0.8,sv;q=0.7");
@@ -112,4 +112,5 @@ public class NordicGrowthMarket extends AbstractHttpsPostConnection implements T
         connection.setRequestProperty("X-GWT-Module-Base", "http://turing.ngm.se/MDWebFront/quotes/");
         connection.setRequestProperty("X-GWT-Permutation", "165556F18402C15B9C4A62A43EBB19D1");
     }
+
 }

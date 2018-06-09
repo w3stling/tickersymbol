@@ -29,7 +29,6 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 
 import java.io.*;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,9 +37,8 @@ import java.util.List;
  * Ticker provider implementation that fetches ticker information from Morning Star.
  * Morning Start is a investment research firm that compiles and analyzes fund, stock and general market data.
  */
-public class MorningStar extends AbstractHttpsGetConnection implements TickerSymbolProvider {
+public class MorningStar extends AbstractHttpsConnection implements TickerSymbolProvider {
     private static final String URL = "http://www.morningstar.com/api/v2/search/securities/5/usquote-v2/?q=%1$s";
-    private static final String HTTP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36";
 
 
     /**
@@ -56,13 +54,6 @@ public class MorningStar extends AbstractHttpsGetConnection implements TickerSym
         JsonReader jsonReader = new JsonReader(reader);
 
         return handleResponse(jsonReader);
-    }
-
-
-    @Override
-    protected void setRequestHeaders(URLConnection connection) {
-        connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
-        connection.setRequestProperty("User-Agent", HTTP_USER_AGENT);
     }
 
 
@@ -121,22 +112,7 @@ public class MorningStar extends AbstractHttpsGetConnection implements TickerSym
             ticker.setSource(Source.MORNING_STAR);
 
             while (reader.hasNext()) {
-                String name = reader.nextName();
-
-                if ("OS001".equals(name))
-                    ticker.setSymbol(reader.nextString());
-                else if ("OS01W".equals(name))
-                    ticker.setName(reader.nextString());
-                else if ("OS05J".equals(name))
-                    ticker.setIsin(reader.nextString());
-                else if ("OS05M".equals(name))
-                    ticker.setCurrency(reader.nextString());
-                else if ("LS01Z".equals(name))
-                    ticker.setMic(reader.nextString());
-                else if ("OS01X".equals(name))
-                    ticker.setDescription(reader.nextString());
-                else
-                    reader.skipValue();
+                parseTicker(reader, ticker);
             }
 
             if (isValid(ticker))
@@ -148,9 +124,31 @@ public class MorningStar extends AbstractHttpsGetConnection implements TickerSym
         reader.endArray();
     }
 
+
+    private void parseTicker(JsonReader reader, TickerSymbol ticker) throws IOException {
+        String name = reader.nextName();
+
+        if ("OS001".equals(name))
+            ticker.setSymbol(reader.nextString());
+        else if ("OS01W".equals(name))
+            ticker.setName(reader.nextString());
+        else if ("OS05J".equals(name))
+            ticker.setIsin(reader.nextString());
+        else if ("OS05M".equals(name))
+            ticker.setCurrency(reader.nextString());
+        else if ("LS01Z".equals(name))
+            ticker.setMic(reader.nextString());
+        else if ("OS01X".equals(name))
+            ticker.setDescription(reader.nextString());
+        else
+            reader.skipValue();
+    }
+
+
     private boolean isValid(TickerSymbol ticker) {
         return ticker != null && ticker.getSymbol() != null && ticker.getName() != null && ticker.getIsin() != null &&
                 ticker.getCurrency() != null && ticker.getMic() != null;
     }
+
 }
 

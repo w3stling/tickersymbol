@@ -39,7 +39,7 @@ import java.util.List;
  * Ticker provider implementation that fetches ticker information from Nasdaq OMX Nordic.
  * Nasdaq OMX Nordic is a stock exchange for swedish stocks and nordic stocks.
  */
-public class NasdaqOmxNordic extends AbstractHttpsPostConnection implements TickerSymbolProvider {
+public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSymbolProvider {
     private static final String URL = "http://www.nasdaqomxnordic.com/webproxy/DataFeedProxy.aspx";
     private static final String HTTP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36";
     private static final String HTTP_POST_BODY = "<post>\n" +
@@ -73,7 +73,7 @@ public class NasdaqOmxNordic extends AbstractHttpsPostConnection implements Tick
 
 
     @Override
-    protected void setRequestHeaders(URLConnection connection, byte[] postBody) {
+    protected void setPostRequestHeaders(URLConnection connection, byte[] postBody) {
         connection.setRequestProperty("Accept", "*/*");
         connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
         connection.setRequestProperty("Accept-Language", "en-GB,en;q=0.9,en-US;q=0.8,sv;q=0.7");
@@ -124,10 +124,10 @@ public class NasdaqOmxNordic extends AbstractHttpsPostConnection implements Tick
                 parseTicker(reader, ticker);
             }
 
-            reader.endObject();
-
             if (isValid(ticker))
                 tickers.add(ticker);
+
+            reader.endObject();
         }
 
         if (reader.peek() == JsonToken.END_ARRAY)
@@ -146,11 +146,10 @@ public class NasdaqOmxNordic extends AbstractHttpsPostConnection implements Tick
             ticker.setIsin(reader.nextString());
         else if ("@cr".equals(name))
             ticker.setCurrency(reader.nextString());
-        else if ("@mkt".equals(name)) {
+        else if ("@mkt".equals(name))
             ticker.setMic(getMic(reader.nextString()));
-        }
         else if ("@st".equals(name))
-            ticker.setDescription(nextOptString(reader, ""));
+            ticker.setDescription(JsonUtil.nextOptString(reader, ""));
         else
             reader.skipValue();
     }
@@ -162,22 +161,6 @@ public class NasdaqOmxNordic extends AbstractHttpsPostConnection implements Tick
             return null;
 
         return mkt[2];
-    }
-
-
-    private String nextOptString(JsonReader reader, String pDefaultValue) throws IOException {
-        String tValue;
-        JsonToken tToken = reader.peek();
-
-        if (tToken != JsonToken.NULL && tToken == JsonToken.STRING) {
-            tValue = reader.nextString();
-        }
-        else {
-            tValue = pDefaultValue;
-            reader.skipValue();
-        }
-
-        return tValue;
     }
 
 

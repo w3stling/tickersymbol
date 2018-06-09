@@ -29,7 +29,6 @@ import com.apptastic.tickersymbol.TickerSymbol;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -39,9 +38,8 @@ import java.util.List;
  * Ticker provider implementation that fetches ticker information from Aktie Torget.
  * Aktie Torget is a small swedish market place.
  */
-public class AktieTorget extends AbstractHttpsGetConnection implements TickerSymbolProvider {
+public class AktieTorget extends AbstractHttpsConnection implements TickerSymbolProvider {
     private static final String URL = "https://www.aktietorget.se/bolag/bolags-aktieinformation/?InstrumentID=%1$s";
-    private static final String HTTP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36";
 
 
     /**
@@ -131,10 +129,4 @@ public class AktieTorget extends AbstractHttpsGetConnection implements TickerSym
         return ticker != null && ticker.getName() != null && ticker.getSymbol() != null && ticker.getIsin() != null && ticker.getDescription() != null;
     }
 
-
-    @Override
-    protected void setRequestHeaders(URLConnection connection) {
-        connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
-        connection.setRequestProperty("User-Agent", HTTP_USER_AGENT);
-    }
 }
