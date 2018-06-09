@@ -74,16 +74,15 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
 
     @Override
     protected void setPostRequestHeaders(URLConnection connection, byte[] postBody) {
+        super.setPostRequestHeaders(connection, postBody);
+
         connection.setRequestProperty("Accept", "*/*");
-        connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
         connection.setRequestProperty("Accept-Language", "en-GB,en;q=0.9,en-US;q=0.8,sv;q=0.7");
         connection.setRequestProperty("Connection", "keep-alive");
-        connection.setRequestProperty("Content-Length", String.valueOf(postBody.length));
         connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         connection.setRequestProperty("Host", "www.nasdaqomxnordic.com");
         connection.setRequestProperty("Origin", "http://www.nasdaqomxnordic.com");
         connection.setRequestProperty("Referer", "http://www.nasdaqomxnordic.com/aktier/microsite?Instrument=SSE323");
-        connection.setRequestProperty("User-Agent", HTTP_USER_AGENT);
         connection.setRequestProperty("X-Requested-With", "XMLHttpRequest");
     }
 

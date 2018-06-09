@@ -11,6 +11,10 @@ import java.util.function.BiConsumer;
 
 public class JsonUtil {
 
+    private JsonUtil() {
+
+    }
+
     public static String nextOptString(JsonReader reader, String pDefaultValue) throws IOException {
         String tValue;
         JsonToken tToken = reader.peek();
@@ -26,7 +30,7 @@ public class JsonUtil {
         return tValue;
     }
 
-
+/*
     public static void parseArrayOfTickers(JsonReader reader, List<TickerSymbol> tickers, BiConsumer<JsonReader, List<TickerSymbol>> consumer) throws IOException {
         if (reader.peek() == JsonToken.BEGIN_ARRAY)
             reader.beginArray();
@@ -40,4 +44,5 @@ public class JsonUtil {
         if (reader.peek() == JsonToken.END_ARRAY)
             reader.endArray();
     }
+*/
 }

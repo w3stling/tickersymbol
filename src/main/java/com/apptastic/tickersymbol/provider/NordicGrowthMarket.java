@@ -99,16 +99,15 @@ public class NordicGrowthMarket extends AbstractHttpsConnection implements Ticke
 
     @Override
     protected void setPostRequestHeaders(URLConnection connection, byte[] postBody) {
+        super.setPostRequestHeaders(connection, postBody);
+
         connection.setRequestProperty("Accept", "*/*");
-        connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
         connection.setRequestProperty("Accept-Language", "en-GB,en;q=0.9,en-US;q=0.8,sv;q=0.7");
         connection.setRequestProperty("Connection", "keep-alive");
-        connection.setRequestProperty("Content-Length", String.valueOf(postBody.length));
         connection.setRequestProperty("Content-Type", "text/x-gwt-rpc; charset=UTF-8");
         connection.setRequestProperty("Host", "turing.ngm.se");
         connection.setRequestProperty("Origin", "http://turing.ngm.se");
         connection.setRequestProperty("Referer", "http://turing.ngm.se/MDWebFront/quotes.html?locale=sv_SE&activeTab=shareQuotes");
-        connection.setRequestProperty("User-Agent", HTTP_USER_AGENT);
         connection.setRequestProperty("X-GWT-Module-Base", "http://turing.ngm.se/MDWebFront/quotes/");
         connection.setRequestProperty("X-GWT-Permutation", "165556F18402C15B9C4A62A43EBB19D1");
     }
