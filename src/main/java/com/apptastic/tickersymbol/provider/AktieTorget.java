@@ -29,21 +29,17 @@ import com.apptastic.tickersymbol.TickerSymbol;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URLConnection;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
 
 
 /**
  * Ticker provider implementation that fetches ticker information from Aktie Torget.
  * Aktie Torget is a small swedish market place.
  */
-public class AktieTorget implements TickerSymbolProvider {
+public class AktieTorget extends AbstractHttpsGetConnection implements TickerSymbolProvider {
     private static final String URL = "https://www.aktietorget.se/bolag/bolags-aktieinformation/?InstrumentID=%1$s";
     private static final String HTTP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36";
 
@@ -136,19 +132,9 @@ public class AktieTorget implements TickerSymbolProvider {
     }
 
 
-    private BufferedReader sendRequest(String url, String characterEncoding) throws IOException {
-
-        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-
+    @Override
+    protected void setRequestHeaders(URLConnection connection) {
         connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
         connection.setRequestProperty("User-Agent", HTTP_USER_AGENT);
-        connection.connect();
-
-        InputStream inputStream = connection.getInputStream();
-
-        if ("gzip".equals(connection.getContentEncoding()))
-            inputStream = new GZIPInputStream(inputStream);
-
-        return new BufferedReader(new InputStreamReader(inputStream, characterEncoding));
     }
 }

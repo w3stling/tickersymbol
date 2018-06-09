@@ -29,19 +29,17 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.GZIPInputStream;
 
 
 /**
  * Ticker provider implementation that fetches ticker information from Nasdaq OMX Nordic.
  * Nasdaq OMX Nordic is a stock exchange for swedish stocks and nordic stocks.
  */
-public class NasdaqOmxNordic implements TickerSymbolProvider {
+public class NasdaqOmxNordic extends AbstractHttpsPostConnection implements TickerSymbolProvider {
     private static final String URL = "http://www.nasdaqomxnordic.com/webproxy/DataFeedProxy.aspx";
     private static final String HTTP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36";
     private static final String HTTP_POST_BODY = "<post>\n" +
@@ -74,9 +72,8 @@ public class NasdaqOmxNordic implements TickerSymbolProvider {
     }
 
 
-    private BufferedReader sendRequest(String url, byte[] postBody, String characterEncoding) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-
+    @Override
+    protected void setRequestHeaders(URLConnection connection, byte[] postBody) {
         connection.setRequestProperty("Accept", "*/*");
         connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
         connection.setRequestProperty("Accept-Language", "en-GB,en;q=0.9,en-US;q=0.8,sv;q=0.7");
@@ -88,20 +85,6 @@ public class NasdaqOmxNordic implements TickerSymbolProvider {
         connection.setRequestProperty("Referer", "http://www.nasdaqomxnordic.com/aktier/microsite?Instrument=SSE323");
         connection.setRequestProperty("User-Agent", HTTP_USER_AGENT);
         connection.setRequestProperty("X-Requested-With", "XMLHttpRequest");
-        connection.setRequestMethod("POST");
-
-        connection.setDoOutput(true);
-        OutputStream os = connection.getOutputStream();
-        os.write(postBody);
-        os.flush();
-        os.close();
-
-        InputStream inputStream = connection.getInputStream();
-
-        if ("gzip".equals(connection.getContentEncoding()))
-            inputStream = new GZIPInputStream(inputStream);
-
-        return new BufferedReader(new InputStreamReader(inputStream, characterEncoding));
     }
 
 
@@ -202,4 +185,5 @@ public class NasdaqOmxNordic implements TickerSymbolProvider {
         return ticker != null && ticker.getSymbol() != null && ticker.getName() != null && ticker.getIsin() != null &&
                 ticker.getCurrency() != null && ticker.getMic() != null;
     }
+
 }

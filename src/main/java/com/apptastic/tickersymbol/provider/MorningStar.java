@@ -31,6 +31,7 @@ import com.google.gson.stream.JsonToken;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -40,7 +41,7 @@ import java.util.zip.GZIPInputStream;
  * Ticker provider implementation that fetches ticker information from Morning Star.
  * Morning Start is a investment research firm that compiles and analyzes fund, stock and general market data.
  */
-public class MorningStar implements TickerSymbolProvider {
+public class MorningStar extends AbstractHttpsGetConnection implements TickerSymbolProvider {
     private static final String URL = "http://www.morningstar.com/api/v2/search/securities/5/usquote-v2/?q=%1$s";
     private static final String HTTP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36";
 
@@ -61,20 +62,10 @@ public class MorningStar implements TickerSymbolProvider {
     }
 
 
-    private BufferedReader sendRequest(String url, String characterEncoding) throws IOException {
-
-        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-
+    @Override
+    protected void setRequestHeaders(URLConnection connection) {
         connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
         connection.setRequestProperty("User-Agent", HTTP_USER_AGENT);
-
-        connection.connect();
-        InputStream inputStream = connection.getInputStream();
-
-        if ("gzip".equals(connection.getContentEncoding()))
-            inputStream = new GZIPInputStream(inputStream);
-
-        return new BufferedReader(new InputStreamReader(inputStream, characterEncoding));
     }
 
 
