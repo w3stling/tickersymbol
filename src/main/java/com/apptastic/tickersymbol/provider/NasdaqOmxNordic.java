@@ -115,53 +115,43 @@ public class NasdaqOmxNordic extends AbstractHttpsPostConnection implements Tick
             reader.beginArray();
 
         while (reader.hasNext()) {
-            TickerSymbol ticker = parseTicker(reader);
+            if (reader.peek() == JsonToken.BEGIN_OBJECT)
+                reader.beginObject();
 
-            if (ticker != null)
+            TickerSymbol ticker = new TickerSymbol();
+            ticker.setSource(Source.NASDAQ_OMX_NORDIC);
+
+            while (reader.hasNext()) {
+                String name = reader.nextName();
+
+                if ("@nm".equals(name))
+                    ticker.setSymbol(reader.nextString());
+                else if ("@fnm".equals(name))
+                    ticker.setName(reader.nextString());
+                else if ("@isin".equals(name))
+                    ticker.setIsin(reader.nextString());
+                else if ("@cr".equals(name))
+                    ticker.setCurrency(reader.nextString());
+                else if ("@mkt".equals(name)) {
+                    String[] mkt = reader.nextString().split(":");
+                    if (mkt.length > 2)
+                        ticker.setMic(mkt[2]);
+                }
+                else if ("@st".equals(name))
+                    ticker.setDescription(nextOptString(reader, ""));
+                else
+                    reader.skipValue();
+            }
+
+            if (reader.peek() == JsonToken.END_OBJECT)
+                reader.endObject();
+
+            if (isValid(ticker))
                 tickers.add(ticker);
         }
 
         if (reader.peek() == JsonToken.END_ARRAY)
             reader.endArray();
-    }
-
-
-    private TickerSymbol parseTicker(JsonReader reader) throws IOException {
-        TickerSymbol ticker = new TickerSymbol();
-        ticker.setSource(Source.NASDAQ_OMX_NORDIC);
-
-        if (reader.peek() == JsonToken.BEGIN_OBJECT)
-            reader.beginObject();
-
-        while (reader.hasNext()) {
-            String name = reader.nextName();
-
-            if ("@nm".equals(name))
-                ticker.setSymbol(reader.nextString());
-            else if ("@fnm".equals(name))
-                ticker.setName(reader.nextString());
-            else if ("@isin".equals(name))
-                ticker.setIsin(reader.nextString());
-            else if ("@cr".equals(name))
-                ticker.setCurrency(reader.nextString());
-            else if ("@mkt".equals(name)) {
-                String[] mkt = reader.nextString().split(":");
-                if (mkt.length > 2)
-                    ticker.setMic(mkt[2]);
-            }
-            else if ("@st".equals(name))
-                ticker.setDescription(nextOptString(reader, ""));
-            else
-                reader.skipValue();
-        }
-
-        if (reader.peek() == JsonToken.END_OBJECT)
-            reader.endObject();
-
-        if (!isValid(ticker))
-            ticker = null;
-
-        return ticker;
     }
 
 

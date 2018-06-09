@@ -98,7 +98,7 @@ public class MorningStar extends AbstractHttpsGetConnection implements TickerSym
         while (reader.hasNext()) {
             String name = reader.nextName();
             if ("r".equals(name))
-                parseR(reader, tickers);
+                parseTickers(reader, tickers);
             else
                 reader.skipValue();
         }
@@ -111,55 +111,45 @@ public class MorningStar extends AbstractHttpsGetConnection implements TickerSym
     }
 
 
-    private void parseR(JsonReader reader, List<TickerSymbol> tickers) throws IOException {
+    private void parseTickers(JsonReader reader, List<TickerSymbol> tickers) throws IOException {
         if (reader.peek() == JsonToken.BEGIN_ARRAY)
             reader.beginArray();
 
         while (reader.hasNext()) {
-            TickerSymbol ticker = parseTicker(reader);
+            if (reader.peek() == JsonToken.BEGIN_OBJECT)
+                reader.beginObject();
 
-            if (ticker != null)
+            TickerSymbol ticker = new TickerSymbol();
+            ticker.setSource(Source.MORNING_STAR);
+
+            while (reader.hasNext()) {
+                String name = reader.nextName();
+
+                if ("OS001".equals(name))
+                    ticker.setSymbol(reader.nextString());
+                else if ("OS01W".equals(name))
+                    ticker.setName(reader.nextString());
+                else if ("OS05J".equals(name))
+                    ticker.setIsin(reader.nextString());
+                else if ("OS05M".equals(name))
+                    ticker.setCurrency(reader.nextString());
+                else if ("LS01Z".equals(name))
+                    ticker.setMic(reader.nextString());
+                else if ("OS01X".equals(name))
+                    ticker.setDescription(reader.nextString());
+                else
+                    reader.skipValue();
+            }
+
+            if (isValid(ticker))
                 tickers.add(ticker);
+
+            if (reader.peek() == JsonToken.END_OBJECT)
+                reader.endObject();
         }
 
         if (reader.peek() == JsonToken.END_ARRAY)
             reader.endArray();
-    }
-
-
-    private TickerSymbol parseTicker(JsonReader reader) throws IOException {
-        TickerSymbol ticker = new TickerSymbol();
-        ticker.setSource(Source.MORNING_STAR);
-
-        if (reader.peek() == JsonToken.BEGIN_OBJECT)
-            reader.beginObject();
-
-        while (reader.hasNext()) {
-            String name = reader.nextName();
-
-            if ("OS001".equals(name))
-                ticker.setSymbol(reader.nextString());
-            else if ("OS01W".equals(name))
-                ticker.setName(reader.nextString());
-            else if ("OS05J".equals(name))
-                ticker.setIsin(reader.nextString());
-            else if ("OS05M".equals(name))
-                ticker.setCurrency(reader.nextString());
-            else if ("LS01Z".equals(name))
-                ticker.setMic(reader.nextString());
-            else if ("OS01X".equals(name))
-                ticker.setDescription(reader.nextString());
-            else
-                reader.skipValue();
-        }
-
-        if (reader.peek() == JsonToken.END_OBJECT)
-            reader.endObject();
-
-        if (!isValid(ticker))
-            ticker = null;
-
-        return ticker;
     }
 
     private boolean isValid(TickerSymbol ticker) {
