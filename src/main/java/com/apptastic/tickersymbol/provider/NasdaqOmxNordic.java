@@ -41,7 +41,6 @@ import java.util.List;
  */
 public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSymbolProvider {
     private static final String URL = "http://www.nasdaqomxnordic.com/webproxy/DataFeedProxy.aspx";
-    private static final String HTTP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36";
     private static final String HTTP_POST_BODY = "<post>\n" +
             "<param name=\"SubSystem\" value=\"Prices\"/>\n" +
             "<param name=\"Action\" value=\"Search\"/>\n" +
