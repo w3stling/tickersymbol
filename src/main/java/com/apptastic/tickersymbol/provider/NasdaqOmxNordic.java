@@ -70,7 +70,7 @@ public class NasdaqOmxNordic implements TickerSymbolProvider {
         BufferedReader reader = sendRequest(URL, postBody.getBytes(), "UTF-8");
         JsonReader jsonReader = new JsonReader(reader);
 
-        return handleResponse(jsonReader, true);
+        return handleResponse(jsonReader);
     }
 
 
@@ -105,7 +105,7 @@ public class NasdaqOmxNordic implements TickerSymbolProvider {
     }
 
 
-    private List<TickerSymbol> handleResponse(JsonReader reader, boolean first) throws IOException {
+    private List<TickerSymbol> handleResponse(JsonReader reader) throws IOException {
         List<TickerSymbol> tickers = new ArrayList<>();
 
         if (reader.peek() == JsonToken.BEGIN_OBJECT)

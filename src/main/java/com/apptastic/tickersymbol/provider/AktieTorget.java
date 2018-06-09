@@ -44,7 +44,6 @@ import java.util.zip.GZIPInputStream;
  * Aktie Torget is a small swedish market place.
  */
 public class AktieTorget implements TickerSymbolProvider {
-    //private static final String URL = "https://www.aktietorget.se/company/company-stock-info/?InstrumentID=%1$s";
     private static final String URL = "https://www.aktietorget.se/bolag/bolags-aktieinformation/?InstrumentID=%1$s";
     private static final String HTTP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36";
 
@@ -78,7 +77,7 @@ public class AktieTorget implements TickerSymbolProvider {
 
         while (line != null) {
             if (line.contains("card__general__content__list__item__label")) {
-                ticker = parseFieldValue(line, ticker, reader);
+                parseFieldValue(line, ticker, reader);
 
                 if (isTickerValid(ticker))
                     break;
@@ -96,33 +95,23 @@ public class AktieTorget implements TickerSymbolProvider {
     }
 
 
-    private TickerSymbol parseFieldValue(String line, TickerSymbol ticker, BufferedReader reader) throws IOException {
+    private void parseFieldValue(String line, TickerSymbol ticker, BufferedReader reader) throws IOException {
         if (line.contains("Aktienamn") || line.contains("Share name")) {
             String shareName = getValue(reader);
-
-            if (shareName != null)
-                ticker.setName(shareName);
+            ticker.setName(shareName);
         }
         else if (line.contains("Kortnamn") || line.contains("Short name")) {
             String shortName = getValue(reader);
-
-            if (shortName != null)
-                ticker.setSymbol(shortName);
+            ticker.setSymbol(shortName);
         }
         else if (line.contains("ISIN-kod") || line.contains("ISIN Code")) {
             String isinCode = getValue(reader);
-
-            if (isinCode != null)
-                ticker.setIsin(isinCode);
+            ticker.setIsin(isinCode);
         }
         else if (line.contains("Typ") || line.contains("Type")) {
             String type = getValue(reader);
-
-            if (type != null)
-                ticker.setDescription(type);
+            ticker.setDescription(type);
         }
-
-        return ticker;
     }
 
 
