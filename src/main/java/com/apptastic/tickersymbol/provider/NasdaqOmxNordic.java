@@ -112,14 +112,12 @@ public class NasdaqOmxNordic implements TickerSymbolProvider {
             reader.beginObject();
 
         while (reader.hasNext()) {
-            switch (reader.nextName()) {
-                case "inst":
-                    parseTickers(reader, tickers);
-                    continue;
+            String name = reader.nextName();
 
-                default:
-                    reader.skipValue();
-            }
+            if ("inst".equals(name))
+                parseTickers(reader, tickers);
+            else
+                reader.skipValue();
         }
 
         if (reader.peek() == JsonToken.END_OBJECT)
@@ -146,54 +144,43 @@ public class NasdaqOmxNordic implements TickerSymbolProvider {
 
 
     private TickerSymbol parseTicker(JsonReader reader) throws IOException {
-        TickerSymbol ticker = null;
+        TickerSymbol ticker = new TickerSymbol();
+        ticker.setSource(Source.NASDAQ_OMX_NORDIC);
 
-        if (reader.peek() == JsonToken.BEGIN_OBJECT) {
+        if (reader.peek() == JsonToken.BEGIN_OBJECT)
             reader.beginObject();
 
-            ticker = new TickerSymbol();
-            ticker.setSource(Source.NASDAQ_OMX_NORDIC);
-        }
-
         while (reader.hasNext()) {
+            String name = reader.nextName();
 
-            switch (reader.nextName()) {
-                case "@nm":
-                    ticker.setSymbol(reader.nextString());
-                    continue;
-
-                case "@fnm":
-                    ticker.setName(reader.nextString());
-                    continue;
-
-                case "@isin":
-                    ticker.setIsin(reader.nextString());
-                    continue;
-
-                case "@cr":
-                    ticker.setCurrency(reader.nextString());
-                    continue;
-
-                case "@mkt":
-                    String[] mkt = reader.nextString().split(":");
-                    if (mkt.length > 2)
-                        ticker.setMic(mkt[2]);
-                    continue;
-
-                case "@st":
-                    ticker.setDescription(nextOptString(reader, ""));
-                    continue;
-
-                default:
-                    reader.skipValue();
+            if ("@nm".equals(name))
+                ticker.setSymbol(reader.nextString());
+            else if ("@fnm".equals(name))
+                ticker.setName(reader.nextString());
+            else if ("@isin".equals(name))
+                ticker.setIsin(reader.nextString());
+            else if ("@cr".equals(name))
+                ticker.setCurrency(reader.nextString());
+            else if ("@mkt".equals(name)) {
+                String[] mkt = reader.nextString().split(":");
+                if (mkt.length > 2)
+                    ticker.setMic(mkt[2]);
             }
+            else if ("@st".equals(name))
+                ticker.setDescription(nextOptString(reader, ""));
+            else
+                reader.skipValue();
         }
 
         if (reader.peek() == JsonToken.END_OBJECT)
             reader.endObject();
 
+        if (!isValid(ticker))
+            ticker = null;
+
         return ticker;
     }
+
 
     private String nextOptString(JsonReader reader, String pDefaultValue) throws IOException {
         String tValue;
@@ -210,4 +197,9 @@ public class NasdaqOmxNordic implements TickerSymbolProvider {
         return tValue;
     }
 
+
+    private boolean isValid(TickerSymbol ticker) {
+        return ticker != null && ticker.getSymbol() != null && ticker.getName() != null && ticker.getIsin() != null &&
+                ticker.getCurrency() != null && ticker.getMic() != null;
+    }
 }

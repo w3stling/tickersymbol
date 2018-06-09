@@ -57,7 +57,7 @@ public class MorningStar implements TickerSymbolProvider {
         BufferedReader reader = sendRequest(url, "UTF-8");
         JsonReader jsonReader = new JsonReader(reader);
 
-        return handleResponse(jsonReader, true);
+        return handleResponse(jsonReader);
     }
 
 
@@ -78,23 +78,19 @@ public class MorningStar implements TickerSymbolProvider {
     }
 
 
-    public List<TickerSymbol> handleResponse(JsonReader reader, boolean first) throws IOException {
+    private List<TickerSymbol> handleResponse(JsonReader reader) throws IOException {
         List<TickerSymbol> tickers = new ArrayList<>();
 
         if (reader.peek() == JsonToken.BEGIN_OBJECT)
             reader.beginObject();
 
         while (reader.hasNext()) {
+            String name = reader.nextName();
 
-            switch (reader.nextName()) {
-                case "m":
-                    parseM(reader, tickers);
-                    continue;
-
-                default:
-                    reader.skipValue();
-            }
-
+            if ("m".equals(name))
+                parseM(reader, tickers);
+            else
+                reader.skipValue();
         }
 
         if (reader.peek() == JsonToken.END_OBJECT)
@@ -112,14 +108,11 @@ public class MorningStar implements TickerSymbolProvider {
             reader.beginObject();
 
         while (reader.hasNext()) {
-            switch (reader.nextName()) {
-                case "r":
-                    parseR(reader, tickers);
-                    continue;
-
-                default:
-                    reader.skipValue();
-            }
+            String name = reader.nextName();
+            if ("r".equals(name))
+                parseR(reader, tickers);
+            else
+                reader.skipValue();
         }
 
         if (reader.peek() == JsonToken.END_OBJECT)
@@ -147,50 +140,43 @@ public class MorningStar implements TickerSymbolProvider {
 
 
     private TickerSymbol parseTicker(JsonReader reader) throws IOException {
-        TickerSymbol ticker = null;
+        TickerSymbol ticker = new TickerSymbol();
+        ticker.setSource(Source.MORNING_STAR);
 
-        if (reader.peek() == JsonToken.BEGIN_OBJECT) {
+        if (reader.peek() == JsonToken.BEGIN_OBJECT)
             reader.beginObject();
 
-            ticker = new TickerSymbol();
-            ticker.setSource(Source.MORNING_STAR);
-        }
-
         while (reader.hasNext()) {
+            String name = reader.nextName();
 
-            switch (reader.nextName()) {
-                case "OS001":
-                    ticker.setSymbol(reader.nextString());
-                    continue;
-
-                case "OS01W":
-                    ticker.setName(reader.nextString());
-                    continue;
-
-                case "OS05J":
-                    ticker.setIsin(reader.nextString());
-                    continue;
-
-                case "OS05M":
-                    ticker.setCurrency(reader.nextString());
-                    continue;
-
-                case "LS01Z":
-                    ticker.setMic(reader.nextString());
-                    continue;
-
-                case "OS01X":
-                    ticker.setDescription(reader.nextString());
-                    continue;
-
-                default:
-                    reader.skipValue();
-            }
+            if ("OS001".equals(name))
+                ticker.setSymbol(reader.nextString());
+            else if ("OS01W".equals(name))
+                ticker.setName(reader.nextString());
+            else if ("OS05J".equals(name))
+                ticker.setIsin(reader.nextString());
+            else if ("OS05M".equals(name))
+                ticker.setCurrency(reader.nextString());
+            else if ("LS01Z".equals(name))
+                ticker.setMic(reader.nextString());
+            else if ("OS01X".equals(name))
+                ticker.setDescription(reader.nextString());
+            else
+                reader.skipValue();
         }
 
         if (reader.peek() == JsonToken.END_OBJECT)
             reader.endObject();
 
+        if (!isValid(ticker))
+            ticker = null;
+
         return ticker;
     }
+
+    private boolean isValid(TickerSymbol ticker) {
+        return ticker != null && ticker.getSymbol() != null && ticker.getName() != null && ticker.getIsin() != null &&
+                ticker.getCurrency() != null && ticker.getMic() != null;
+    }
 }
+

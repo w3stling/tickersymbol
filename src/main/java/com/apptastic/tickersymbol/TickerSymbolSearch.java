@@ -78,6 +78,8 @@ public class TickerSymbolSearch {
 
             if (logger.isLoggable(Level.WARNING))
                 logger.log(Level.WARNING, "Failed to invoke all providers. ", e);
+
+            Thread.currentThread().interrupt();
         }
         finally {
             es.shutdown();
@@ -97,6 +99,8 @@ public class TickerSymbolSearch {
 
             if (logger.isLoggable(Level.WARNING))
                 logger.log(Level.WARNING, "Failed to get response. ", e);
+
+            Thread.currentThread().interrupt();
         }
 
         return tickers;
