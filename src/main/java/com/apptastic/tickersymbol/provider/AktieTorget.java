@@ -73,7 +73,7 @@ public class AktieTorget extends AbstractHttpsConnection implements TickerSymbol
             if (line.contains("card__general__content__list__item__label")) {
                 parseFieldValue(line, ticker, reader);
 
-                if (isTickerValid(ticker))
+                if (isTickerSymbolValid(ticker))
                     break;
             }
 
@@ -82,7 +82,7 @@ public class AktieTorget extends AbstractHttpsConnection implements TickerSymbol
 
         reader.close();
 
-        if (!isTickerValid(ticker))
+        if (!isTickerSymbolValid(ticker))
             ticker = null;
 
         return ticker;
@@ -125,8 +125,9 @@ public class AktieTorget extends AbstractHttpsConnection implements TickerSymbol
     }
 
 
-    private boolean isTickerValid(TickerSymbol ticker) {
-        return ticker != null && ticker.getName() != null && ticker.getSymbol() != null && ticker.getIsin() != null && ticker.getDescription() != null;
+    @Override
+    protected boolean isTickerSymbolValid(TickerSymbol ticker) {
+        return super.isTickerSymbolValid(ticker) && ticker.getDescription() != null;
     }
 
 }

@@ -108,36 +108,14 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
     }
 
 
-    private void parseTickers(JsonReader reader, List<TickerSymbol> tickers) throws IOException {
-        if (reader.peek() == JsonToken.BEGIN_ARRAY)
-            reader.beginArray();
-
-        while (reader.hasNext()) {
-            reader.beginObject();
-
-            TickerSymbol ticker = new TickerSymbol();
-            ticker.setSource(Source.NASDAQ_OMX_NORDIC);
-
-            while (reader.hasNext()) {
-                parseTicker(reader, ticker);
-            }
-
-            if (isValid(ticker))
-                tickers.add(ticker);
-
-            reader.endObject();
-        }
-
-        if (reader.peek() == JsonToken.END_ARRAY)
-            reader.endArray();
-    }
-
-
-    private void parseTicker(JsonReader reader, TickerSymbol ticker) throws IOException {
+    @Override
+    protected void parseTicker(JsonReader reader, TickerSymbol ticker) throws IOException {
         String name = reader.nextName();
 
-        if ("@nm".equals(name))
+        if ("@nm".equals(name)) {
             ticker.setSymbol(reader.nextString());
+            ticker.setSource(Source.NASDAQ_OMX_NORDIC);
+        }
         else if ("@fnm".equals(name))
             ticker.setName(reader.nextString());
         else if ("@isin".equals(name))
@@ -160,11 +138,4 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
 
         return mkt[2];
     }
-
-
-    private boolean isValid(TickerSymbol ticker) {
-        return ticker != null && ticker.getSymbol() != null && ticker.getName() != null && ticker.getIsin() != null &&
-                ticker.getCurrency() != null && ticker.getMic() != null;
-    }
-
 }

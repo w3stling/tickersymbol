@@ -102,34 +102,14 @@ public class MorningStar extends AbstractHttpsConnection implements TickerSymbol
     }
 
 
-    private void parseTickers(JsonReader reader, List<TickerSymbol> tickers) throws IOException {
-        reader.beginArray();
-
-        while (reader.hasNext()) {
-            reader.beginObject();
-
-            TickerSymbol ticker = new TickerSymbol();
-            ticker.setSource(Source.MORNING_STAR);
-
-            while (reader.hasNext()) {
-                parseTicker(reader, ticker);
-            }
-
-            if (isValid(ticker))
-                tickers.add(ticker);
-
-            reader.endObject();
-        }
-
-        reader.endArray();
-    }
-
-
-    private void parseTicker(JsonReader reader, TickerSymbol ticker) throws IOException {
+    @Override
+    protected void parseTicker(JsonReader reader, TickerSymbol ticker) throws IOException {
         String name = reader.nextName();
 
-        if ("OS001".equals(name))
+        if ("OS001".equals(name)) {
             ticker.setSymbol(reader.nextString());
+            ticker.setSource(Source.MORNING_STAR);
+        }
         else if ("OS01W".equals(name))
             ticker.setName(reader.nextString());
         else if ("OS05J".equals(name))
@@ -142,12 +122,6 @@ public class MorningStar extends AbstractHttpsConnection implements TickerSymbol
             ticker.setDescription(reader.nextString());
         else
             reader.skipValue();
-    }
-
-
-    private boolean isValid(TickerSymbol ticker) {
-        return ticker != null && ticker.getSymbol() != null && ticker.getName() != null && ticker.getIsin() != null &&
-                ticker.getCurrency() != null && ticker.getMic() != null;
     }
 
 }
