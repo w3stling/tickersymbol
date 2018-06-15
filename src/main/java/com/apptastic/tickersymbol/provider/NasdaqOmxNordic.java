@@ -26,11 +26,13 @@ package com.apptastic.tickersymbol.provider;
 import com.apptastic.tickersymbol.Source;
 import com.apptastic.tickersymbol.TickerSymbol;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 
 import java.io.*;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -65,6 +67,7 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
 
         BufferedReader reader = sendRequest(URL, postBody.getBytes(), "UTF-8");
         JsonReader jsonReader = new JsonReader(reader);
+        jsonReader.setLenient(true);
 
         return handleResponse(jsonReader);
     }
@@ -86,6 +89,9 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
 
 
     private List<TickerSymbol> handleResponse(JsonReader reader) throws IOException {
+        if (reader.peek() == JsonToken.STRING)
+            return Collections.emptyList();
+
         List<TickerSymbol> tickers = new ArrayList<>();
         JsonUtil.optBeginObject(reader);
 

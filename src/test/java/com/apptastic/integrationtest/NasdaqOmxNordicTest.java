@@ -25,6 +25,16 @@ public class NasdaqOmxNordicTest {
 
 
     @Test
+    public void badIsinFormat() throws IOException {
+        NasdaqOmxNordic provider = new NasdaqOmxNordic();
+        List<TickerSymbol> tickers = provider.searchByIsin("#SE0011310655");
+
+        assertNotNull(tickers);
+        assertEquals(0, tickers.size());
+    }
+
+
+    @Test
     public void testEricsson() throws IOException {
         NasdaqOmxNordic provider = new NasdaqOmxNordic();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0000108656");
