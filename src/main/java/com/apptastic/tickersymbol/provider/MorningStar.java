@@ -37,7 +37,7 @@ import java.util.List;
  * Morning Start is a investment research firm that compiles and analyzes fund, stock and general market data.
  */
 public class MorningStar extends AbstractHttpsConnection implements TickerSymbolProvider {
-    private static final String URL = "http://www.morningstar.com/api/v2/search/securities/5/usquote-v2/?q=%1$s";
+    private static final String URL = "https://www.morningstar.com/api/v2/search/securities/5/usquote-v2/?q=%1$s";
 
 
     /**
@@ -51,6 +51,7 @@ public class MorningStar extends AbstractHttpsConnection implements TickerSymbol
 
         BufferedReader reader = sendRequest(url, "UTF-8");
         JsonReader jsonReader = new JsonReader(reader);
+        jsonReader.setLenient(true);
 
         return handleResponse(jsonReader);
     }
