@@ -152,6 +152,9 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
                 logger.log(Level.WARNING, "Failed to get ticker symbol", e);
         }
 
+        if (!isTickerSymbolValid(ticker))
+            ticker = null;
+
         return ticker;
     }
 

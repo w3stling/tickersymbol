@@ -129,6 +129,81 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
         if (reader == null)
             return null;
 
+        TickerSymbol ticker = getTickerNameOnPage(reader);
+        String line = "";
+
+        while (line != null && !line.contains("Kortnamn"))
+            line = reader.readLine();
+
+        if (ticker == null || line == null)
+            return null;
+
+        parseTickerSymbol(reader, ticker, line);
+
+        if (!isTickerSymbolValid(ticker))
+            ticker = null;
+
+        return ticker;
+    }
+
+
+    private void parseTickerSymbol(BufferedReader reader, TickerSymbol ticker, String line) throws IOException {
+
+        while (line != null) {
+
+            if (!line.contains("<dt><span>")) {
+                line = reader.readLine();
+                continue;
+            }
+
+            if (line.contains("Kortnamn"))
+                parseKortnamn(reader, ticker);
+            else if (line.contains("ISIN"))
+                parseIsin(reader, ticker);
+            else if (line.contains("Marknad"))
+                parseMarknad(reader, ticker);
+            else if (line.contains("Handlas i"))
+                parseHandlasI(reader, ticker);
+
+            if (isTickerSymbolValid(ticker))
+                break;
+
+            line = reader.readLine();
+        }
+    }
+
+
+    private void parseKortnamn(BufferedReader reader, TickerSymbol ticker) throws IOException {
+        String symbol = getValue(reader);
+
+        if (symbol != null)
+            symbol = symbol.toUpperCase();
+
+        ticker.setSymbol(symbol);
+    }
+
+
+    private void parseIsin(BufferedReader reader, TickerSymbol ticker) throws IOException {
+        String isin = getValue(reader);
+        ticker.setIsin(isin);
+    }
+
+
+    private void parseMarknad(BufferedReader reader, TickerSymbol ticker) throws IOException {
+        String market = getValue(reader);
+        String mic = market2Mic(market);
+        ticker.setMic(mic);
+        ticker.setDescription(market);
+    }
+
+
+    private void parseHandlasI(BufferedReader reader, TickerSymbol ticker) throws IOException {
+        String currency = getValue(reader);
+        ticker.setCurrency(currency);
+    }
+
+
+    private TickerSymbol getTickerNameOnPage(BufferedReader reader) throws IOException {
         TickerSymbol ticker = null;
         String line = "";
 
@@ -148,48 +223,6 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
             }
         }
 
-        while (line != null && !line.contains("Kortnamn"))
-            line = reader.readLine();
-
-        if (ticker == null || line == null)
-            return null;
-
-        while (line != null) {
-
-            if (!line.contains("<dt><span>")) {
-                line = reader.readLine();
-                continue;
-            }
-
-            if (line.contains("Kortnamn")) {
-                String symbol = getValue(reader);
-
-                if (symbol != null)
-                    symbol = symbol.toUpperCase();
-
-                ticker.setSymbol(symbol);
-            }
-            else if (line.contains("ISIN")) {
-                String isin = getValue(reader);
-                ticker.setIsin(isin);
-            }
-            else if (line.contains("Marknad")) {
-                String market = getValue(reader);
-                String mic = market2Mic(market);
-                ticker.setMic(mic);
-                ticker.setDescription(market);
-            }
-            else if (line.contains("Handlas i")) {
-                String currency = getValue(reader);
-                ticker.setCurrency(currency);
-            }
-
-            if (isTickerSymbolValid(ticker))
-                break;
-
-            line = reader.readLine();
-        }
-
         return ticker;
     }
 
@@ -204,42 +237,51 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
         int start = line.indexOf("<dd><span>");
         int end = line.indexOf("</span></dd>", start);
 
-        if (start != -1 && end != -1 && end >= start) {
-            return line.substring(start + 10, end).trim();
-        }
-        else if (start != -1) {
-            StringBuilder valueBuilder = new StringBuilder();
-            line = line.substring(start + 10).trim();
-
-            while (line != null && end == -1) {
-                end = line.lastIndexOf("</span></dd>", start);
-
-                if (end != -1)
-                    line = line.substring(0, end);
-
-                line = line.trim();
-
-                if (!line.isEmpty())
-                    valueBuilder.append(line);
-
-                if (end != -1)
-                    break;
-
-                line = reader.readLine();
-
-                if (line != null && line.contains("<br")) {
-                    int brStart = line.indexOf("<br");
-                    int brEnd = line.indexOf("/>", brStart);
-                    String part1 = line.substring(0, brStart);
-                    String part2 = line.substring(brEnd + 2);
-                    line = part1 + part2;
-                }
-            }
-
-            value = valueBuilder.toString().trim();
-        }
+        if (start != -1 && end != -1 && end >= start)
+            value = line.substring(start + 10, end).trim();
+        else if (start != -1)
+            value = getMultilineValue(reader, line, start, end);
 
         return value;
+    }
+
+
+    private String getMultilineValue(BufferedReader reader, String line, int start, int end) throws IOException {
+        StringBuilder valueBuilder = new StringBuilder();
+        line = line.substring(start + 10).trim();
+
+        while (line != null && end == -1) {
+            end = line.lastIndexOf("</span></dd>", start);
+
+            if (end != -1)
+                line = line.substring(0, end);
+
+            line = line.trim();
+
+            if (!line.isEmpty())
+                valueBuilder.append(line);
+
+            if (end != -1)
+                break;
+
+            line = reader.readLine();
+            line = removeBrTag(line);
+        }
+
+        return valueBuilder.toString().trim();
+    }
+
+
+    private String removeBrTag(String text) {
+        if (text != null && text.contains("<br")) {
+            int brStart = text.indexOf("<br");
+            int brEnd = text.indexOf("/>", brStart);
+            String part1 = text.substring(0, brStart);
+            String part2 = text.substring(brEnd + 2);
+            text = part1 + part2;
+        }
+
+        return text;
     }
 
 
