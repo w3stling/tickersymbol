@@ -172,33 +172,14 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
                 continue;
             }
 
-            if (line.contains("Handelsplats")) {
-                String market = getValue(reader);
-                String mic = market2Mic(market);
-                ticker.setMic(mic);
-            }
-            else if (line.contains("Valuta")) {
-                String currency = getValue(reader).trim();
-
-                if (!currency.isEmpty())
-                    ticker.setCurrency(currency);
-            }
-            else if (line.contains("ISIN")) {
-                List<String> values = getValues(reader);
-
-                if (values.size() == 3) {
-                    if (!values.get(0).isEmpty())
-                        ticker.setSymbol(values.get(0));
-
-                    if (!values.get(2).isEmpty())
-                        ticker.setIsin(values.get(2));
-                }
-            }
+            if (line.contains("Handelsplats"))
+                parseHandelsplats(reader, ticker);
+            else if (line.contains("Valuta"))
+                parseValuta(reader, ticker);
+            else if (line.contains("ISIN"))
+                parseIsin(reader, ticker);
             else if (line.contains("Namn")) {
-                String name = formatName(getValue(reader));
-
-                if (!name.isEmpty())
-                    ticker.setName(name);
+                parseName(reader, ticker);
 
                 if (isTickerSymbolValid(ticker))
                     break;
@@ -210,21 +191,59 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
         return ticker;
     }
 
+
+    private void parseHandelsplats(BufferedReader reader, TickerSymbol ticker) throws IOException {
+        String market = getValue(reader);
+        String mic = market2Mic(market);
+        ticker.setMic(mic);
+    }
+
+
+    private void parseValuta(BufferedReader reader, TickerSymbol ticker) throws IOException {
+        String currency = getValue(reader).trim();
+
+        if (!currency.isEmpty())
+            ticker.setCurrency(currency);
+    }
+
+
+    private void parseIsin(BufferedReader reader, TickerSymbol ticker) throws IOException {
+        List<String> values = getValues(reader);
+
+        if (values.size() == 3) {
+            if (!values.get(0).isEmpty())
+                ticker.setSymbol(values.get(0));
+
+            if (!values.get(2).isEmpty())
+                ticker.setIsin(values.get(2));
+        }
+    }
+
+
+    private void parseName(BufferedReader reader, TickerSymbol ticker) throws IOException {
+        String name = formatName(getValue(reader));
+
+        if (!name.isEmpty())
+            ticker.setName(name);
+    }
+
+
     private String getValue(BufferedReader reader) throws IOException {
-        String value = null;
+        String value = "";
         String line = reader.readLine();
 
         if (line == null)
             return "";
 
-        int start = line.indexOf(">");
-        int end = line.indexOf("<", start);
+        int start = line.indexOf('>');
+        int end = line.indexOf('<', start);
 
         if (start != -1 && end != -1 && end >= start)
             value = line.substring(start + 1, end).trim();
 
         return value;
     }
+
 
     private List<String> getValues(BufferedReader reader) throws IOException {
         List<String> values = new ArrayList<>();
@@ -233,17 +252,17 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
         if (line == null)
             return values;
 
-        int start = line.indexOf(">", 0);
+        int start = line.indexOf('>', 0);
 
         while (start != -1) {
-            int end = line.indexOf("<", start);
+            int end = line.indexOf('<', start);
 
             if (end != -1 && end == start + 1)
                 values.add("");
             else if (end != -1 && end > start + 1)
                 values.add(line.substring(start + 1, end).trim());
 
-            start = line.indexOf(">", start + 1);
+            start = line.indexOf('>', start + 1);
         }
 
         return values;
