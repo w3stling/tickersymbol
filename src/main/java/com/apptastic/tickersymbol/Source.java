@@ -31,6 +31,7 @@ public enum Source {
     NASDAQ_OMX_NORDIC,
     NORDIC_GROWTH_MARKET,
     AKTIE_TORGET,
-    MORNING_STAR
+    MORNING_STAR,
+    AVANZA,
 }
 

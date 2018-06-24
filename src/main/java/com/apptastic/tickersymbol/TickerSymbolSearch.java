@@ -29,6 +29,8 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -37,8 +39,9 @@ import java.util.stream.Stream;
  * Class for searching ticker symbols.
  */
 public class TickerSymbolSearch {
-    private static final String LOG_GROUP = "com.apptastic.tickersymbol";
+    private static final Pattern ISIN_PATTERN = Pattern.compile("^[A-Z]{2}[A-Z\\d]{9}\\d$");
     private List<TickerSymbolProvider> tickerProviders;
+
 
     /**
      * Constructor.
@@ -47,8 +50,10 @@ public class TickerSymbolSearch {
         tickerProviders = Arrays.asList(new NasdaqOmxNordic(),
                                         new NordicGrowthMarket(),
                                         new AktieTorget(),
-                                        new MorningStar());
+                                        new MorningStar(),
+                                        new Avanza());
     }
+
 
     /**
      * Search ticker symbol by ISIN code.
@@ -56,29 +61,33 @@ public class TickerSymbolSearch {
      * @return stream of tickers with the give ISIN code
      */
     public Stream<TickerSymbol> searchByIsin(String isin) {
+        if (!validIsin(isin))
+            return Stream.empty();
+
         List<Callable<List<TickerSymbol>>> finders = tickerProviders.stream()
                 .map(p -> new IsinTickerSymbolFinder(isin, p))
                 .collect(Collectors.toList());
 
         return invokeAll(finders).stream()
                 .map(this::getTickerResponse)
-                .filter(Objects::nonNull)
                 .flatMap(Collection::stream)
                 .filter(t -> isin.equals(t.getIsin()));
     }
 
+
+    private boolean validIsin(String text) {
+        return text != null && ISIN_PATTERN.matcher(text).matches();
+    }
+
+
     private List<Future<List<TickerSymbol>>> invokeAll(List<Callable<List<TickerSymbol>>> finders) {
-        ExecutorService es = Executors.newScheduledThreadPool(4);
+        ExecutorService es = Executors.newCachedThreadPool();
 
         try {
             return es.invokeAll(finders);
         }
         catch (InterruptedException e) {
-            Logger logger = Logger.getLogger(LOG_GROUP);
-
-            if (logger.isLoggable(Level.WARNING))
-                logger.log(Level.WARNING, "Failed to invoke all providers. ", e);
-
+            logException("Failed to invoke all providers. ", e);
             Thread.currentThread().interrupt();
         }
         finally {
@@ -88,21 +97,26 @@ public class TickerSymbolSearch {
         return Collections.emptyList();
     }
 
+
     private List<TickerSymbol> getTickerResponse(Future<List<TickerSymbol>> future) {
-        List<TickerSymbol> tickers = null;
+        List<TickerSymbol> tickers = Collections.emptyList();
 
         try {
-            tickers = future.get(5, TimeUnit.SECONDS);
+            tickers = future.get(8, TimeUnit.SECONDS);
         }
         catch (InterruptedException | ExecutionException | TimeoutException e) {
-            Logger logger = Logger.getLogger(LOG_GROUP);
-
-            if (logger.isLoggable(Level.WARNING))
-                logger.log(Level.WARNING, "Failed to get response. ", e);
-
+            logException("Failed to get response. ", e);
             Thread.currentThread().interrupt();
         }
 
         return tickers;
+    }
+
+
+    private void logException(String message, Exception e) {
+        Logger logger = Logger.getLogger("com.apptastic.tickersymbol");
+
+        if (logger.isLoggable(Level.WARNING))
+            logger.log(Level.WARNING, message, e);
     }
 }
