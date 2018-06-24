@@ -151,10 +151,8 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
 
         while (line != null) {
 
-            if (!line.contains("<dt><span>")) {
+            if (!line.contains("<dt><span>"))
                 line = reader.readLine();
-                continue;
-            }
 
             if (line.contains("Kortnamn"))
                 parseKortnamn(reader, ticker);
@@ -212,7 +210,7 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
 
         if (line != null) {
             int start = line.indexOf("data-intrument_name");
-            int end = line.indexOf("\"", start + 21);
+            int end = line.indexOf('"', start + 21);
 
             if (start != -1 && end != -1 && end >= start + 21) {
                 String name = line.substring(start + 21, end);

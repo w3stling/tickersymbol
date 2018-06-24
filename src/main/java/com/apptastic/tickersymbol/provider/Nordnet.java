@@ -170,10 +170,8 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
 
         while (line != null) {
 
-            if (!line.contains("class=\"betona\"")) {
+            if (!line.contains("class=\"betona\""))
                 line = reader.readLine();
-                continue;
-            }
 
             if (line.contains("Handelsplats"))
                 parseHandelsplats(reader, ticker);
