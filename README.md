@@ -20,7 +20,7 @@ This Java library makes it easier to automate ticker symbols lookup via Java 8 s
 
 Examples
 --------
-### Search ticker by ISIN
+### Search ticker symbol by ISIN
 Search ticker symbols for Ericsson B (ISIN SE0000108656) that is listed on Nasdaq OMX Nordic (MIC equals to XSTO) and is traded in currency SEK. 
 ```java
 TickerSymbolSearch tickerSymbol = new TickerSymbolSearch();
