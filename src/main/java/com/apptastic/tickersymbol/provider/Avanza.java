@@ -121,6 +121,9 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
                 logger.log(Level.WARNING, "Failed to get ticker symbol", e);
         }
 
+        if (!isTickerSymbolValid(ticker))
+            ticker = null;
+
         return ticker;
     }
 
@@ -139,9 +142,6 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
             return null;
 
         parseTickerSymbol(reader, ticker, line);
-
-        if (!isTickerSymbolValid(ticker))
-            ticker = null;
 
         return ticker;
     }
