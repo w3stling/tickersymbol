@@ -226,11 +226,11 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
 
 
     private String getValue(BufferedReader reader) throws IOException {
-        String value = null;
+        String value = "";
         String line = reader.readLine();
 
         if (line == null)
-            return null;
+            return "";
 
         int start = line.indexOf("<dd><span>");
         int end = line.indexOf("</span></dd>", start);
