@@ -65,11 +65,9 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
         String postBody =  String.format(HTTP_POST_BODY, isin, "", "");
         postBody = "xmlquery=" + URLEncoder.encode(postBody, "UTF-8");
 
-        BufferedReader reader = sendRequest(URL, postBody.getBytes(), "UTF-8");
-        JsonReader jsonReader = new JsonReader(reader);
-        jsonReader.setLenient(true);
-
-        return handleResponse(jsonReader);
+        try (BufferedReader reader = sendRequest(URL, postBody.getBytes(), "UTF-8")) {
+            return handleResponse(reader);
+        }
     }
 
 
@@ -88,23 +86,26 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
     }
 
 
-    private List<TickerSymbol> handleResponse(JsonReader reader) throws IOException {
-        if (reader.peek() == JsonToken.STRING)
+    private List<TickerSymbol> handleResponse(BufferedReader reader) throws IOException {
+        JsonReader jsonReader = new JsonReader(reader);
+        jsonReader.setLenient(true);
+
+        if (jsonReader.peek() == JsonToken.STRING)
             return Collections.emptyList();
 
         List<TickerSymbol> tickers = new ArrayList<>();
-        JsonUtil.optBeginObject(reader);
+        JsonUtil.optBeginObject(jsonReader);
 
-        while (reader.hasNext()) {
-            String name = reader.nextName();
+        while (jsonReader.hasNext()) {
+            String name = jsonReader.nextName();
 
             if ("inst".equals(name))
-                parseTickers(reader, tickers);
+                parseTickers(jsonReader, tickers);
             else
-                reader.skipValue();
+                jsonReader.skipValue();
         }
 
-        JsonUtil.optEndObject(reader);
+        JsonUtil.optEndObject(jsonReader);
         return tickers;
     }
 

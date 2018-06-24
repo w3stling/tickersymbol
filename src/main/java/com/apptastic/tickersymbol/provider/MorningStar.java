@@ -49,11 +49,13 @@ public class MorningStar extends AbstractHttpsConnection implements TickerSymbol
     public List<TickerSymbol> searchByIsin(String isin) throws IOException {
         String url = String.format(URL, isin);
 
-        BufferedReader reader = sendRequest(url, "UTF-8");
-        JsonReader jsonReader = new JsonReader(reader);
-        jsonReader.setLenient(true);
+        try  (BufferedReader reader = sendRequest(url, "UTF-8")) {
 
-        return handleResponse(jsonReader);
+            JsonReader jsonReader = new JsonReader(reader);
+            jsonReader.setLenient(true);
+
+            return handleResponse(jsonReader);
+        }
     }
 
 

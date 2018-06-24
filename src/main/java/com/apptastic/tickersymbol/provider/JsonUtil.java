@@ -37,19 +37,17 @@ public class JsonUtil {
 
 
     public static String nextOptString(JsonReader reader, String pDefaultValue) throws IOException {
-        String tValue;
+        String tValue = pDefaultValue;
         JsonToken tToken = reader.peek();
 
-        if (tToken != JsonToken.NULL && tToken == JsonToken.STRING) {
+        if (tToken != JsonToken.NULL && tToken == JsonToken.STRING)
             tValue = reader.nextString();
-        }
-        else {
-            tValue = pDefaultValue;
+        else
             reader.skipValue();
-        }
 
         return tValue;
     }
+
 
     public static void optBeginObject(JsonReader reader) throws IOException {
         if (reader.peek() == JsonToken.BEGIN_OBJECT)

@@ -51,13 +51,16 @@ public class AktieTorget extends AbstractHttpsConnection implements TickerSymbol
     @Override
     public List<TickerSymbol> searchByIsin(String isin) throws IOException {
         String url = String.format(URL, isin);
-        BufferedReader reader = sendRequest(url, "UTF-8");
-        TickerSymbol ticker = handleResponse(reader);
 
-        if (ticker == null)
-            return Collections.emptyList();
+        try (BufferedReader reader = sendRequest(url, "UTF-8")) {
 
-        return Arrays.asList(ticker);
+            TickerSymbol ticker = handleResponse(reader);
+
+            if (ticker == null)
+                return Collections.emptyList();
+
+            return Arrays.asList(ticker);
+        }
     }
 
 
@@ -79,8 +82,6 @@ public class AktieTorget extends AbstractHttpsConnection implements TickerSymbol
 
             line = reader.readLine();
         }
-
-        reader.close();
 
         if (!isTickerSymbolValid(ticker))
             ticker = null;

@@ -50,8 +50,9 @@ public class NordicGrowthMarket extends AbstractHttpsConnection implements Ticke
     public List<TickerSymbol> searchByIsin(String isin) throws IOException {
         String postBody =  String.format(HTTP_POST_BODY, isin, System.currentTimeMillis());
 
-        BufferedReader reader = sendRequest(URL, postBody.getBytes(), "UTF-8");
-        return handleResponse(reader, isin);
+        try (BufferedReader reader = sendRequest(URL, postBody.getBytes(), "UTF-8")) {
+            return handleResponse(reader, isin);
+        }
     }
 
 
