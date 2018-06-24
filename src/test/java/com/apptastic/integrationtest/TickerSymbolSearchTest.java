@@ -1,16 +1,39 @@
 package com.apptastic.integrationtest;
 
+import com.apptastic.tickersymbol.IsinTickerSymbolFinder;
 import com.apptastic.tickersymbol.Source;
 import com.apptastic.tickersymbol.TickerSymbol;
 import com.apptastic.tickersymbol.TickerSymbolSearch;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
+
 public class TickerSymbolSearchTest {
+
+
+    @Test
+    public void testInvalidIsin() {
+        TickerSymbolSearch ts = new TickerSymbolSearch();
+        List<TickerSymbol> tickers = ts.searchByIsin("0065339B1004")
+                .collect(Collectors.toList());
+
+        assertTrue(tickers.isEmpty());
+    }
+
+    @Test
+    public void testInvalidNullIsin() {
+        TickerSymbolSearch ts = new TickerSymbolSearch();
+        List<TickerSymbol> tickers = ts.searchByIsin(null)
+                .collect(Collectors.toList());
+
+        assertTrue(tickers.isEmpty());
+    }
+
 
     @Test
     public void testNasdaqOmxNordic() {
@@ -90,6 +113,13 @@ public class TickerSymbolSearchTest {
         assertEquals("XTSE", ticker.getMic());
         assertEquals("TORONTO STOCK EXCHANGE", ticker.getDescription());
         assertEquals(Source.MORNING_STAR, ticker.getSource());
+    }
+
+    @Test
+    public void testFinder() {
+        IsinTickerSymbolFinder finder = new IsinTickerSymbolFinder("", null);
+        List<TickerSymbol> symbols = finder.call();
+        assertTrue(symbols.isEmpty());
     }
 
 }
