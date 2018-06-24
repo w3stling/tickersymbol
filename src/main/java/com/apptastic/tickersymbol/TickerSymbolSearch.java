@@ -51,7 +51,8 @@ public class TickerSymbolSearch {
                                         new NordicGrowthMarket(),
                                         new AktieTorget(),
                                         new MorningStar(),
-                                        new Avanza());
+                                        new Avanza(),
+                                        new Nordnet());
     }
 
 

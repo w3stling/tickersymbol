@@ -33,5 +33,6 @@ public enum Source {
     AKTIE_TORGET,
     MORNING_STAR,
     AVANZA,
+    NORDNET
 }
 
