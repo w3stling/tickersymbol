@@ -43,7 +43,7 @@ import java.util.stream.Stream;
  */
 public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvider {
     private static final String URL_BASE = "https://www.avanza.se";
-    private static final String URL_SUGGESTION = "https://www.avanza.se/ab/sok/inline?query=%1$s&_=%2$s";
+    private static final String URL_SUGGESTION = "https://www.avanza.se/ab/sok/inline?query=%1$s&_=%2$d";
 
 
     /**
@@ -54,7 +54,7 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
      */
     @Override
     public List<TickerSymbol> searchByIsin(String isin) throws IOException {
-        String url = String.format(URL_SUGGESTION, isin, Long.toString(System.currentTimeMillis()/1000));
+        String url = String.format(URL_SUGGESTION, isin, System.currentTimeMillis()/1000);
 
         try (BufferedReader reader = sendRequest(url,"UTF-8")) {
 
