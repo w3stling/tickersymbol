@@ -1,3 +1,4 @@
+/*
 package com.apptastic.integrationtest;
 
 import com.apptastic.tickersymbol.Source;
@@ -98,3 +99,4 @@ public class AktieTorgetTest {
         assertEquals(Source.AKTIE_TORGET, ticker.getSource());
     }
 }
+*/

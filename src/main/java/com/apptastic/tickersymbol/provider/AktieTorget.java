@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+/*
 package com.apptastic.tickersymbol.provider;
 
 
@@ -34,20 +35,9 @@ import java.util.Collections;
 import java.util.List;
 
 
-/**
- * Ticker provider implementation that fetches ticker information from Aktie Torget.
- * Aktie Torget is a small swedish market place.
- */
 public class AktieTorget extends AbstractHttpsConnection implements TickerSymbolProvider {
     private static final String URL = "https://www.aktietorget.se/bolag/bolags-aktieinformation/?InstrumentID=%1$s";
 
-
-    /**
-     * Search ticker by ISIN code.
-     * @param isin ISIN code.
-     * @return stream of tickers
-     * @throws IOException IO exception
-     */
     @Override
     public List<TickerSymbol> searchByIsin(String isin) throws IOException {
         String url = String.format(URL, isin);
@@ -132,3 +122,4 @@ public class AktieTorget extends AbstractHttpsConnection implements TickerSymbol
     }
 
 }
+*/
