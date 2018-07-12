@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/*
 package com.apptastic.tickersymbol.provider;
 
 
@@ -35,9 +34,20 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class AktieTorget extends AbstractHttpsConnection implements TickerSymbolProvider {
-    private static final String URL = "https://www.aktietorget.se/bolag/bolags-aktieinformation/?InstrumentID=%1$s";
+/**
+ * Ticker provider implementation that fetches ticker information from Spotlight Stock Market (formerly known as Aktie Torget).
+ * Spotlight Stock Market is a small swedish market place.
+ */
+public class SpotlightStockMarket extends AbstractHttpsConnection implements TickerSymbolProvider {
+    private static final String URL = "https://www.spotlightstockmarket.com/sv/bolag/irtrade?InstrumentId=%1$s";
 
+
+    /**
+     * Search ticker by ISIN code.
+     * @param isin ISIN code.
+     * @return stream of tickers
+     * @throws IOException IO exception
+     */
     @Override
     public List<TickerSymbol> searchByIsin(String isin) throws IOException {
         String url = String.format(URL, isin);
@@ -56,14 +66,13 @@ public class AktieTorget extends AbstractHttpsConnection implements TickerSymbol
 
     private TickerSymbol handleResponse(BufferedReader reader) throws IOException {
         TickerSymbol ticker = new TickerSymbol();
-        ticker.setCurrency("SEK");
         ticker.setMic("XSAT");
-        ticker.setSource(Source.AKTIE_TORGET);
+        ticker.setSource(Source.SPOTLIGHT_STOCK_MARKET);
 
         String line = reader.readLine();
 
         while (line != null) {
-            if (line.contains("card__general__content__list__item__label")) {
+            if (line.contains("component__list-item__title")) {
                 parseFieldValue(line, ticker, reader);
 
                 if (isTickerSymbolValid(ticker))
@@ -89,18 +98,23 @@ public class AktieTorget extends AbstractHttpsConnection implements TickerSymbol
             String shortName = getValue(reader);
             ticker.setSymbol(shortName);
         }
-        else if (line.contains("ISIN-kod") || line.contains("ISIN Code")) {
+        else if (line.contains("ISIN-Kod") || line.contains("ISIN Code")) {
             String isinCode = getValue(reader);
             ticker.setIsin(isinCode);
         }
-        else if (line.contains("Typ") || line.contains("Type")) {
+        else if (line.contains("Tillgångsklass") || line.contains("Type")) {
             String type = getValue(reader);
             ticker.setDescription(type);
+        }
+        else if (line.contains("Valuta") || line.contains("Currency")) {
+            String currency = getValue(reader);
+            ticker.setCurrency(currency);
         }
     }
 
 
     private String getValue(BufferedReader reader) throws IOException {
+        reader.readLine();
         String line = reader.readLine();
 
         if (line == null)
@@ -122,4 +136,3 @@ public class AktieTorget extends AbstractHttpsConnection implements TickerSymbol
     }
 
 }
-*/

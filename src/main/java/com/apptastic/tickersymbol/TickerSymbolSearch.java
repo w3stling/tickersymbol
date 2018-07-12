@@ -48,7 +48,7 @@ public class TickerSymbolSearch {
     public TickerSymbolSearch() {
         tickerProviders = Arrays.asList(new NasdaqOmxNordic(),
                                         new NordicGrowthMarket(),
-                                        //new AktieTorget(),
+                                        new SpotlightStockMarket(),
                                         new MorningStar(),
                                         new Avanza(),
                                         new Nordnet());

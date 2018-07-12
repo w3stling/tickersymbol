@@ -74,12 +74,12 @@ public class TickerSymbolSearchTest {
         assertEquals(Source.NORDIC_GROWTH_MARKET, ticker.getSource());
     }
 
-/*
+
     @Test
-    public void testAktieTorget() {
+    public void testSpotlightStockMarket() {
         TickerSymbolSearch ts = new TickerSymbolSearch();
         List<TickerSymbol> tickers = ts.searchByIsin("SE0009548597")
-                .filter(t -> t.getSource() == Source.AKTIE_TORGET)
+                .filter(t -> t.getSource() == Source.SPOTLIGHT_STOCK_MARKET)
                 .collect(Collectors.toList());
 
         assertEquals(1, tickers.size());
@@ -90,10 +90,10 @@ public class TickerSymbolSearchTest {
         assertEquals("SEK", ticker.getCurrency());
         assertEquals("SE0009548597", ticker.getIsin());
         assertEquals("XSAT", ticker.getMic());
-        assertTrue("Share".equals(ticker.getDescription()) || "Aktie".equals(ticker.getDescription()));
-        assertEquals(Source.AKTIE_TORGET, ticker.getSource());
+        assertTrue(ticker.getDescription() != null);
+        assertEquals(Source.SPOTLIGHT_STOCK_MARKET, ticker.getSource());
     }
-*/
+
 
     @Test
     public void testMorningStar() {

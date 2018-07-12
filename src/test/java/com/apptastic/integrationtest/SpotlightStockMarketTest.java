@@ -1,9 +1,8 @@
-/*
 package com.apptastic.integrationtest;
 
 import com.apptastic.tickersymbol.Source;
 import com.apptastic.tickersymbol.TickerSymbol;
-import com.apptastic.tickersymbol.provider.AktieTorget;
+import com.apptastic.tickersymbol.provider.SpotlightStockMarket;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -12,11 +11,11 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 
-public class AktieTorgetTest {
+public class SpotlightStockMarketTest {
 
     @Test
     public void isinNotFound() throws IOException {
-        AktieTorget provider = new AktieTorget();
+        SpotlightStockMarket provider = new SpotlightStockMarket();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0011204486");
 
         assertNotNull(tickers);
@@ -26,7 +25,7 @@ public class AktieTorgetTest {
 
     @Test
     public void testTransferatorB() throws IOException {
-        AktieTorget provider = new AktieTorget();
+        SpotlightStockMarket provider = new SpotlightStockMarket();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0002658278");
 
         assertNotNull(tickers);
@@ -38,14 +37,14 @@ public class AktieTorgetTest {
         assertEquals("SEK", ticker.getCurrency());
         assertEquals("SE0002658278", ticker.getIsin());
         assertEquals("XSAT", ticker.getMic());
-        assertTrue("Share".equals(ticker.getDescription()) || "Aktie".equals(ticker.getDescription()));
-        assertEquals(Source.AKTIE_TORGET, ticker.getSource());
+        assertTrue(ticker.getDescription() != null);
+        assertEquals(Source.SPOTLIGHT_STOCK_MARKET, ticker.getSource());
     }
 
 
     @Test
     public void testEatGood() throws IOException {
-        AktieTorget provider = new AktieTorget();
+        SpotlightStockMarket provider = new SpotlightStockMarket();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0009548597");
 
         assertNotNull(tickers);
@@ -57,14 +56,14 @@ public class AktieTorgetTest {
         assertEquals("SEK", ticker.getCurrency());
         assertEquals("SE0009548597", ticker.getIsin());
         assertEquals("XSAT", ticker.getMic());
-        assertTrue("Share".equals(ticker.getDescription()) || "Aktie".equals(ticker.getDescription()));
-        assertEquals(Source.AKTIE_TORGET, ticker.getSource());
+        assertTrue(ticker.getDescription() != null);
+        assertEquals(Source.SPOTLIGHT_STOCK_MARKET, ticker.getSource());
     }
 
 
     @Test
     public void testLatvianForestB() throws IOException {
-        AktieTorget provider = new AktieTorget();
+        SpotlightStockMarket provider = new SpotlightStockMarket();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0003883008");
 
         assertNotNull(tickers);
@@ -76,14 +75,14 @@ public class AktieTorgetTest {
         assertEquals("SEK", ticker.getCurrency());
         assertEquals("SE0003883008", ticker.getIsin());
         assertEquals("XSAT", ticker.getMic());
-        assertTrue("Share".equals(ticker.getDescription()) || "Aktie".equals(ticker.getDescription()));
-        assertEquals(Source.AKTIE_TORGET, ticker.getSource());
+        assertTrue(ticker.getDescription() != null);
+        assertEquals(Source.SPOTLIGHT_STOCK_MARKET, ticker.getSource());
     }
 
 
     @Test
     public void testSpectraCure() throws IOException {
-        AktieTorget provider = new AktieTorget();
+        SpotlightStockMarket provider = new SpotlightStockMarket();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0007158118");
 
         assertNotNull(tickers);
@@ -95,8 +94,7 @@ public class AktieTorgetTest {
         assertEquals("SEK", ticker.getCurrency());
         assertEquals("SE0007158118", ticker.getIsin());
         assertEquals("XSAT", ticker.getMic());
-        assertTrue("Share".equals(ticker.getDescription()) || "Aktie".equals(ticker.getDescription()));
-        assertEquals(Source.AKTIE_TORGET, ticker.getSource());
+        assertTrue(ticker.getDescription() != null);
+        assertEquals(Source.SPOTLIGHT_STOCK_MARKET, ticker.getSource());
     }
 }
-*/
