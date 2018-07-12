@@ -114,10 +114,10 @@ public class SpotlightStockMarket extends AbstractHttpsConnection implements Tic
 
 
     private String getValue(BufferedReader reader) throws IOException {
-        String skipp = reader.readLine();
+        String skip = reader.readLine();
         String line = reader.readLine();
 
-        if (skipp == null || line == null)
+        if (skip == null || line == null)
             return null;
 
         int start = line.indexOf('>');
