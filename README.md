@@ -3,7 +3,7 @@ Ticker Symbol Search
 
 [![Build Status](https://travis-ci.org/w3stling/tickersymbol.svg?branch=master)](https://travis-ci.org/w3stling/tickersymbol)
 [![Download](https://api.bintray.com/packages/apptastic/maven-repo/tickersymbol/images/download.svg)](https://bintray.com/apptastic/maven-repo/tickersymbol/_latestVersion)
-[![Javadoc](https://img.shields.io/badge/javadoc-1.0.6-blue.svg)](https://w3stling.github.io/tickersymbol/javadoc/1.0.6)
+[![Javadoc](https://img.shields.io/badge/javadoc-1.1.0-blue.svg)](https://w3stling.github.io/tickersymbol/javadoc/1.1.0)
 [![License](http://img.shields.io/:license-MIT-blue.svg?style=flat-round)](http://apptastic-software.mit-license.org)   
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.apptastic%3Atickersymbol&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.apptastic%3Atickersymbol)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.apptastic%3Atickersymbol&metric=coverage)](https://sonarcloud.io/component_measures?id=com.apptastic%3Atickersymbol&metric=Coverage)
@@ -20,8 +20,18 @@ This Java library makes it easier to automate ticker symbols lookup via Java 8 s
 
 Examples
 --------
-### Search ticker symbol by ISIN
-Search ticker symbols for Ericsson B (ISIN SE0000108656) that is listed on Nasdaq OMX Nordic (MIC equals to XSTO) and is traded in currency SEK. 
+### Search ticker symbol by name
+Search ticker symbols for Ericsson B that is listed on Nasdaq OMX Nordic (MIC equals to XSTO) and is traded in currency SEK. 
+```java
+TickerSymbolSearch tickerSymbol = new TickerSymbolSearch();
+List<TickerSymbol> symbols = tickerSymbol.searchByName("Ericsson B")
+                        .filter(s -> "XSTO".equals(s.getMic()))
+                        .filter(s -> "SEK".equals(s.getCurrency()))
+                        .collect(Collectors.toList());
+```
+
+### Search ticker symbol by ISIN code
+Same as example above but searching for Ericsson B with ISIN number instead.
 ```java
 TickerSymbolSearch tickerSymbol = new TickerSymbolSearch();
 List<TickerSymbol> symbols = tickerSymbol.searchByIsin("SE0000108656")
@@ -58,7 +68,7 @@ Add dependency declaration:
         <dependency>
             <groupId>com.apptastic</groupId>
             <artifactId>tickersymbol</artifactId>
-            <version>1.0.6</version>
+            <version>1.1.0</version>
         </dependency>
     </dependencies>
     ...
@@ -78,7 +88,7 @@ repositories {
 Add dependency declaration:
 ```groovy
 dependencies {
-    implementation 'com.apptastic:tickersymbol:1.0.6'
+    implementation 'com.apptastic:tickersymbol:1.1.0'
 }
 ```
 
