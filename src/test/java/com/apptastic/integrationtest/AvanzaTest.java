@@ -14,6 +14,25 @@ import static org.junit.Assert.*;
 public class AvanzaTest {
 
     @Test
+    public void testNameNorwegianAirShuttle() throws IOException {
+        Avanza provider = new Avanza();
+        List<TickerSymbol> tickers = provider.searchByName("Norwegian Air");
+
+        assertNotNull(tickers);
+        assertEquals(1, tickers.size());
+
+        TickerSymbol ticker = tickers.get(0);
+        assertEquals("Norwegian Air Shuttle", ticker.getName());
+        assertEquals("NAS", ticker.getSymbol());
+        assertEquals("NOK", ticker.getCurrency());
+        assertEquals("NO0010196140", ticker.getIsin());
+        assertEquals("XOSL", ticker.getMic());
+        assertTrue(!ticker.getDescription().isEmpty());
+        assertEquals(Source.AVANZA, ticker.getSource());
+    }
+
+
+    @Test
     public void isinNotFound() throws IOException {
         Avanza provider = new Avanza();
 
@@ -136,7 +155,7 @@ public class AvanzaTest {
 
 
     @Test
-    public void testSpectraCure() throws IOException {
+    public void testIsinSpectraCure() throws IOException {
         Avanza provider = new Avanza();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0007158118");
 
@@ -155,7 +174,7 @@ public class AvanzaTest {
 
 
     @Test
-    public void testPaynova() throws IOException {
+    public void testIsinPaynova() throws IOException {
         Avanza provider = new Avanza();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0001162462");
 

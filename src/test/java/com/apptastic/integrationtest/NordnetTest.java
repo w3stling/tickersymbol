@@ -16,6 +16,24 @@ import static org.junit.Assert.assertTrue;
 public class NordnetTest {
 
     @Test
+    public void testNameNorwegianAirShuttle() throws IOException {
+        Nordnet provider = new Nordnet();
+        List<TickerSymbol> tickers = provider.searchByName("Norwegian Air");
+
+        assertNotNull(tickers);
+        assertTrue(tickers.size() > 1);
+
+        TickerSymbol ticker = tickers.get(0);
+        assertEquals("Norwegian Air Shuttle", ticker.getName());
+        assertEquals("NAS", ticker.getSymbol());
+        assertEquals("NOK", ticker.getCurrency());
+        assertEquals("NO0010196140", ticker.getIsin());
+        assertEquals("XOSL", ticker.getMic());
+        assertTrue(!ticker.getDescription().isEmpty());
+        assertEquals(Source.NORDNET, ticker.getSource());
+    }
+
+    @Test
     public void isinNotFound() throws IOException {
         Nordnet provider = new Nordnet();
 
@@ -129,7 +147,7 @@ public class NordnetTest {
 
 
     @Test
-    public void testSpectraCure() throws IOException {
+    public void testIsinSpectraCure() throws IOException {
         Nordnet provider = new Nordnet();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0007158118");
 
@@ -148,7 +166,7 @@ public class NordnetTest {
 
 
     @Test
-    public void testPaynova() throws IOException {
+    public void testIsinPaynova() throws IOException {
         Nordnet provider = new Nordnet();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0001162462");
 

@@ -47,14 +47,15 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
 
 
     /**
-     * Search ticker by ISIN code.
-     * @param isin ISIN code.
+     * Search ticker by name.
+     * @param name name.
      * @return stream of tickers
      * @throws IOException IO exception
      */
     @Override
-    public List<TickerSymbol> searchByIsin(String isin) throws IOException {
-        String url = String.format(URL_SUGGESTION, isin, System.currentTimeMillis()/1000);
+    public List<TickerSymbol> searchByName(String name) throws IOException {
+        name = name.replace(' ', '+');
+        String url = String.format(URL_SUGGESTION, name, System.currentTimeMillis()/1000);
 
         try (BufferedReader reader = sendRequest(url,"UTF-8")) {
 
@@ -63,6 +64,18 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
         }
+    }
+
+
+    /**
+     * Search ticker by ISIN code.
+     * @param isin ISIN code.
+     * @return stream of tickers
+     * @throws IOException IO exception
+     */
+    @Override
+    public List<TickerSymbol> searchByIsin(String isin) throws IOException {
+        return searchByName(isin);
     }
 
 

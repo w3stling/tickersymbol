@@ -49,6 +49,26 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
 
 
     /**
+     * Search ticker by name.
+     * @param name name.
+     * @return stream of tickers
+     * @throws IOException IO exception
+     */
+    @Override
+    public List<TickerSymbol> searchByName(String name) throws IOException {
+        String postBody =  String.format(HTTP_POST_BODY, name);
+
+        try (BufferedReader reader = sendRequest(URL_SUGGESTION, postBody.getBytes(), "UTF-8")) {
+
+            return parseSuggestionResponse(reader, name)
+                    .map(this::getTickerSymbol)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        }
+    }
+
+
+    /**
      * Search ticker by ISIN code.
      * @param isin ISIN code.
      * @return stream of tickers
@@ -56,15 +76,7 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
      */
     @Override
     public List<TickerSymbol> searchByIsin(String isin) throws IOException {
-        String postBody =  String.format(HTTP_POST_BODY, isin);
-
-        try (BufferedReader reader = sendRequest(URL_SUGGESTION, postBody.getBytes(), "UTF-8")) {
-
-            return parseSuggestionResponse(reader, isin)
-                    .map(this::getTickerSymbol)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-        }
+        return searchByName(isin);
     }
 
 

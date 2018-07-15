@@ -56,6 +56,18 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
 
 
     /**
+     * Search ticker by name.
+     * @param name name.
+     * @return stream of tickers
+     * @throws IOException IO exception
+     */
+    @Override
+    public List<TickerSymbol> searchByName(String name) {
+        return Collections.emptyList();
+    }
+
+
+    /**
      * Search ticker by ISIN code.
      * @param isin ISIN code.
      * @return stream of tickers

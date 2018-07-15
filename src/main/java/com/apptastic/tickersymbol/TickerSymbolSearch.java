@@ -56,9 +56,25 @@ public class TickerSymbolSearch {
 
 
     /**
+     * Search ticker symbol by name.
+     * @param name name
+     * @return stream of ticker symbols
+     */
+    public Stream<TickerSymbol> searchByName(String name) {
+        List<Callable<List<TickerSymbol>>> finders = tickerProviders.stream()
+                .map(p -> new NameTickerSymbolFinder(name, p))
+                .collect(Collectors.toList());
+
+        return invokeAll(finders).stream()
+                .map(this::getTickerResponse)
+                .flatMap(Collection::stream);
+    }
+
+
+    /**
      * Search ticker symbol by ISIN code.
      * @param isin ISIN code
-     * @return stream of tickers with the give ISIN code
+     * @return stream of ticker symbols with the give ISIN code
      */
     public Stream<TickerSymbol> searchByIsin(String isin) {
         if (!validIsin(isin))

@@ -29,6 +29,7 @@ import com.google.gson.stream.JsonReader;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -38,6 +39,18 @@ import java.util.List;
  */
 public class MorningStar extends AbstractHttpsConnection implements TickerSymbolProvider {
     private static final String URL = "https://www.morningstar.com/api/v2/search/securities/5/usquote-v2/?q=%1$s";
+
+
+    /**
+     * Search ticker by name.
+     * @param name name.
+     * @return stream of tickers
+     * @throws IOException IO exception
+     */
+    @Override
+    public List<TickerSymbol> searchByName(String name) {
+        return Collections.emptyList();
+    }
 
 
     /**

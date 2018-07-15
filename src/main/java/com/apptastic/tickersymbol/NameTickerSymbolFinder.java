@@ -21,33 +21,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.apptastic.tickersymbol.provider;
+package com.apptastic.tickersymbol;
 
-import com.apptastic.tickersymbol.TickerSymbol;
+import com.apptastic.tickersymbol.provider.TickerSymbolProvider;
 
-import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
- * Ticker provider interface.
- * A ticket provider provides ticker information by fetching it from a source.
+ * Internal class for making parallel ticker provider searches.
  */
-public interface TickerSymbolProvider {
+public class NameTickerSymbolFinder implements Callable<List<TickerSymbol>> {
+    private String name;
+    private TickerSymbolProvider provider;
 
     /**
-     * Search ticker by name.
-     * @param name name.
-     * @return stream of tickers
-     * @throws IOException IO exception
+     * Constructor
+     * @param name symbol name
+     * @param provider the provider of the ticker
      */
-    List<TickerSymbol> searchByName(String name) throws IOException;
+    public NameTickerSymbolFinder(String name, TickerSymbolProvider provider) {
+        this.name = name;
+        this.provider = provider;
+    }
 
     /**
-     * Search ticker symbol by ISIN code.
-     * @param isin ISIN code.
-     * @return stream of tickers
-     * @throws IOException IO exception
+     * Fetches the ticker.
+     * @return list of tickers
      */
-    List<TickerSymbol> searchByIsin(String isin) throws IOException;
+    @Override
+    public List<TickerSymbol> call() {
+        try {
+            return provider.searchByName(name);
+        }
+        catch (Exception e) {
+            Logger logger = Logger.getLogger("com.apptastic.tickersymbol");
+
+            if (logger.isLoggable(Level.WARNING))
+                logger.log(Level.WARNING, "Failed to get response. ", e);
+
+            return Collections.emptyList();
+        }
+    }
 }
+

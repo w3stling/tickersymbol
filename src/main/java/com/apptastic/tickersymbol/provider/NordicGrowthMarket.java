@@ -29,6 +29,7 @@ import com.apptastic.tickersymbol.TickerSymbol;
 import java.io.*;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -39,6 +40,18 @@ import java.util.List;
 public class NordicGrowthMarket extends AbstractHttpsConnection implements TickerSymbolProvider {
     private static final String URL = "http://turing.ngm.se/MDWebFront/quotes/service";
     private static final String HTTP_POST_BODY = "7|0|6|http://turing.ngm.se/MDWebFront/quotes/|F30BB935BF060E376C44B6B85A44C503|se.ngm.mdweb.front.client.rpc.SearchRPCService|getCompletionResult|com.google.gwt.user.client.ui.SuggestOracle$Request/3707347745|{\"query\":\"%1$s\", \"segment\":[\"NMTF:MST\",\"XNGM:AIFS\",\"XNGM:EQST\",\"NMTF:MOS\",\"NMTF:EDEX\",\"XNGM:DNCE\",\"XNGM:DNKO\",\"XNGM:DDEX\",\"XNGM:DSKO\",\"XNGM:DDCE\",\"XNGM:DFCE\",\"NMTF:EFKO\",\"NMTF:ETPF\",\"NMTF:EDKO\",\"NMTF:ESCE\",\"NMTF:ESKO\",\"NMTF:EDPV\",\"NMTF:ETPN\",\"NMTF:ENCE\",\"XNGM:DSPV\",\"NMTF:EDCE\",\"NMTF:ENKO\",\"NMTF:ESPV\",\"NMTF:EFEX\",\"NMTF:ENPV\",\"XNGM:DFEX\",\"NMTF:ESEX\",\"XNGM:DDKO\",\"NMTF:EFCE\",\"NMTF:ETPS\",\"XNGM:DDPV\",\"XNGM:DNEX\",\"XNGM:DSEX\",\"XNGM:DFPV\",\"XNGM:DSCE\",\"NMTF:EFPV\",\"XNGM:DFKO\",\"XNGM:DNPV\",\"NMTF:ENEX\",\"NMTF:ETPD\",\"NMTF:IPMD\",\"NMTF:IPMF\",\"NMTF:IPMN\",\"XNGM:DSBO\",\"NMTF:IPMS\",\"XNGM:DDMP\",\"XNGM:DNBO\",\"NMTF:IPMDMP\",\"XNGM:DNMP\",\"NMTF:IPMSMP\",\"XNGM:DSSP\",\"XNGM:DDSP\",\"NMTF:IPMDSP\",\"NMTF:IPMNMP\",\"XNGM:DSMP\",\"XNGM:DFBO\",\"NMTF:IPMNSP\",\"XNGM:DFSP\",\"NMTF:IPMFMP\",\"XNGM:DNSP\",\"NMTF:IPMSSP\",\"XNGM:DFMP\",\"NMTF:IPMFSP\",\"NMTF:MDSM\",\"XNGM:MDSS\",\"NMTF:CBSM\",\"XNGM:CBOS\",\"XNGM:DEBS\"], \"timeStamp\":\"%2$d\", \"putCall\":\"\", \"category\":[], \"subCategory\":[], \"issuer\":[], \"arranger\":[], \"instrumentTypes\":[], \"fromEndDate\":\"\", \"toEndDate\":\"\", \"firstTradedDate\":\"0\"}|1|2|3|4|1|5|5|15|6|";
+
+
+    /**
+     * Search ticker by name.
+     * @param name name.
+     * @return stream of tickers
+     * @throws IOException IO exception
+     */
+    @Override
+    public List<TickerSymbol> searchByName(String name) {
+        return Collections.emptyList();
+    }
 
 
     /**
