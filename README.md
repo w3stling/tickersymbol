@@ -31,7 +31,7 @@ List<TickerSymbol> symbols = tickerSymbol.searchByName("Ericsson B")
 ```
 
 ### Search ticker symbol by ISIN code
-Same as example above but searching for Ericsson B with ISIN number instead.
+Same as example above but searching for Ericsson B with ISIN number.
 ```java
 TickerSymbolSearch tickerSymbol = new TickerSymbolSearch();
 List<TickerSymbol> symbols = tickerSymbol.searchByIsin("SE0000108656")
