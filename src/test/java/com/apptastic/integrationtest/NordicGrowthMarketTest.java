@@ -121,16 +121,16 @@ public class NordicGrowthMarketTest {
     @Test
     public void testChordateMedical() throws IOException {
         NordicGrowthMarket provider = new NordicGrowthMarket();
-        List<TickerSymbol> tickers = provider.searchByIsin("SE0011204486");
+        List<TickerSymbol> tickers = provider.searchByIsin("SE0009495559");
 
         assertNotNull(tickers);
         assertEquals(1, tickers.size());
 
         TickerSymbol ticker = tickers.get(0);
-        assertEquals("Chordate Medical Holding BTU", ticker.getName());
+        assertEquals("Chordate Medical Holding", ticker.getName());
         assertEquals("CMH", ticker.getSymbol());
         assertEquals("SEK", ticker.getCurrency());
-        assertEquals("SE0011204486", ticker.getIsin());
+        assertEquals("SE0009495559", ticker.getIsin());
         assertEquals("XNGM", ticker.getMic());
         assertEquals("", ticker.getDescription());
         assertEquals(Source.NORDIC_GROWTH_MARKET, ticker.getSource());
