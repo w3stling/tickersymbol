@@ -41,6 +41,7 @@ public abstract class AbstractHttpsConnection {
     protected BufferedReader sendRequest(String url, String characterEncoding) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 
+        setTimeouts(connection);
         setGetRequestHeaders(connection);
 
         InputStream inputStream = connection.getInputStream();
@@ -55,6 +56,7 @@ public abstract class AbstractHttpsConnection {
     protected BufferedReader sendRequest(String url, byte[] postBody, String characterEncoding) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 
+        setTimeouts(connection);
         setPostRequestHeaders(connection, postBody);
 
         connection.setRequestMethod("POST");
@@ -72,6 +74,10 @@ public abstract class AbstractHttpsConnection {
         return new BufferedReader(new InputStreamReader(inputStream, characterEncoding));
     }
 
+    protected void setTimeouts(URLConnection connection) {
+        connection.setConnectTimeout(15 * 1000);
+        connection.setReadTimeout(15 * 1000);
+    }
 
     protected void setGetRequestHeaders(URLConnection connection) {
         connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
