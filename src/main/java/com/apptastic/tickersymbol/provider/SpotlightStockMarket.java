@@ -21,7 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-/*
 package com.apptastic.tickersymbol.provider;
 
 
@@ -35,31 +34,31 @@ import java.util.Collections;
 import java.util.List;
 
 
-//
-// * Ticker provider implementation that fetches ticker information from Spotlight Stock Market (formerly known as Aktie Torget).
-// * Spotlight Stock Market is a small swedish market place.
-//
+/**
+ * Ticker provider implementation that fetches ticker information from Spotlight Stock Market (formerly known as Aktie Torget).
+ * Spotlight Stock Market is a small swedish market place.
+ */
 public class SpotlightStockMarket extends AbstractHttpsConnection implements TickerSymbolProvider {
     private static final String URL = "https://www.spotlightstockmarket.com/sv/bolag/irtrade?InstrumentId=%1$s";
 
 
-//
-//     * Search ticker by name.
-//     * @param name name.
-//     * @return stream of tickers
-//
+    /**
+     * Search ticker by name.
+     * @param name name.
+     * @return stream of tickers
+     */
     @Override
     public List<TickerSymbol> searchByName(String name) {
         return Collections.emptyList();
     }
 
 
-//
-//     * Search ticker by ISIN code.
-//     * @param isin ISIN code.
-//     * @return stream of tickers
-//     * @throws IOException IO exception
-//
+    /**
+     * Search ticker by ISIN code.
+     * @param isin ISIN code.
+     * @return stream of tickers
+     * @throws IOException IO exception
+     */
     @Override
     public List<TickerSymbol> searchByIsin(String isin) throws IOException {
         String url = String.format(URL, isin);
@@ -149,4 +148,3 @@ public class SpotlightStockMarket extends AbstractHttpsConnection implements Tic
     }
 
 }
-*/
