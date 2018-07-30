@@ -74,7 +74,7 @@ public class TickerSymbolSearchTest {
         assertEquals(Source.NORDIC_GROWTH_MARKET, ticker.getSource());
     }
 
-
+/*
     @Test
     public void testSpotlightStockMarketSearchByIsin() {
         TickerSymbolSearch ts = new TickerSymbolSearch();
@@ -93,7 +93,7 @@ public class TickerSymbolSearchTest {
         assertTrue(ticker.getDescription() != null);
         assertEquals(Source.SPOTLIGHT_STOCK_MARKET, ticker.getSource());
     }
-
+*/
 
     @Test
     public void testMorningStarSearchByIsin() {
