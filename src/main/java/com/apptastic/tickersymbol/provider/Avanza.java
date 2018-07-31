@@ -300,15 +300,15 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
         String mic = "";
         text = text.toLowerCase();
 
-        if (text.contains("stockholmsbörsen") || text.contains("cap stockholm") || text.contains("first north stockholm"))
+        if (text.contains("stockholmsbörsen") || text.contains("stockholm") || text.contains("first north stockholm"))
             mic = "XSTO";
         else if (text.contains("ngm"))
             mic = "XNGM";
-        else if (text.contains("aktietorget"))
+        else if (text.contains("spotlight") || text.contains("aktietorget"))
             mic = "XSAT";
-        else if (text.contains("köpenhamnsbörsen") || text.contains("cap copenhagen"))
+        else if (text.contains("köpenhamnsbörsen") || text.contains("copenhagen"))
             mic = "XCSE";
-        else if (text.contains("helsingforsbörsen") || text.contains("cap helsinki"))
+        else if (text.contains("helsingforsbörsen") || text.contains("helsinki"))
             mic = "XHEL";
         else if (text.contains("oslobörsen"))
             mic = "XOSL";

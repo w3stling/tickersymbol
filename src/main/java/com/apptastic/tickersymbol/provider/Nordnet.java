@@ -286,21 +286,21 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
         String mic = "";
         text = text.toLowerCase();
 
-        if (text.contains("nasdaq stockholm"))
+        if (text.contains("stockholm"))
             mic = "XSTO";
         else if (text.contains("spotlight"))
             mic = "XSAT";
         else if (text.contains("ngm"))
             mic = "XNGM";
-        else if (text.contains("nasdaq copenhagen"))
+        else if (text.contains("copenhagen"))
             mic = "XCSE";
-        else if (text.contains("nasdaq helsinki"))
+        else if (text.contains("helsinki"))
             mic = "XHEL";
         else if (text.contains("ose"))
             mic = "XOSL";
         else if (text.equals("nasdaq") || text.equals("otc foreign"))
             mic = "XNYS";
-        else if (text.contains("toronto stock exchange"))
+        else if (text.contains("toronto"))
             mic = "XTSE";
         else if (text.contains("xetra"))
             mic = "XETR";
