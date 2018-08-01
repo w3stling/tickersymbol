@@ -3,7 +3,7 @@ Ticker Symbol Search
 
 [![Build Status](https://travis-ci.org/w3stling/tickersymbol.svg?branch=master)](https://travis-ci.org/w3stling/tickersymbol)
 [![Download](https://api.bintray.com/packages/apptastic/maven-repo/tickersymbol/images/download.svg)](https://bintray.com/apptastic/maven-repo/tickersymbol/_latestVersion)
-[![Javadoc](https://img.shields.io/badge/javadoc-1.1.2-blue.svg)](https://w3stling.github.io/tickersymbol/javadoc/1.1.1)
+[![Javadoc](https://img.shields.io/badge/javadoc-1.1.2-blue.svg)](https://w3stling.github.io/tickersymbol/javadoc/1.1.2)
 [![License](http://img.shields.io/:license-MIT-blue.svg?style=flat-round)](http://apptastic-software.mit-license.org)   
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.apptastic%3Atickersymbol&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.apptastic%3Atickersymbol)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.apptastic%3Atickersymbol&metric=coverage)](https://sonarcloud.io/component_measures?id=com.apptastic%3Atickersymbol&metric=Coverage)
