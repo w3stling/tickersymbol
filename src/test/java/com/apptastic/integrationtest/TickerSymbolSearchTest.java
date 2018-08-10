@@ -1,9 +1,6 @@
 package com.apptastic.integrationtest;
 
-import com.apptastic.tickersymbol.IsinTickerSymbolFinder;
-import com.apptastic.tickersymbol.Source;
-import com.apptastic.tickersymbol.TickerSymbol;
-import com.apptastic.tickersymbol.TickerSymbolSearch;
+import com.apptastic.tickersymbol.*;
 import org.junit.Test;
 
 import java.util.List;
@@ -197,8 +194,15 @@ public class TickerSymbolSearchTest {
 
 
     @Test
-    public void testEmptyIsinCode() {
+    public void testEmptyIsinCodeNullProvider() {
         IsinTickerSymbolFinder finder = new IsinTickerSymbolFinder("", null);
+        List<TickerSymbol> symbols = finder.call();
+        assertTrue(symbols.isEmpty());
+    }
+
+    @Test
+    public void testEmptyNameNullProvider() {
+        NameTickerSymbolFinder finder = new NameTickerSymbolFinder("", null);
         List<TickerSymbol> symbols = finder.call();
         assertTrue(symbols.isEmpty());
     }
