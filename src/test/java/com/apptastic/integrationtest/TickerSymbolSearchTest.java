@@ -188,7 +188,7 @@ public class TickerSymbolSearchTest {
         assertEquals("SEK", ticker.getCurrency());
         assertEquals("SE0009548597", ticker.getIsin());
         assertEquals("XSAT", ticker.getMic());
-        assertTrue("Spotlight Stock Market".equals(ticker.getDescription()));
+        assertTrue(ticker.getDescription().contains("Spotlight"));
         assertEquals(Source.NORDNET, ticker.getSource());
     }
 
