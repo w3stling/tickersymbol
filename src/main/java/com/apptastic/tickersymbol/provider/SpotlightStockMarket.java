@@ -72,6 +72,13 @@ public class SpotlightStockMarket extends AbstractHttpsConnection implements Tic
 
             return Arrays.asList(ticker);
         }
+        catch (IOException e) {
+            if (e.getMessage().contains("code: 500"))
+                return Collections.emptyList();
+            else
+                throw e;
+        }
+
     }
 
 
