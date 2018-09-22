@@ -75,8 +75,8 @@ public abstract class AbstractHttpsConnection {
     }
 
     protected void setTimeouts(URLConnection connection) {
-        connection.setConnectTimeout(10 * 1000);
-        connection.setReadTimeout(10 * 1000);
+        connection.setConnectTimeout(15 * 1000);
+        connection.setReadTimeout(15 * 1000);
     }
 
     protected void setGetRequestHeaders(URLConnection connection) {
