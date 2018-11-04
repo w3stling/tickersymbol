@@ -49,38 +49,26 @@ public abstract class AbstractHttpsConnection {
     }
 
     protected BufferedReader sendRequest(String url, String characterEncoding) throws IOException {
-        var builder = HttpRequest.newBuilder(URI.create(url)).GET();
-        setTimeouts(builder);
-        setRequestHeaders(builder);
-        var req = builder.build();
+        var builder = HttpRequest.newBuilder(URI.create(url))
+                .GET();
 
-        try {
-            var resp = httpClient.send(req, HttpResponse.BodyHandlers.ofInputStream());
-            var inputStream = resp.body();
-
-            if (Optional.of("gzip").equals(resp.headers().firstValue("Content-Encoding")))
-                inputStream = new GZIPInputStream(inputStream);
-
-            var reader = new InputStreamReader(inputStream, characterEncoding);
-            return new BufferedReader(reader);
-        }
-        catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IOException(e);
-        }
+        return sendRequest(builder, characterEncoding);
     }
 
     protected BufferedReader sendRequest(String url, byte[] postBody, String characterEncoding) throws IOException {
         var builder = HttpRequest.newBuilder(URI.create(url))
                 .POST(HttpRequest.BodyPublishers.ofByteArray(postBody));
 
+        return sendRequest(builder, characterEncoding);
+    }
+
+    private BufferedReader sendRequest(HttpRequest.Builder builder, String characterEncoding) throws IOException {
         setTimeouts(builder);
         setRequestHeaders(builder);
-
-        var req = builder.build();
+        var request = builder.build();
 
         try {
-            var resp = httpClient.send(req, HttpResponse.BodyHandlers.ofInputStream());
+            var resp = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
             var inputStream = resp.body();
 
             if (Optional.of("gzip").equals(resp.headers().firstValue("Content-Encoding")))
