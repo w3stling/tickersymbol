@@ -68,8 +68,8 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
     }
 
     @Override
-    protected void setPostRequestHeaders(HttpRequest.Builder requestBuilder, byte[] postBody) {
-        super.setPostRequestHeaders(requestBuilder, postBody);
+    protected void setRequestHeaders(HttpRequest.Builder requestBuilder) {
+        super.setRequestHeaders(requestBuilder);
 
         requestBuilder.header("Accept", "application/json, text/javascript, */*; q=0.01");
         requestBuilder.header("Accept-Encoding", "gzip, deflate, br");

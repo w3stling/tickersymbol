@@ -106,8 +106,8 @@ public class NordicGrowthMarket extends AbstractHttpsConnection implements Ticke
     }
 
     @Override
-    protected void setPostRequestHeaders(HttpRequest.Builder requestBuilder, byte[] postBody) {
-        super.setPostRequestHeaders(requestBuilder, postBody);
+    protected void setRequestHeaders(HttpRequest.Builder requestBuilder) {
+        super.setRequestHeaders(requestBuilder);
 
         requestBuilder.header("Accept", "*/*");
         requestBuilder.header("Accept-Language", "en-GB,en;q=0.9,en-US;q=0.8,sv;q=0.7");

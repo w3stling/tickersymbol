@@ -51,7 +51,7 @@ public abstract class AbstractHttpsConnection {
     protected BufferedReader sendRequest(String url, String characterEncoding) throws IOException {
         var builder = HttpRequest.newBuilder(URI.create(url)).GET();
         setTimeouts(builder);
-        setGetRequestHeaders(builder);
+        setRequestHeaders(builder);
         var req = builder.build();
 
         try {
@@ -75,7 +75,7 @@ public abstract class AbstractHttpsConnection {
                 .POST(HttpRequest.BodyPublishers.ofByteArray(postBody));
 
         setTimeouts(builder);
-        setPostRequestHeaders(builder, postBody);
+        setRequestHeaders(builder);
 
         var req = builder.build();
 
@@ -99,12 +99,7 @@ public abstract class AbstractHttpsConnection {
         requestBuilder.timeout(Duration.ofSeconds(15));
     }
 
-    protected void setGetRequestHeaders(HttpRequest.Builder requestBuilder) {
-        requestBuilder.header("Accept-Encoding", "gzip, deflate");
-        requestBuilder.header("User-Agent", HTTP_USER_AGENT);
-    }
-
-    protected void setPostRequestHeaders(HttpRequest.Builder requestBuilder, byte[] postBody) {
+    protected void setRequestHeaders(HttpRequest.Builder requestBuilder) {
         requestBuilder.header("Accept-Encoding", "gzip, deflate");
         requestBuilder.header("User-Agent", HTTP_USER_AGENT);
     }
