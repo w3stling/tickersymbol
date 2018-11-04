@@ -29,6 +29,7 @@ import com.google.gson.stream.JsonReader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +48,6 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
     private static final String URL_SUGGESTION = "https://www.nordnet.se/search/suggest.html";
     private static final String HTTP_POST_BODY = "q=%1$s";
 
-
     /**
      * Search ticker by name.
      * @param name name.
@@ -56,7 +56,7 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
      */
     @Override
     public List<TickerSymbol> searchByName(String name) throws IOException {
-        String postBody =  String.format(HTTP_POST_BODY, name);
+        String postBody = String.format(HTTP_POST_BODY, name);
 
         try (BufferedReader reader = sendRequest(URL_SUGGESTION, postBody.getBytes(), "UTF-8")) {
 
@@ -67,6 +67,16 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
         }
     }
 
+    @Override
+    protected void setPostRequestHeaders(HttpRequest.Builder requestBuilder, byte[] postBody) {
+        super.setPostRequestHeaders(requestBuilder, postBody);
+
+        requestBuilder.header("Accept", "application/json, text/javascript, */*; q=0.01");
+        requestBuilder.header("Accept-Encoding", "gzip, deflate, br");
+        requestBuilder.header("Accept-Language", "en-GB,en;q=0.9,en-US;q=0.8,sv;q=0.7");
+        requestBuilder.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        requestBuilder.header("X-Requested-With","XMLHttpRequest");
+    }
 
     /**
      * Search ticker by ISIN code.
@@ -78,7 +88,6 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
     public List<TickerSymbol> searchByIsin(String isin) throws IOException {
         return searchByName(isin);
     }
-
 
     private Stream<Suggestion> parseSuggestionResponse(BufferedReader reader, String isin) throws IOException {
         JsonReader jsonReader = new JsonReader(reader);
@@ -106,7 +115,6 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
         jsonReader.endObject();
         return suggestions.stream().parallel();
     }
-
 
     private Suggestion parseSuggestions(JsonReader jsonReader, String isin) throws IOException {
         Suggestion suggestion = null;
@@ -150,7 +158,6 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
         return suggestion;
     }
 
-
     private TickerSymbol getTickerSymbol(Suggestion suggestion) {
         TickerSymbol ticker = null;
 
@@ -169,7 +176,6 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
 
         return ticker;
     }
-
 
     private TickerSymbol parsePageResponse(BufferedReader reader, TickerSymbol ticker) throws IOException {
         String line = "";
@@ -204,13 +210,11 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
         return ticker;
     }
 
-
     private void parseHandelsplats(BufferedReader reader, TickerSymbol ticker) throws IOException {
         String market = getValue(reader);
         String mic = market2Mic(market);
         ticker.setMic(mic);
     }
-
 
     private void parseValuta(BufferedReader reader, TickerSymbol ticker) throws IOException {
         String currency = getValue(reader).trim();
@@ -218,7 +222,6 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
         if (!currency.isEmpty())
             ticker.setCurrency(currency);
     }
-
 
     private void parseIsin(BufferedReader reader, TickerSymbol ticker) throws IOException {
         List<String> values = getValues(reader);
@@ -232,14 +235,12 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
         }
     }
 
-
     private void parseName(BufferedReader reader, TickerSymbol ticker) throws IOException {
         String name = formatName(getValue(reader));
 
         if (!name.isEmpty())
             ticker.setName(name);
     }
-
 
     private String getValue(BufferedReader reader) throws IOException {
         String value = "";
@@ -256,7 +257,6 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
 
         return value;
     }
-
 
     private List<String> getValues(BufferedReader reader) throws IOException {
         List<String> values = new ArrayList<>();
@@ -280,7 +280,6 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
 
         return values;
     }
-
 
     private String market2Mic(String text) {
         String mic = "";
@@ -308,7 +307,6 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
         return mic;
     }
 
-
     private class Suggestion {
         private String url;
         private TickerSymbol tickerSymbol;
@@ -332,7 +330,6 @@ public class Nordnet extends AbstractHttpsConnection implements TickerSymbolProv
         }
 
     }
-
 
     private String formatName(String name) {
         if (name == null)

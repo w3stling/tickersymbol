@@ -29,8 +29,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 
 import java.io.*;
-import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +54,6 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
             "<param name=\"app\" value=\"/aktier/microsite\"/>\n" +
             "</post>";
 
-
     /**
      * Search ticker by name.
      * @param name name.
@@ -64,7 +63,6 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
     public List<TickerSymbol> searchByName(String name) {
         return Collections.emptyList();
     }
-
 
     /**
      * Search ticker by ISIN code.
@@ -81,21 +79,15 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
         }
     }
 
-
     @Override
-    protected void setPostRequestHeaders(URLConnection connection, byte[] postBody) {
-        super.setPostRequestHeaders(connection, postBody);
+    protected void setPostRequestHeaders(HttpRequest.Builder requestBuilder, byte[] postBody) {
+        super.setPostRequestHeaders(requestBuilder, postBody);
 
-        connection.setRequestProperty("Accept", "*/*");
-        connection.setRequestProperty("Accept-Language", "en-GB,en;q=0.9,en-US;q=0.8,sv;q=0.7");
-        connection.setRequestProperty("Connection", "keep-alive");
-        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
-        connection.setRequestProperty("Host", "www.nasdaqomxnordic.com");
-        connection.setRequestProperty("Origin", "http://www.nasdaqomxnordic.com");
-        connection.setRequestProperty("Referer", "http://www.nasdaqomxnordic.com/aktier/microsite?Instrument=SSE323");
-        connection.setRequestProperty("X-Requested-With", "XMLHttpRequest");
+        requestBuilder.header("Accept", "*/*");
+        requestBuilder.header("Accept-Language", "en-GB,en;q=0.9,en-US;q=0.8,sv;q=0.7");
+        requestBuilder.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
+        requestBuilder.header("X-Requested-With", "XMLHttpRequest");
     }
-
 
     private List<TickerSymbol> handleResponse(BufferedReader reader) throws IOException {
         JsonReader jsonReader = new JsonReader(reader);
@@ -120,7 +112,6 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
         return tickers;
     }
 
-
     @Override
     protected void parseTicker(JsonReader reader, TickerSymbol ticker) throws IOException {
         String name = reader.nextName();
@@ -142,7 +133,6 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
         else
             reader.skipValue();
     }
-
 
     private String getMic(String text) {
         String[] mkt = text.split(":");

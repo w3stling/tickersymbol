@@ -27,68 +27,86 @@ import com.apptastic.tickersymbol.TickerSymbol;
 import com.google.gson.stream.JsonReader;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 
 
 public abstract class AbstractHttpsConnection {
     private static final String HTTP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36";
+    private final HttpClient httpClient;
 
+    protected AbstractHttpsConnection() {
+        httpClient = HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(15))
+                .followRedirects(HttpClient.Redirect.NORMAL)
+                .build();
+    }
 
     protected BufferedReader sendRequest(String url, String characterEncoding) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        var builder = HttpRequest.newBuilder(URI.create(url)).GET();
+        setTimeouts(builder);
+        setGetRequestHeaders(builder);
+        var req = builder.build();
 
-        setTimeouts(connection);
-        setGetRequestHeaders(connection);
+        try {
+            var resp = httpClient.send(req, HttpResponse.BodyHandlers.ofInputStream());
+            var inputStream = resp.body();
 
-        InputStream inputStream = connection.getInputStream();
+            if (Optional.of("gzip").equals(resp.headers().firstValue("Content-Encoding")))
+                inputStream = new GZIPInputStream(inputStream);
 
-        if ("gzip".equals(connection.getContentEncoding()))
-            inputStream = new GZIPInputStream(inputStream);
-
-        return new BufferedReader(new InputStreamReader(inputStream, characterEncoding));
+            var reader = new InputStreamReader(inputStream, characterEncoding);
+            return new BufferedReader(reader);
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException(e);
+        }
     }
-
 
     protected BufferedReader sendRequest(String url, byte[] postBody, String characterEncoding) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        var builder = HttpRequest.newBuilder(URI.create(url))
+                .POST(HttpRequest.BodyPublishers.ofByteArray(postBody));
 
-        setTimeouts(connection);
-        setPostRequestHeaders(connection, postBody);
+        setTimeouts(builder);
+        setPostRequestHeaders(builder, postBody);
 
-        connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
-        OutputStream os = connection.getOutputStream();
-        os.write(postBody);
-        os.flush();
-        os.close();
+        var req = builder.build();
 
-        InputStream inputStream = connection.getInputStream();
+        try {
+            var resp = httpClient.send(req, HttpResponse.BodyHandlers.ofInputStream());
+            var inputStream = resp.body();
 
-        if ("gzip".equals(connection.getContentEncoding()))
-            inputStream = new GZIPInputStream(inputStream);
+            if (Optional.of("gzip").equals(resp.headers().firstValue("Content-Encoding")))
+                inputStream = new GZIPInputStream(inputStream);
 
-        return new BufferedReader(new InputStreamReader(inputStream, characterEncoding));
+            var reader = new InputStreamReader(inputStream, characterEncoding);
+            return new BufferedReader(reader);
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException(e);
+        }
     }
 
-    protected void setTimeouts(URLConnection connection) {
-        connection.setConnectTimeout(15 * 1000);
-        connection.setReadTimeout(15 * 1000);
+    protected void setTimeouts(HttpRequest.Builder requestBuilder) {
+        requestBuilder.timeout(Duration.ofSeconds(15));
     }
 
-    protected void setGetRequestHeaders(URLConnection connection) {
-        connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
-        connection.setRequestProperty("User-Agent", HTTP_USER_AGENT);
+    protected void setGetRequestHeaders(HttpRequest.Builder requestBuilder) {
+        requestBuilder.header("Accept-Encoding", "gzip, deflate");
+        requestBuilder.header("User-Agent", HTTP_USER_AGENT);
     }
 
-
-    protected void setPostRequestHeaders(URLConnection connection, byte[] postBody) {
-        connection.setRequestProperty("Accept-Encoding", "gzip, deflate");
-        connection.setRequestProperty("User-Agent", HTTP_USER_AGENT);
-        connection.setRequestProperty("Content-Length", String.valueOf(postBody.length));
+    protected void setPostRequestHeaders(HttpRequest.Builder requestBuilder, byte[] postBody) {
+        requestBuilder.header("Accept-Encoding", "gzip, deflate");
+        requestBuilder.header("User-Agent", HTTP_USER_AGENT);
     }
 
     protected void parseTickers(JsonReader reader, List<TickerSymbol> tickers) throws IOException {
@@ -111,11 +129,9 @@ public abstract class AbstractHttpsConnection {
         JsonUtil.optEndArray(reader);
     }
 
-
     protected void parseTicker(JsonReader reader, TickerSymbol ticker) throws IOException {
 
     }
-
 
     protected boolean isTickerSymbolValid(TickerSymbol ticker) {
         return ticker != null && ticker.getSymbol() != null && ticker.getName() != null && ticker.getIsin() != null &&

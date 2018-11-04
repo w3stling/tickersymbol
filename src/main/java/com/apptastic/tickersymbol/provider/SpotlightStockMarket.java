@@ -41,7 +41,6 @@ import java.util.List;
 public class SpotlightStockMarket extends AbstractHttpsConnection implements TickerSymbolProvider {
     private static final String URL = "https://www.spotlightstockmarket.com/sv/bolag/irtrade?InstrumentId=%1$s";
 
-
     /**
      * Search ticker by name.
      * @param name name.
@@ -51,7 +50,6 @@ public class SpotlightStockMarket extends AbstractHttpsConnection implements Tic
     public List<TickerSymbol> searchByName(String name) {
         return Collections.emptyList();
     }
-
 
     /**
      * Search ticker by ISIN code.
@@ -81,7 +79,6 @@ public class SpotlightStockMarket extends AbstractHttpsConnection implements Tic
 
     }
 
-
     private TickerSymbol handleResponse(BufferedReader reader) throws IOException {
         TickerSymbol ticker = new TickerSymbol();
         ticker.setMic("XSAT");
@@ -107,7 +104,6 @@ public class SpotlightStockMarket extends AbstractHttpsConnection implements Tic
         return ticker;
     }
 
-
     private void parseFieldValue(String line, TickerSymbol ticker, BufferedReader reader) throws IOException {
         if (line.contains("Aktienamn") || line.contains("Share name")) {
             String shareName = getValue(reader);
@@ -131,7 +127,6 @@ public class SpotlightStockMarket extends AbstractHttpsConnection implements Tic
         }
     }
 
-
     private String getValue(BufferedReader reader) throws IOException {
         String skip = reader.readLine();
         String line = reader.readLine();
@@ -147,7 +142,6 @@ public class SpotlightStockMarket extends AbstractHttpsConnection implements Tic
 
         return line.substring(start + 1, end).trim();
     }
-
 
     @Override
     protected boolean isTickerSymbolValid(TickerSymbol ticker) {

@@ -40,7 +40,6 @@ import java.util.List;
 public class MorningStar extends AbstractHttpsConnection implements TickerSymbolProvider {
     private static final String URL = "https://www.morningstar.com/api/v2/search/securities/5/usquote-v2/?q=%1$s";
 
-
     /**
      * Search ticker by name.
      * @param name name.
@@ -50,7 +49,6 @@ public class MorningStar extends AbstractHttpsConnection implements TickerSymbol
     public List<TickerSymbol> searchByName(String name) {
         return Collections.emptyList();
     }
-
 
     /**
      * Search ticker by ISIN code.
@@ -69,7 +67,6 @@ public class MorningStar extends AbstractHttpsConnection implements TickerSymbol
             return handleResponse(jsonReader);
         }
     }
-
 
     private List<TickerSymbol> handleResponse(JsonReader reader) throws IOException {
         List<TickerSymbol> tickers = new ArrayList<>();
@@ -102,7 +99,6 @@ public class MorningStar extends AbstractHttpsConnection implements TickerSymbol
         reader.endObject();
         return tickers;
     }
-
 
     @Override
     protected void parseTicker(JsonReader reader, TickerSymbol ticker) throws IOException {

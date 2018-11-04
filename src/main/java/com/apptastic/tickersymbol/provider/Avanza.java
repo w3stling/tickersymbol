@@ -45,7 +45,6 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
     private static final String URL_BASE = "https://www.avanza.se";
     private static final String URL_SUGGESTION = "https://www.avanza.se/ab/sok/inline?query=%1$s&_=%2$d";
 
-
     /**
      * Search ticker by name.
      * @param name name.
@@ -66,7 +65,6 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
         }
     }
 
-
     /**
      * Search ticker by ISIN code.
      * @param isin ISIN code.
@@ -77,7 +75,6 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
     public List<TickerSymbol> searchByIsin(String isin) throws IOException {
         return searchByName(isin);
     }
-
 
     private Stream<String> parseSuggestionResponse(BufferedReader reader) throws IOException {
         String line = reader.readLine();
@@ -104,7 +101,6 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
         return results.stream().parallel();
     }
 
-
     private String getLink(String line) {
         int index = line.indexOf(" href=");
 
@@ -119,7 +115,6 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
 
         return line.substring(start + 1, end).trim();
     }
-
 
     private TickerSymbol getTickerSymbol(String url) {
         TickerSymbol ticker = null;
@@ -140,7 +135,6 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
         return ticker;
     }
 
-
     private TickerSymbol parsePageResponse(BufferedReader reader) throws IOException {
         if (reader == null)
             return null;
@@ -158,7 +152,6 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
 
         return ticker;
     }
-
 
     private void parseTickerSymbol(BufferedReader reader, TickerSymbol ticker, String line) throws IOException {
 
@@ -183,7 +176,6 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
         }
     }
 
-
     private void parseKortnamn(BufferedReader reader, TickerSymbol ticker) throws IOException {
         String symbol = getValue(reader);
 
@@ -193,12 +185,10 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
         ticker.setSymbol(symbol);
     }
 
-
     private void parseIsin(BufferedReader reader, TickerSymbol ticker) throws IOException {
         String isin = getValue(reader);
         ticker.setIsin(isin);
     }
-
 
     private void parseMarknad(BufferedReader reader, TickerSymbol ticker) throws IOException {
         String market = getValue(reader);
@@ -207,12 +197,10 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
         ticker.setDescription(market);
     }
 
-
     private void parseHandlasI(BufferedReader reader, TickerSymbol ticker) throws IOException {
         String currency = getValue(reader);
         ticker.setCurrency(currency);
     }
-
 
     private TickerSymbol getTickerNameOnPage(BufferedReader reader) throws IOException {
         TickerSymbol ticker = null;
@@ -237,7 +225,6 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
         return ticker;
     }
 
-
     private String getValue(BufferedReader reader) throws IOException {
         String value = "";
         String line = reader.readLine();
@@ -255,7 +242,6 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
 
         return value;
     }
-
 
     private String getMultilineValue(BufferedReader reader, String line, int start, int end) throws IOException {
         StringBuilder valueBuilder = new StringBuilder();
@@ -282,7 +268,6 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
         return valueBuilder.toString().trim();
     }
 
-
     private String removeBrTag(String text) {
         if (text != null && text.contains("<br")) {
             int brStart = text.indexOf("<br");
@@ -294,7 +279,6 @@ public class Avanza extends AbstractHttpsConnection implements TickerSymbolProvi
 
         return text;
     }
-
 
     private String market2Mic(String text) {
         String mic = "";
