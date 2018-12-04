@@ -159,7 +159,7 @@ public class NordnetTest {
         assertEquals("SPEC", ticker.getSymbol());
         assertEquals("SEK", ticker.getCurrency());
         assertEquals("SE0007158118", ticker.getIsin());
-        assertEquals("XSAT", ticker.getMic());
+        assertEquals("XSTO", ticker.getMic());
         assertTrue(!ticker.getDescription().isEmpty());
         assertEquals(Source.NORDNET, ticker.getSource());
     }
