@@ -155,7 +155,7 @@ public class NordnetTest {
         assertEquals(1, tickers.size());
 
         TickerSymbol ticker = tickers.get(0);
-        assertEquals("SpectraCure", ticker.getName());
+        assertEquals("SpectraCure AB", ticker.getName());
         assertEquals("SPEC", ticker.getSymbol());
         assertEquals("SEK", ticker.getCurrency());
         assertEquals("SE0007158118", ticker.getIsin());
