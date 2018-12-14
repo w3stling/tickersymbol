@@ -3,7 +3,7 @@ Ticker Symbol Search
 
 [![Build Status](https://travis-ci.org/w3stling/tickersymbol.svg?branch=master)](https://travis-ci.org/w3stling/tickersymbol)
 [![Download](https://api.bintray.com/packages/apptastic/maven-repo/tickersymbol/images/download.svg)](https://bintray.com/apptastic/maven-repo/tickersymbol/_latestVersion)
-[![Javadoc](https://img.shields.io/badge/javadoc-1.1.4-blue.svg)](https://w3stling.github.io/tickersymbol/javadoc/1.1.4)
+[![Javadoc](https://img.shields.io/badge/javadoc-2.0.0-blue.svg)](https://w3stling.github.io/tickersymbol/javadoc/2.0.0)
 [![License](http://img.shields.io/:license-MIT-blue.svg?style=flat-round)](http://apptastic-software.mit-license.org)   
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=com.apptastic%3Atickersymbol&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.apptastic%3Atickersymbol)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.apptastic%3Atickersymbol&metric=coverage)](https://sonarcloud.io/component_measures?id=com.apptastic%3Atickersymbol&metric=Coverage)
@@ -16,7 +16,7 @@ A ticker symbol is an arrangement of characters (usually letters) representing a
 exchange or otherwise traded publicly. When a company issues securities to the public marketplace, it selects an
 available ticker symbol for its securities that investors use to place trade orders.
 
-This Java library makes it easier to automate ticker symbols lookup via Java 8 stream API.
+This Java library makes it easier to automate ticker symbols lookup via Java stream API.
 
 Examples
 --------
@@ -68,7 +68,7 @@ Add dependency declaration:
         <dependency>
             <groupId>com.apptastic</groupId>
             <artifactId>tickersymbol</artifactId>
-            <version>1.1.4</version>
+            <version>2.0.0</version>
         </dependency>
     </dependencies>
     ...
@@ -86,11 +86,11 @@ repositories {
 Add dependency declaration:
 ```groovy
 dependencies {
-    implementation 'com.apptastic:tickersymbol:1.1.4'
+    implementation 'com.apptastic:tickersymbol:2.0.0'
 }
 ```
 
-Ticker Symbol library requires at minimum Java 8.
+Ticker Symbol library requires at minimum Java 11.
 
 License
 -------
