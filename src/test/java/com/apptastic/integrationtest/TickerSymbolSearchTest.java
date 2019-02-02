@@ -1,6 +1,7 @@
 package com.apptastic.integrationtest;
 
 import com.apptastic.tickersymbol.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -153,6 +154,7 @@ public class TickerSymbolSearchTest {
     }
 
 
+    @Ignore
     @Test
     public void testNordnetSearchByName() {
         TickerSymbolSearch ts = new TickerSymbolSearch();
@@ -173,6 +175,7 @@ public class TickerSymbolSearchTest {
     }
 
 
+    @Ignore
     @Test
     public void testNordnetSearchByIsin() {
         TickerSymbolSearch ts = new TickerSymbolSearch();

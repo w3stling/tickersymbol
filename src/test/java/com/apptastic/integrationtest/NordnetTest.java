@@ -3,6 +3,7 @@ package com.apptastic.integrationtest;
 import com.apptastic.tickersymbol.Source;
 import com.apptastic.tickersymbol.TickerSymbol;
 import com.apptastic.tickersymbol.provider.Nordnet;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 public class NordnetTest {
 
+    @Ignore
     @Test
     public void testNameNorwegianAirShuttle() throws IOException {
         Nordnet provider = new Nordnet();
@@ -33,6 +35,7 @@ public class NordnetTest {
         assertEquals(Source.NORDNET, ticker.getSource());
     }
 
+    @Ignore
     @Test
     public void isinNotFound() throws IOException {
         Nordnet provider = new Nordnet();
@@ -41,6 +44,7 @@ public class NordnetTest {
         assertEquals(0, tickers.size());
     }
 
+    @Ignore
     @Test
     public void testIsinNgexResources() throws IOException {
         Nordnet provider = new Nordnet();
@@ -110,6 +114,7 @@ public class NordnetTest {
         assertEquals(Source.NORDNET, ticker.getSource());
     }
 
+    @Ignore
     @Test
     public void testIsinKone() throws IOException {
         Nordnet provider = new Nordnet();
@@ -127,7 +132,7 @@ public class NordnetTest {
         assertEquals(Source.NORDNET, ticker.getSource());
     }
 
-
+    @Ignore
     @Test
     public void testIsinNetflix() throws IOException {
         Nordnet provider = new Nordnet();
@@ -146,6 +151,7 @@ public class NordnetTest {
     }
 
 
+    @Ignore
     @Test
     public void testIsinSpectraCure() throws IOException {
         Nordnet provider = new Nordnet();
@@ -164,7 +170,7 @@ public class NordnetTest {
         assertEquals(Source.NORDNET, ticker.getSource());
     }
 
-
+    @Ignore
     @Test
     public void testIsinPaynova() throws IOException {
         Nordnet provider = new Nordnet();

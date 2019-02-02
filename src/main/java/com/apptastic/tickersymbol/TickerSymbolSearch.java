@@ -50,8 +50,8 @@ public class TickerSymbolSearch {
                                         new NordicGrowthMarket(),
                                         //new SpotlightStockMarket(),
                                         new MorningStar(),
-                                        new Avanza(),
-                                        new Nordnet());
+                                        new Avanza());
+                                        //new Nordnet());
     }
 
 
