@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-@Ignore
+
 public class NordnetTest {
 
     @Test
@@ -136,7 +136,7 @@ public class NordnetTest {
         assertTrue(tickers.size() >= 1);
 
         TickerSymbol ticker = tickers.get(0);
-        assertEquals("Netflix, Inc", ticker.getName());
+        assertEquals("NETFLIX INC", ticker.getName());
         assertEquals("NFLX", ticker.getSymbol());
         assertEquals("USD", ticker.getCurrency());
         assertEquals("US64110L1061", ticker.getIsin());
