@@ -73,25 +73,6 @@ public class NasdaqOmxNordicTest {
 
 
     @Test
-    public void testMrGreen() throws IOException {
-        NasdaqOmxNordic provider = new NasdaqOmxNordic();
-        List<TickerSymbol> tickers = provider.searchByIsin("SE0010949750");
-
-        assertNotNull(tickers);
-        assertEquals(1, tickers.size());
-
-        TickerSymbol ticker = tickers.get(0);
-        assertEquals("Mr Green & Co", ticker.getName());
-        assertEquals("MRG", ticker.getSymbol());
-        assertEquals("SEK", ticker.getCurrency());
-        assertEquals("SE0010949750", ticker.getIsin());
-        assertEquals("XSTO", ticker.getMic());
-        assertEquals("Ordinary shares", ticker.getDescription());
-        assertEquals(Source.NASDAQ_OMX_NORDIC, ticker.getSource());
-    }
-
-
-    @Test
     public void testMycronic() throws IOException {
         NasdaqOmxNordic provider = new NasdaqOmxNordic();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0000375115");
