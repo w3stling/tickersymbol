@@ -136,7 +136,7 @@ public class NordnetTest {
         assertTrue(tickers.size() >= 1);
 
         TickerSymbol ticker = tickers.get(0);
-        assertEquals("NETFLIX INC", ticker.getName());
+        assertEquals("Netflix, Inc", ticker.getName());
         assertEquals("NFLX", ticker.getSymbol());
         assertEquals("USD", ticker.getCurrency());
         assertEquals("US64110L1061", ticker.getIsin());
