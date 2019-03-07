@@ -120,7 +120,7 @@ public class TickerSymbolSearchTest {
                 .filter(t -> t.getSource() == Source.AVANZA)
                 .collect(Collectors.toList());
 
-        assertEquals(1, tickers.size());
+        assertEquals(2, tickers.size());
 
         TickerSymbol ticker = tickers.get(0);
         assertEquals("Norwegian Air Shuttle", ticker.getName());
