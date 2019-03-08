@@ -19,7 +19,7 @@ public class AvanzaTest {
         List<TickerSymbol> tickers = provider.searchByName("Norwegian Air");
 
         assertNotNull(tickers);
-        assertEquals(2, tickers.size());
+        assertEquals(1, tickers.size());
 
         TickerSymbol ticker = tickers.get(0);
         assertEquals("Norwegian Air Shuttle", ticker.getName());
