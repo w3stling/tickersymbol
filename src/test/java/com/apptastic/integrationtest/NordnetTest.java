@@ -7,6 +7,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -48,18 +49,10 @@ public class NordnetTest {
 
         List<TickerSymbol> tickers = provider.searchByIsin("CA65339B1004");
         assertEquals(3, tickers.size());
+        tickers.sort(Comparator.comparing(TickerSymbol::getCurrency));
 
         TickerSymbol ticker = tickers.get(0);
-        assertEquals("NGEx Resources Inc", ticker.getName());
-        assertEquals("NGQ", ticker.getSymbol());
-        assertEquals("SEK", ticker.getCurrency());
-        assertEquals("CA65339B1004", ticker.getIsin());
-        assertEquals("XSTO", ticker.getMic());
-        assertTrue(!ticker.getDescription().isEmpty());
-        assertEquals(Source.NORDNET, ticker.getSource());
-
-        ticker = tickers.get(1);
-        assertEquals("NGEX RESOURCES INC", ticker.getName());
+        assertEquals("ngex resources inc", ticker.getName().toLowerCase());
         assertEquals("NGQ", ticker.getSymbol());
         assertEquals("CAD", ticker.getCurrency());
         assertEquals("CA65339B1004", ticker.getIsin());
@@ -67,8 +60,17 @@ public class NordnetTest {
         assertTrue(!ticker.getDescription().isEmpty());
         assertEquals(Source.NORDNET, ticker.getSource());
 
+        ticker = tickers.get(1);
+        assertEquals("ngex resources inc", ticker.getName().toLowerCase());
+        assertEquals("NGQ", ticker.getSymbol());
+        assertEquals("SEK", ticker.getCurrency());
+        assertEquals("CA65339B1004", ticker.getIsin());
+        assertEquals("XSTO", ticker.getMic());
+        assertTrue(!ticker.getDescription().isEmpty());
+        assertEquals(Source.NORDNET, ticker.getSource());
+
         ticker = tickers.get(2);
-        assertEquals("NGEX RESOURCES INC", ticker.getName());
+        assertEquals("ngex resources inc", ticker.getName().toLowerCase());
         assertEquals("NGQRF", ticker.getSymbol());
         assertEquals("USD", ticker.getCurrency());
         assertEquals("CA65339B1004", ticker.getIsin());
