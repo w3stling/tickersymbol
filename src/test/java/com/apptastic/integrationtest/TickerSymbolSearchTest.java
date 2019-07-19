@@ -103,7 +103,7 @@ public class TickerSymbolSearchTest {
         assertEquals(1, tickers.size());
 
         TickerSymbol ticker = tickers.get(0);
-        assertEquals("NGEx Resources Inc", ticker.getName());
+        assertEquals("Josemaria Resources Inc", ticker.getName());
         assertEquals("NGQ", ticker.getSymbol());
         assertEquals("CAD", ticker.getCurrency());
         assertEquals("CA65339B1004", ticker.getIsin());

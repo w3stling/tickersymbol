@@ -43,7 +43,7 @@ public class MorningStarTest {
         }
 
         assertNotNull(ticker);
-        assertEquals("NGEx Resources Inc", ticker.getName());
+        assertEquals("Josemaria Resources Inc", ticker.getName());
         assertEquals("NGQ", ticker.getSymbol());
         assertEquals("CAD", ticker.getCurrency());
         assertEquals("CA65339B1004", ticker.getIsin());
