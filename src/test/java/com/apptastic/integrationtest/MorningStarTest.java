@@ -28,7 +28,7 @@ public class MorningStarTest {
     @Test
     public void testNgexResources() throws IOException {
         MorningStar provider = new MorningStar();
-        List<TickerSymbol> tickers = provider.searchByIsin("CA65339B1004");
+        List<TickerSymbol> tickers = provider.searchByIsin("CA0030691012");
 
         assertNotNull(tickers);
         assertTrue(tickers.size() > 0);
@@ -43,10 +43,10 @@ public class MorningStarTest {
         }
 
         assertNotNull(ticker);
-        assertEquals("Josemaria Resources Inc", ticker.getName());
-        assertEquals("NGQ", ticker.getSymbol());
+        assertEquals("Aberdeen International Inc", ticker.getName());
+        assertEquals("AAB", ticker.getSymbol());
         assertEquals("CAD", ticker.getCurrency());
-        assertEquals("CA65339B1004", ticker.getIsin());
+        assertEquals("CA0030691012", ticker.getIsin());
         assertEquals("XTSE", ticker.getMic());
         assertEquals("TORONTO STOCK EXCHANGE", ticker.getDescription());
         assertEquals(Source.MORNING_STAR, ticker.getSource());

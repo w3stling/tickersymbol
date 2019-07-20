@@ -95,7 +95,7 @@ public class TickerSymbolSearchTest {
     @Test
     public void testMorningStarSearchByIsin() {
         TickerSymbolSearch ts = new TickerSymbolSearch();
-        List<TickerSymbol> tickers = ts.searchByIsin("CA65339B1004")
+        List<TickerSymbol> tickers = ts.searchByIsin("CA0030691012")
                 .filter(t -> "CAD".equals(t.getCurrency()))
                 .filter(t -> t.getSource() == Source.MORNING_STAR)
                 .collect(Collectors.toList());
@@ -103,10 +103,10 @@ public class TickerSymbolSearchTest {
         assertEquals(1, tickers.size());
 
         TickerSymbol ticker = tickers.get(0);
-        assertEquals("Josemaria Resources Inc", ticker.getName());
-        assertEquals("NGQ", ticker.getSymbol());
+        assertEquals("Aberdeen International Inc", ticker.getName());
+        assertEquals("AAB", ticker.getSymbol());
         assertEquals("CAD", ticker.getCurrency());
-        assertEquals("CA65339B1004", ticker.getIsin());
+        assertEquals("CA0030691012", ticker.getIsin());
         assertEquals("XTSE", ticker.getMic());
         assertEquals("TORONTO STOCK EXCHANGE", ticker.getDescription());
         assertEquals(Source.MORNING_STAR, ticker.getSource());
