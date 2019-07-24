@@ -47,34 +47,16 @@ public class NordnetTest {
     public void testIsinNgexResources() throws IOException {
         Nordnet provider = new Nordnet();
 
-        List<TickerSymbol> tickers = provider.searchByIsin("CA65339B1004");
-        assertEquals(3, tickers.size());
+        List<TickerSymbol> tickers = provider.searchByIsin("CA0030691012");
+        assertEquals(1, tickers.size());
         tickers.sort(Comparator.comparing(TickerSymbol::getCurrency));
 
         TickerSymbol ticker = tickers.get(0);
-        assertEquals("ngex resources inc", ticker.getName().toLowerCase());
-        assertEquals("NGQ", ticker.getSymbol());
+        assertEquals("ABERDEEN INTERNATIONAL INC", ticker.getName());
+        assertEquals("AAB", ticker.getSymbol());
         assertEquals("CAD", ticker.getCurrency());
-        assertEquals("CA65339B1004", ticker.getIsin());
+        assertEquals("CA0030691012", ticker.getIsin());
         assertEquals("XTSE", ticker.getMic());
-        assertTrue(!ticker.getDescription().isEmpty());
-        assertEquals(Source.NORDNET, ticker.getSource());
-
-        ticker = tickers.get(1);
-        assertEquals("ngex resources inc", ticker.getName().toLowerCase());
-        assertEquals("NGQ", ticker.getSymbol());
-        assertEquals("SEK", ticker.getCurrency());
-        assertEquals("CA65339B1004", ticker.getIsin());
-        assertEquals("XSTO", ticker.getMic());
-        assertTrue(!ticker.getDescription().isEmpty());
-        assertEquals(Source.NORDNET, ticker.getSource());
-
-        ticker = tickers.get(2);
-        assertEquals("ngex resources inc", ticker.getName().toLowerCase());
-        assertEquals("NGQRF", ticker.getSymbol());
-        assertEquals("USD", ticker.getCurrency());
-        assertEquals("CA65339B1004", ticker.getIsin());
-        //assertEquals("Nasdaq OTC Foreign", ticker.getMic());
         assertTrue(!ticker.getDescription().isEmpty());
         assertEquals(Source.NORDNET, ticker.getSource());
     }

@@ -44,18 +44,19 @@ public class AvanzaTest {
     public void testIsinNgexResources() throws IOException {
         Avanza provider = new Avanza();
 
-        List<TickerSymbol> tickers = provider.searchByIsin("CA65339B1004");
-        assertEquals(2, tickers.size());
+        List<TickerSymbol> tickers = provider.searchByIsin("CA0030691012");
+        assertEquals(1, tickers.size());
 
         TickerSymbol ticker = tickers.get(0);
-        assertEquals("NGEx Resources", ticker.getName());
-        assertEquals("NGQ", ticker.getSymbol());
-        assertEquals("SEK", ticker.getCurrency());
-        assertEquals("CA65339B1004", ticker.getIsin());
-        assertEquals("XSTO", ticker.getMic());
+        assertEquals("Aberdeen International Inc", ticker.getName());
+        assertEquals("AAB", ticker.getSymbol());
+        assertEquals("CAD", ticker.getCurrency());
+        assertEquals("CA0030691012", ticker.getIsin());
+        assertEquals("XTSE", ticker.getMic());
         assertTrue(!ticker.getDescription().isEmpty());
         assertEquals(Source.AVANZA, ticker.getSource());
 
+        /*
         ticker = tickers.get(1);
         assertEquals("NGEx Resources", ticker.getName());
         assertEquals("NGQ", ticker.getSymbol());
@@ -64,6 +65,7 @@ public class AvanzaTest {
         assertEquals("XTSE", ticker.getMic());
         assertTrue(!ticker.getDescription().isEmpty());
         assertEquals(Source.AVANZA, ticker.getSource());
+        */
     }
 
     @Test
