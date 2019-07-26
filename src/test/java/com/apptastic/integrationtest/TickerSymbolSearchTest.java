@@ -34,7 +34,7 @@ public class TickerSymbolSearchTest {
     @Test
     public void testNasdaqOmxNordicSearchByIsin() {
         TickerSymbolSearch ts = new TickerSymbolSearch();
-        List<TickerSymbol> tickers = ts.searchByIsin("CA65339B1004")
+        List<TickerSymbol> tickers = ts.searchByIsin("SE0000108656")
                 .filter(t -> "SEK".equals(t.getCurrency()))
                 .filter(t -> t.getSource() == Source.NASDAQ_OMX_NORDIC)
                 .collect(Collectors.toList());
@@ -42,10 +42,10 @@ public class TickerSymbolSearchTest {
         assertEquals(1, tickers.size());
 
         TickerSymbol ticker = tickers.get(0);
-        assertEquals("NGEx Resources", ticker.getName());
-        assertEquals("NGQ", ticker.getSymbol());
+        assertEquals("Ericsson B", ticker.getName());
+        assertEquals("ERIC B", ticker.getSymbol());
         assertEquals("SEK", ticker.getCurrency());
-        assertEquals("CA65339B1004", ticker.getIsin());
+        assertEquals("SE0000108656", ticker.getIsin());
         assertEquals("XSTO", ticker.getMic());
         assertEquals("Ordinary shares", ticker.getDescription());
         assertEquals(Source.NASDAQ_OMX_NORDIC, ticker.getSource());
