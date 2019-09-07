@@ -93,27 +93,6 @@ public class TickerSymbolSearchTest {
 */
 
     @Test
-    public void testMorningStarSearchByIsin() {
-        TickerSymbolSearch ts = new TickerSymbolSearch();
-        List<TickerSymbol> tickers = ts.searchByIsin("CA0030691012")
-                .filter(t -> "CAD".equals(t.getCurrency()))
-                .filter(t -> t.getSource() == Source.MORNING_STAR)
-                .collect(Collectors.toList());
-
-        assertEquals(1, tickers.size());
-
-        TickerSymbol ticker = tickers.get(0);
-        assertEquals("Aberdeen International Inc", ticker.getName());
-        assertEquals("AAB", ticker.getSymbol());
-        assertEquals("CAD", ticker.getCurrency());
-        assertEquals("CA0030691012", ticker.getIsin());
-        assertEquals("XTSE", ticker.getMic());
-        assertEquals("TORONTO STOCK EXCHANGE", ticker.getDescription());
-        assertEquals(Source.MORNING_STAR, ticker.getSource());
-    }
-
-
-    @Test
     public void testAvanzaSearchByName() {
         TickerSymbolSearch ts = new TickerSymbolSearch();
         List<TickerSymbol> tickers = ts.searchByName("Norwegian Air Shuttle")
