@@ -74,6 +74,10 @@ compileJava {
     }
 }
 
+compileTestJava {
+    options.encoding = "UTF-8"
+}
+
 javadoc {
     options.encoding = "UTF-8"
     inputs.property("moduleName", moduleName)
