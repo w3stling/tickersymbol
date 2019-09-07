@@ -64,6 +64,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 ext.moduleName = 'com.apptastic.tickersymbol'
 
 compileJava {
+    options.encoding = "UTF-8"
     inputs.property('moduleName', moduleName)
     doFirst {
         options.compilerArgs = [
@@ -74,6 +75,7 @@ compileJava {
 }
 
 javadoc {
+    options.encoding = "UTF-8"
     inputs.property("moduleName", moduleName)
     doFirst {
         options.addStringOption('-module-path', classpath.asPath)
