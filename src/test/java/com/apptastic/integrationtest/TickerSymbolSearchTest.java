@@ -55,7 +55,7 @@ public class TickerSymbolSearchTest {
     @Test
     public void testNordicGrowthMarketSearchByIsin() {
         TickerSymbolSearch ts = new TickerSymbolSearch();
-        List<TickerSymbol> tickers = ts.searchByIsin("SE0001162462")
+        List<TickerSymbol> tickers = ts.searchByIsin("SE0013108867")
                 .filter(t -> t.getSource() == Source.NORDIC_GROWTH_MARKET)
                 .collect(Collectors.toList());
 
@@ -65,7 +65,7 @@ public class TickerSymbolSearchTest {
         assertEquals("Paynova", ticker.getName());
         assertEquals("PAY", ticker.getSymbol());
         assertEquals("SEK", ticker.getCurrency());
-        assertEquals("SE0001162462", ticker.getIsin());
+        assertEquals("SE0013108867", ticker.getIsin());
         assertEquals("XNGM", ticker.getMic());
         assertEquals("", ticker.getDescription());
         assertEquals(Source.NORDIC_GROWTH_MARKET, ticker.getSource());

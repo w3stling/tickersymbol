@@ -102,7 +102,7 @@ public class NordicGrowthMarketTest {
     @Test
     public void testPaynova() throws IOException {
         NordicGrowthMarket provider = new NordicGrowthMarket();
-        List<TickerSymbol> tickers = provider.searchByIsin("SE0001162462");
+        List<TickerSymbol> tickers = provider.searchByIsin("SE0013108867");
 
         assertNotNull(tickers);
         assertEquals(1, tickers.size());
@@ -111,7 +111,7 @@ public class NordicGrowthMarketTest {
         assertEquals("Paynova", ticker.getName());
         assertEquals("PAY", ticker.getSymbol());
         assertEquals("SEK", ticker.getCurrency());
-        assertEquals("SE0001162462", ticker.getIsin());
+        assertEquals("SE0013108867", ticker.getIsin());
         assertEquals("XNGM", ticker.getMic());
         assertEquals("", ticker.getDescription());
         assertEquals(Source.NORDIC_GROWTH_MARKET, ticker.getSource());

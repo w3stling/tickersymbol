@@ -150,7 +150,7 @@ public class NordnetTest {
     @Test
     public void testIsinPaynova() throws IOException {
         Nordnet provider = new Nordnet();
-        List<TickerSymbol> tickers = provider.searchByIsin("SE0001162462");
+        List<TickerSymbol> tickers = provider.searchByIsin("SE0013108867");
 
         assertNotNull(tickers);
         assertTrue(tickers.size() >= 1);
@@ -159,7 +159,7 @@ public class NordnetTest {
         assertEquals("Paynova", ticker.getName());
         assertEquals("PAY", ticker.getSymbol());
         assertEquals("SEK", ticker.getCurrency());
-        assertEquals("SE0001162462", ticker.getIsin());
+        assertEquals("SE0013108867", ticker.getIsin());
         assertEquals("XNGM", ticker.getMic());
         assertTrue(!ticker.getDescription().isEmpty());
         assertEquals(Source.NORDNET, ticker.getSource());

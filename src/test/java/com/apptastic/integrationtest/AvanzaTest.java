@@ -178,7 +178,7 @@ public class AvanzaTest {
     @Test
     public void testIsinPaynova() throws IOException {
         Avanza provider = new Avanza();
-        List<TickerSymbol> tickers = provider.searchByIsin("SE0001162462");
+        List<TickerSymbol> tickers = provider.searchByIsin("SE0013108867");
 
         assertNotNull(tickers);
         assertEquals(1, tickers.size());
@@ -187,7 +187,7 @@ public class AvanzaTest {
         assertEquals("Paynova", ticker.getName());
         assertEquals("PAY", ticker.getSymbol());
         assertEquals("SEK", ticker.getCurrency());
-        assertEquals("SE0001162462", ticker.getIsin());
+        assertEquals("SE0013108867", ticker.getIsin());
         assertEquals("XNGM", ticker.getMic());
         assertTrue(!ticker.getDescription().isEmpty());
         assertEquals(Source.AVANZA, ticker.getSource());
