@@ -31,6 +31,7 @@ import com.google.gson.stream.JsonToken;
 import java.io.*;
 import java.net.URLEncoder;
 import java.net.http.HttpRequest;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +47,33 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
             "<param name=\"SubSystem\" value=\"Prices\"/>\n" +
             "<param name=\"Action\" value=\"Search\"/>\n" +
             "<param name=\"inst.an\" value=\"nm,fnm,isin,tp,cr,chp,tb,mkt,st,isrid,ec,isr\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XSTO:SEEQ-SHR,M:INET:XSTO:SEEQ-SHR-CCP,M:INET:XSTO:SEEQ-SHR-IC,M:INET:XCSE:DKEQ-SHR,M:INET:XCSE:DKEQ-SHR-CCP,M:INET:XCSE:DKEQ-SHR-IC,M:INET:XHEL:FIEQ-SHR,M:INET:XHEL:FIEQ-SHR-CCP,M:INET:XHEL:FIEQ-SHR-IC,M:INET:XICE:ISEQ-SHR,M:INET:XSTO:SEEQ-SHR-NOK,M:INET:XSTO:SEEQ-SHR-AO,M:INET:FNSE:SEMM-NM,M:INET:FNDK:FNDK-CPH,M:INET:FNFI:SEMM-FN-HEL,M:INET:FNIS:ISEC-SHR,M:INET:FNSE:SEMM-FN-NOK,M:INET:FNEE:EEMM-SHR,M:INET:FNLV:LVMM-SHR,M:INET:FNLT:LTMM-SHR,M:INET:FNFI:SEMM-FN-HE-ERW,M:INET:XTAL:EEEQ-SHR,M:INET:XRIS:LVEQ-SHR,M:INET:XLIT:LTEQ-SHR,M:GITS:RI:RSEBA,M:GITS:TA:TSEBA,M:GITS:VI:VSEBA,INET:XSTO:SEEQXFUNOK,INET:XSTO:SEEQXFU,INET:XSTO:SEEQXFUNOK,INET:XHEL:FIEQFUI,M:INET:XSTO:SEEQ-AIF,M:INET:XCSE:DKEQ-OCIS,M:INET:XCSE:DKEQ-AIF-NMM,M:INET:XCSE:DKEQ-UTC-NMM,M:INET:XCSE:DKEQ-UTC,M:INET:XCSE:DKEQ-FUI,M:INET:FNSE:STO-CERT,M:INET:FNFI:HEL-CERT,L:INET:H11074310,L:INET:H11074310,M:INET:FNDK:CPH-CERT,M:INET:FNSE:STO-WAR,M:INET:FNFI:HEL-WAR,M:INET:FNDK:CPH-WAR,M:INET:FNSE:OSL-WAR,M:INET:FNSE:STO-WAR-X,M:INET:FNFI:HEL-WAR-X,M:INET:FNDK:CPH-WAR-X,GITS:SE:SEI,GITS:SE:SES,GITS:SE:DAI,GITS:SE:DAS,GITS:SE:HXS,GITS:SE:HXSOR,GITS:SE:EUI,GITS:SE:NNOI,M:GITS:SE:NOS,GITS:BONDPRICE30426,GITS:BONDYIELD87750,GITS:RETAILCORPORATEBONDSPRICE118,GITS:STRUCTUREDPRODUCTS30428,GITS:SUBORDINATEDLOANS30427,M:GITS:CO:CPHCB,M:GITS:FC:CPHFB,M:GITS:CO:CPHAU,GITS:BSTR,GITS:BCOR,GITS:HEBE,GITS:HECV,GITS:HE:HELRS,M:GITS:ST:STOCB,M:GITS:ST:STOGB,M:GITS:ST:STOMU,M:GITS:ST:STORB,M:GITS:ST:STOMB,M:GITS:FS:STOFR,M:GITS:FS:STOFU,M:GITS:FS:STOFC,M:GITS:FS:STOFI,M:GITS:ST:STOST,M:GITS:ST:STOLB,M:GITS:RI:RSEBA,M:GITS:TA:TSEBA,M:GITS:VI:VSEBA,INET:XCSE:DKEQUTC,GlobalIndex,INET:XSTO:SEEQEQR,INET:XCSE:DKEQEQR,INET:XHEL:FIEQEQR,M:INET:FNSE:STO-LEV,M:INET:FNFI:HEL-LEV,M:INET:FNDK:CPH-LEV,M:INET:FNSE:STO-LEV-X,M:INET:FNDK:CPH-LEV-X,M:INET:FNFI:HEL-LEV-X,M:INET:FNSE:STO-TRA,M:INET:FNSE:STO-TNM,M:INET:FNFI:HEL-TRA,M:INET:FNDK:CPH-TRA,M:INET:FNFI:HEL-TRA-X,M:INET:FNDK:CPH-TRA-X,M:INET:FNSE:STO-TRA-X,,\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XSTO:SEEQ-SHR\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XSTO:SEEQ-SHR-CCP\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XSTO:SEEQ-SHR-IC\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XCSE:DKEQ-SHR\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XCSE:DKEQ-SHR-CCP\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XCSE:DKEQ-SHR-IC\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XHEL:FIEQ-SHR\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XHEL:FIEQ-SHR-CCP\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XHEL:FIEQ-SHR-IC\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XICE:ISEQ-SHR\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XSTO:SEEQ-SHR-NOK\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XSTO:SEEQ-SHR-AO\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:FNSE:SEMM-NM\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:FNDK:FNDK-CPH\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:FNFI:SEMM-FN-HEL\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:FNIS:ISEC-SHR\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:FNSE:SEMM-FN-NOK\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:FNEE:EEMM-SHR\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:FNLV:LVMM-SHR\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:FNLT:LTMM-SHR\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:FNFI:SEMM-FN-HE-ERW\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XTAL:EEEQ-SHR\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XRIS:LVEQ-SHR\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XLIT:LTEQ-SHR\"/>\n" +
+            "<param name=\"List\" value=\"M:GITS:RI:RSEBA\"/>\n" +
+            "<param name=\"List\" value=\"M:GITS:TA:TSEBA\"/>\n" +
+            "<param name=\"List\" value=\"M:GITS:VI:VSEBA\"/>\n" +
             "<param name=\"InstrumentISIN\" value=\"%1$s\"/>\n" +
             "<param name=\"InstrumentName\" value=\"%2$s\"/>\n" +
             "<param name=\"InstrumentFullName\" value=\"%3$s\"/>\n" +
@@ -72,7 +99,7 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
      */
     public List<TickerSymbol> searchByIsin(String isin) throws IOException {
         String postBody =  String.format(HTTP_POST_BODY, isin, "", "");
-        postBody = "xmlquery=" + URLEncoder.encode(postBody, "UTF-8");
+        postBody = "xmlquery=" + URLEncoder.encode(postBody, StandardCharsets.UTF_8);
 
         try (BufferedReader reader = sendRequest(URL, postBody.getBytes(), "UTF-8")) {
             return handleResponse(reader);
@@ -84,6 +111,7 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
         super.setRequestHeaders(requestBuilder);
 
         requestBuilder.header("Accept", "*/*");
+        requestBuilder.header("Accept-Encoding", "gzip, deflate");
         requestBuilder.header("Accept-Language", "en-GB,en;q=0.9,en-US;q=0.8,sv;q=0.7");
         requestBuilder.header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
         requestBuilder.header("X-Requested-With", "XMLHttpRequest");
