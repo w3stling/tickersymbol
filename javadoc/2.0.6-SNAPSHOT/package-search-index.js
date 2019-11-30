@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"m":"com.apptastic.tickersymbol","l":"com.apptastic.tickersymbol"},{"m":"com.apptastic.tickersymbol","l":"com.apptastic.tickersymbol.provider"}]
