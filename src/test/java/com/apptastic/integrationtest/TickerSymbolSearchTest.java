@@ -30,7 +30,6 @@ public class TickerSymbolSearchTest {
         assertTrue(tickers.isEmpty());
     }
 
-
     @Test
     public void testNasdaqOmxNordicSearchByIsin() {
         TickerSymbolSearch ts = new TickerSymbolSearch();
@@ -50,7 +49,6 @@ public class TickerSymbolSearchTest {
         assertEquals("Ordinary shares", ticker.getDescription());
         assertEquals(Source.NASDAQ_OMX_NORDIC, ticker.getSource());
     }
-
 
     @Test
     public void testNordicGrowthMarketSearchByIsin() {
@@ -111,7 +109,6 @@ public class TickerSymbolSearchTest {
         assertEquals(Source.AVANZA, ticker.getSource());
     }
 
-
     @Test
     public void testAvanzaSearchByIsin() {
         TickerSymbolSearch ts = new TickerSymbolSearch();
@@ -130,47 +127,6 @@ public class TickerSymbolSearchTest {
         assertEquals("Spotlight Stock Market", ticker.getDescription());
         assertEquals(Source.AVANZA, ticker.getSource());
     }
-
-
-    @Test
-    public void testNordnetSearchByName() {
-        TickerSymbolSearch ts = new TickerSymbolSearch();
-        List<TickerSymbol> tickers = ts.searchByName("Norwegian Air Shuttle")
-                .filter(t -> t.getSource() == Source.NORDNET)
-                .collect(Collectors.toList());
-
-        assertTrue(tickers.size() > 0);
-
-        TickerSymbol ticker = tickers.get(0);
-        assertEquals("Norwegian Air Shuttle", ticker.getName());
-        assertEquals("NAS", ticker.getSymbol());
-        assertEquals("NOK", ticker.getCurrency());
-        assertEquals("NO0010196140", ticker.getIsin());
-        assertEquals("XOSL", ticker.getMic());
-        assertTrue(!ticker.getDescription().isEmpty());
-        assertEquals(Source.NORDNET, ticker.getSource());
-    }
-
-
-    @Test
-    public void testNordnetSearchByIsin() {
-        TickerSymbolSearch ts = new TickerSymbolSearch();
-        List<TickerSymbol> tickers = ts.searchByIsin("SE0009548597")
-                .filter(t -> t.getSource() == Source.NORDNET)
-                .collect(Collectors.toList());
-
-        assertEquals(1, tickers.size());
-
-        TickerSymbol ticker = tickers.get(0);
-        assertEquals("EatGood", ticker.getName());
-        assertEquals("EATG", ticker.getSymbol());
-        assertEquals("SEK", ticker.getCurrency());
-        assertEquals("SE0009548597", ticker.getIsin());
-        assertEquals("XSAT", ticker.getMic());
-        assertTrue(ticker.getDescription().contains("Spotlight"));
-        assertEquals(Source.NORDNET, ticker.getSource());
-    }
-
 
     @Test
     public void testEmptyIsinCodeNullProvider() {

@@ -26,11 +26,14 @@ package com.apptastic.tickersymbol.provider;
 import com.apptastic.tickersymbol.TickerSymbol;
 import com.google.gson.stream.JsonReader;
 
+import javax.net.ssl.SSLContext;
 import java.io.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
@@ -39,13 +42,24 @@ import java.util.zip.GZIPInputStream;
 
 public abstract class AbstractHttpsConnection {
     private static final String HTTP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36";
-    private final HttpClient httpClient;
+    private HttpClient httpClient;
 
     protected AbstractHttpsConnection() {
-        httpClient = HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(15))
-                .followRedirects(HttpClient.Redirect.NORMAL)
-                .build();
+        try {
+            SSLContext context = SSLContext.getInstance("TLSv1.3");
+            context.init(null, null, null);
+
+            httpClient = HttpClient.newBuilder()
+                    .sslContext(context)
+                    .connectTimeout(Duration.ofSeconds(15))
+                    .followRedirects(HttpClient.Redirect.NORMAL)
+                    .build();
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            httpClient = HttpClient.newBuilder()
+                    .connectTimeout(Duration.ofSeconds(15))
+                    .followRedirects(HttpClient.Redirect.NORMAL)
+                    .build();
+        }
     }
 
     protected BufferedReader sendRequest(String url, String characterEncoding) throws IOException {
