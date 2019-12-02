@@ -42,7 +42,7 @@ import java.util.List;
  * Nasdaq OMX Nordic is a stock exchange for swedish stocks and nordic stocks.
  */
 public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSymbolProvider {
-    private static final String URL = "http://www.nasdaqomxnordic.com/webproxy/DataFeedProxy.aspx";
+    private static final String URL = "https://www.nasdaqomxnordic.com/webproxy/DataFeedProxy.aspx";
     private static final String HTTP_POST_BODY = "<post>\n" +
             "<param name=\"SubSystem\" value=\"Prices\"/>\n" +
             "<param name=\"Action\" value=\"Search\"/>\n" +
