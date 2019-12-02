@@ -47,33 +47,7 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
             "<param name=\"SubSystem\" value=\"Prices\"/>\n" +
             "<param name=\"Action\" value=\"Search\"/>\n" +
             "<param name=\"inst.an\" value=\"nm,fnm,isin,tp,cr,chp,tb,mkt,st,isrid,ec,isr\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XSTO:SEEQ-SHR\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XSTO:SEEQ-SHR-CCP\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XSTO:SEEQ-SHR-IC\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XCSE:DKEQ-SHR\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XCSE:DKEQ-SHR-CCP\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XCSE:DKEQ-SHR-IC\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XHEL:FIEQ-SHR\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XHEL:FIEQ-SHR-CCP\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XHEL:FIEQ-SHR-IC\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XICE:ISEQ-SHR\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XSTO:SEEQ-SHR-NOK\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XSTO:SEEQ-SHR-AO\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:FNSE:SEMM-NM\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:FNDK:FNDK-CPH\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:FNFI:SEMM-FN-HEL\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:FNIS:ISEC-SHR\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:FNSE:SEMM-FN-NOK\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:FNEE:EEMM-SHR\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:FNLV:LVMM-SHR\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:FNLT:LTMM-SHR\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:FNFI:SEMM-FN-HE-ERW\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XTAL:EEEQ-SHR\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XRIS:LVEQ-SHR\"/>\n" +
-            "<param name=\"List\" value=\"M:INET:XLIT:LTEQ-SHR\"/>\n" +
-            "<param name=\"List\" value=\"M:GITS:RI:RSEBA\"/>\n" +
-            "<param name=\"List\" value=\"M:GITS:TA:TSEBA\"/>\n" +
-            "<param name=\"List\" value=\"M:GITS:VI:VSEBA\"/>\n" +
+            "<param name=\"List\" value=\"M:INET:XSTO:SEEQ-SHR,M:INET:XSTO:SEEQ-SHR-CCP,M:INET:XSTO:SEEQ-SHR-IC,M:INET:XCSE:DKEQ-SHR,M:INET:XCSE:DKEQ-SHR-CCP,M:INET:XCSE:DKEQ-SHR-IC,M:INET:XHEL:FIEQ-SHR,M:INET:XHEL:FIEQ-SHR-CCP,M:INET:XHEL:FIEQ-SHR-IC,M:INET:XICE:ISEQ-SHR,M:INET:XSTO:SEEQ-SHR-NOK,M:INET:XSTO:SEEQ-SHR-AO,M:INET:FNSE:SEMM-NM,M:INET:FNDK:FNDK-CPH,M:INET:FNFI:SEMM-FN-HEL,M:INET:FNIS:ISEC-SHR,M:INET:FNSE:SEMM-FN-NOK,M:INET:FNEE:EEMM-SHR,M:INET:FNLV:LVMM-SHR,M:INET:FNLT:LTMM-SHR,M:INET:FNFI:SEMM-FN-HE-ERW,M:INET:XTAL:EEEQ-SHR,M:INET:XRIS:LVEQ-SHR,M:INET:XLIT:LTEQ-SHR,M:GITS:RI:RSEBA,M:GITS:TA:TSEBA,M:GITS:VI:VSEBA,INET:XSTO:SEEQXFUNOK,INET:XSTO:SEEQXFU,INET:XSTO:SEEQXFUNOK,INET:XHEL:FIEQFUI,M:INET:XSTO:SEEQ-AIF,M:INET:XCSE:DKEQ-OCIS,M:INET:XCSE:DKEQ-AIF-NMM,M:INET:XCSE:DKEQ-UTC-NMM,M:INET:XCSE:DKEQ-FUI,M:INET:FNSE:STO-CERT,M:INET:FNFI:HEL-CERT,L:INET:H11074310,M:INET:FNDK:CPH-CERT,M:INET:FNSE:STO-WAR,M:INET:FNFI:HEL-WAR,M:INET:FNDK:CPH-WAR,M:INET:FNSE:OSL-WAR,M:INET:FNSE:STO-WAR-XM,M:INET:FNFI:HEL-WAR-XM,M:INET:FNDK:CPH-WAR-XM,GITS:SE:SEI,GITS:SE:SES,GITS:SE:DAI,GITS:SE:DAS,GITS:SE:HXS,GITS:SE:HXSOR,GITS:SE:EUI,GITS:SE:NNOI,M:GITS:SE:NOS,GITS:BONDPRICE30426,GITS:BONDYIELD87750,GITS:RETAILCORPORATEBONDSPRICE118,GITS:STRUCTUREDPRODUCTS30428,GITS:SUBORDINATEDLOANS30427,M:GITS:CO:CPHCB,M:GITS:FC:CPHFB,M:GITS:CO:CPHAU,GITS:BSTR,GITS:BCOR,GITS:HEBE,GITS:HECV,GITS:HE:HELRS,M:GITS:ST:STOCB,M:GITS:ST:STOGB,M:GITS:ST:STOMU,M:GITS:ST:STORB,M:GITS:ST:STOMB,M:GITS:FS:STOFR,M:GITS:FS:STOFU,M:GITS:FS:STOFC,M:GITS:FS:STOFI,M:GITS:ST:STOST,M:GITS:ST:STOLB,M:GITS:RI:RSEBA,M:GITS:TA:TSEBA,M:GITS:VI:VSEBA,L:GITS:ICE_MUNICIPAL_AND_LSS_BONDS,L:GITS:ICE_HFF_AND_HOUSING_AUTHORITY_BO,L:GITS:ICE_CORPORATE_BONDS,L:GITS:ICE_NOMINAL_TREASURY_BONDS,L:GITS:ICE_LOAN_INSTITUTION_BONDS,L:GITS:ICE_PREMIUM_BONDS,L:GITS:ICE_INFLATIONLINKED_TREASURY_BO,L:GITS:ICE_BANK_BONDS,L:GITS:ICE_FOREIGN_BONDS,L:GITS:FIRST_NORTH_ICE_FIXED_INCOME,L:GITS:ICE_BANK_BILLS,L:GITS:ICE_SUSTAINABLE_BONDS,L:GITS:ICE_TREASURY_BILLS,INET:XCSE:DKEQUTC,GlobalIndex,INET:XSTO:SEEQEQR,INET:XCSE:DKEQEQR,INET:XHEL:FIEQEQR,M:INET:FNSE:STO-LEV,M:INET:FNFI:HEL-LEV,M:INET:FNDK:CPH-LEV,M:INET:FNSE:STO-LEV-XM,M:INET:FNDK:CPH-LEV-XM,M:INET:FNFI:HEL-LEV-XM,M:INET:FNSE:STO-TRA,M:INET:FNSE:STO-TNM,M:INET:FNFI:HEL-TRA,M:INET:FNDK:CPH-TRA,M:INET:FNFI:HEL-TRA-XM,M:INET:FNDK:CPH-TRA-XM,M:INET:FNSE:STO-TRA-XM,,\"/>" +
             "<param name=\"InstrumentISIN\" value=\"%1$s\"/>\n" +
             "<param name=\"InstrumentName\" value=\"%2$s\"/>\n" +
             "<param name=\"InstrumentFullName\" value=\"%3$s\"/>\n" +
@@ -98,6 +72,10 @@ public class NasdaqOmxNordic extends AbstractHttpsConnection implements TickerSy
      * @throws IOException IO exception
      */
     public List<TickerSymbol> searchByIsin(String isin) throws IOException {
+        if (isin == null || isin.length() != 12) {
+            return Collections.emptyList();
+        }
+
         String postBody =  String.format(HTTP_POST_BODY, isin, "", "");
         postBody = "xmlquery=" + URLEncoder.encode(postBody, StandardCharsets.UTF_8);
 
