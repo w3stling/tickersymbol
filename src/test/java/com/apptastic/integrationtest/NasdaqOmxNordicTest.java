@@ -16,8 +16,6 @@ public class NasdaqOmxNordicTest {
 
     @Test
     public void isinNotFound() throws IOException {
-        sleep();
-
         NasdaqOmxNordic provider = new NasdaqOmxNordic();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0006877700");
 
@@ -28,8 +26,6 @@ public class NasdaqOmxNordicTest {
 
     @Test
     public void badIsinFormat() throws IOException {
-        sleep();
-
         NasdaqOmxNordic provider = new NasdaqOmxNordic();
         List<TickerSymbol> tickers = provider.searchByIsin("#SE0011310655");
 
@@ -40,8 +36,6 @@ public class NasdaqOmxNordicTest {
 
     @Test
     public void testEricsson() throws IOException {
-        sleep();
-
         NasdaqOmxNordic provider = new NasdaqOmxNordic();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0000108656");
 
@@ -61,8 +55,6 @@ public class NasdaqOmxNordicTest {
 
     @Test
     public void testClasOhlson() throws IOException {
-        sleep();
-
         NasdaqOmxNordic provider = new NasdaqOmxNordic();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0000584948");
 
@@ -82,8 +74,6 @@ public class NasdaqOmxNordicTest {
 
     @Test
     public void testMycronic() throws IOException {
-        sleep();
-
         NasdaqOmxNordic provider = new NasdaqOmxNordic();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0000375115");
 
@@ -103,8 +93,6 @@ public class NasdaqOmxNordicTest {
 
     @Test
     public void testLivIhop() throws IOException {
-        sleep();
-
         NasdaqOmxNordic provider = new NasdaqOmxNordic();
         List<TickerSymbol> tickers = provider.searchByIsin("SE0010769356");
 
@@ -121,12 +109,4 @@ public class NasdaqOmxNordicTest {
         assertEquals(Source.NASDAQ_OMX_NORDIC, ticker.getSource());
     }
 
-
-    private static void sleep() {
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 }
