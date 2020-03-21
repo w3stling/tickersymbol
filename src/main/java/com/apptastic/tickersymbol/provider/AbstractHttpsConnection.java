@@ -42,24 +42,8 @@ import java.util.zip.GZIPInputStream;
 
 public abstract class AbstractHttpsConnection {
     private static final String HTTP_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36";
-    private HttpClient httpClient;
 
     protected AbstractHttpsConnection() {
-        try {
-            SSLContext context = SSLContext.getInstance("TLSv1.3");
-            context.init(null, null, null);
-
-            httpClient = HttpClient.newBuilder()
-                    .sslContext(context)
-                    .connectTimeout(Duration.ofSeconds(15))
-                    .followRedirects(HttpClient.Redirect.NORMAL)
-                    .build();
-        } catch (NoSuchAlgorithmException | KeyManagementException e) {
-            httpClient = HttpClient.newBuilder()
-                    .connectTimeout(Duration.ofSeconds(15))
-                    .followRedirects(HttpClient.Redirect.NORMAL)
-                    .build();
-        }
     }
 
     protected BufferedReader sendRequest(String url, String characterEncoding) throws IOException {
@@ -82,6 +66,7 @@ public abstract class AbstractHttpsConnection {
         var request = builder.build();
 
         try {
+            var httpClient = createHttpClient();
             var resp = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
             var inputStream = resp.body();
 
@@ -133,5 +118,26 @@ public abstract class AbstractHttpsConnection {
     protected boolean isTickerSymbolValid(TickerSymbol ticker) {
         return ticker != null && ticker.getSymbol() != null && ticker.getName() != null && ticker.getIsin() != null &&
                 ticker.getCurrency() != null && ticker.getMic() != null;
+    }
+
+    private HttpClient createHttpClient() {
+        HttpClient httpClient;
+        try {
+            SSLContext context = SSLContext.getInstance("TLSv1.3");
+            context.init(null, null, null);
+
+            httpClient = HttpClient.newBuilder()
+                    .sslContext(context)
+                    .connectTimeout(Duration.ofSeconds(15))
+                    .followRedirects(HttpClient.Redirect.NORMAL)
+                    .build();
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            httpClient = HttpClient.newBuilder()
+                    .connectTimeout(Duration.ofSeconds(15))
+                    .followRedirects(HttpClient.Redirect.NORMAL)
+                    .build();
+        }
+
+        return httpClient;
     }
 }
