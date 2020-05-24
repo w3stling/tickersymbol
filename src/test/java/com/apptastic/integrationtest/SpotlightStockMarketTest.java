@@ -37,7 +37,7 @@ public class SpotlightStockMarketTest {
         assertEquals("SEK", ticker.getCurrency());
         assertEquals("SE0002658278", ticker.getIsin());
         assertEquals("XSAT", ticker.getMic());
-        assertTrue(ticker.getDescription() != null);
+        assertNotNull(ticker.getDescription());
         assertEquals(Source.SPOTLIGHT_STOCK_MARKET, ticker.getSource());
     }
 
@@ -56,7 +56,7 @@ public class SpotlightStockMarketTest {
         assertEquals("SEK", ticker.getCurrency());
         assertEquals("SE0009548597", ticker.getIsin());
         assertEquals("XSAT", ticker.getMic());
-        assertTrue(ticker.getDescription() != null);
+        assertNotNull(ticker.getDescription());
         assertEquals(Source.SPOTLIGHT_STOCK_MARKET, ticker.getSource());
     }
 
@@ -75,7 +75,7 @@ public class SpotlightStockMarketTest {
         assertEquals("SEK", ticker.getCurrency());
         assertEquals("SE0003883008", ticker.getIsin());
         assertEquals("XSAT", ticker.getMic());
-        assertTrue(ticker.getDescription() != null);
+        assertNotNull(ticker.getDescription());
         assertEquals(Source.SPOTLIGHT_STOCK_MARKET, ticker.getSource());
     }
 
@@ -94,7 +94,7 @@ public class SpotlightStockMarketTest {
         assertEquals("SEK", ticker.getCurrency());
         assertEquals("SE0007158118", ticker.getIsin());
         assertEquals("XSAT", ticker.getMic());
-        assertTrue(ticker.getDescription() != null);
+        assertNotNull(ticker.getDescription());
         assertEquals(Source.SPOTLIGHT_STOCK_MARKET, ticker.getSource());
     }
 }

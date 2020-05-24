@@ -47,39 +47,39 @@ public class TickerTest {
     @Test
     public void tickerEquals() {
         TickerSymbol ticker = defaultTicker();
-        assertTrue(ticker.equals(ticker));
+        assertEquals(ticker, ticker);
 
         TickerSymbol copy = new TickerSymbol(ticker);
-        assertTrue(ticker.equals(copy));
+        assertEquals(ticker, copy);
 
 
         TickerSymbol symbol = defaultTicker();
         symbol.setSymbol("symbol");
-        assertFalse(ticker.equals(symbol));
+        assertNotEquals(ticker, symbol);
 
         TickerSymbol name = defaultTicker();
         name.setName("name");
-        assertFalse(ticker.equals(name));
+        assertNotEquals(ticker, name);
 
         TickerSymbol currency = defaultTicker();
         currency.setCurrency("USD");
-        assertFalse(ticker.equals(currency));
+        assertNotEquals(ticker, currency);
 
         TickerSymbol isin = defaultTicker();
         isin.setCurrency("SE0000000000");
-        assertFalse(ticker.equals(isin));
+        assertNotEquals(ticker, isin);
 
         TickerSymbol mic = defaultTicker();
         mic.setCurrency("XNGM");
-        assertFalse(ticker.equals(mic));
+        assertNotEquals(ticker, mic);
 
         TickerSymbol description = defaultTicker();
         description.setDescription("description");
-        assertFalse(ticker.equals(description));
+        assertNotEquals(ticker, description);
 
         TickerSymbol source = defaultTicker();
         source.setSource(Source.NORDIC_GROWTH_MARKET);
-        assertFalse(ticker.equals(source));
+        assertNotEquals(ticker, source);
     }
 
 
