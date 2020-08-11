@@ -3,6 +3,7 @@ package com.apptastic.integrationtest;
 import com.apptastic.tickersymbol.Source;
 import com.apptastic.tickersymbol.TickerSymbol;
 import com.apptastic.tickersymbol.provider.NasdaqOmxNordic;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -11,7 +12,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-
+@Ignore
 public class NasdaqOmxNordicTest {
 
     @Test

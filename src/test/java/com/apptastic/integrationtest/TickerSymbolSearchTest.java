@@ -1,6 +1,7 @@
 package com.apptastic.integrationtest;
 
 import com.apptastic.tickersymbol.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class TickerSymbolSearchTest {
         assertTrue(tickers.isEmpty());
     }
 
+    @Ignore
     @Test
     public void testNasdaqOmxNordicSearchByIsin() {
         TickerSymbolSearch ts = new TickerSymbolSearch();
