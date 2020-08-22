@@ -81,18 +81,18 @@ public class NordicGrowthMarketTest {
 
 
     @Test
-    public void testGuidelineGeo() throws IOException {
+    public void testFortnox() throws IOException {
         NordicGrowthMarket provider = new NordicGrowthMarket();
-        List<TickerSymbol> tickers = provider.searchByIsin("SE0005562014");
+        List<TickerSymbol> tickers = provider.searchByIsin("SE0001966656");
 
         assertNotNull(tickers);
         assertEquals(1, tickers.size());
 
         TickerSymbol ticker = tickers.get(0);
-        assertEquals("Guideline Geo", ticker.getName());
-        assertEquals("GGEO", ticker.getSymbol());
+        assertEquals("Fortnox", ticker.getName());
+        assertEquals("FNOX", ticker.getSymbol());
         assertEquals("SEK", ticker.getCurrency());
-        assertEquals("SE0005562014", ticker.getIsin());
+        assertEquals("SE0001966656", ticker.getIsin());
         assertEquals("XNGM", ticker.getMic());
         assertEquals("", ticker.getDescription());
         assertEquals(Source.NORDIC_GROWTH_MARKET, ticker.getSource());
