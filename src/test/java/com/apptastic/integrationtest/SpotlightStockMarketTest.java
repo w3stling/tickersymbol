@@ -3,6 +3,7 @@ package com.apptastic.integrationtest;
 import com.apptastic.tickersymbol.Source;
 import com.apptastic.tickersymbol.TickerSymbol;
 import com.apptastic.tickersymbol.provider.SpotlightStockMarket;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -10,7 +11,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-
+@Ignore
 public class SpotlightStockMarketTest {
 
     @Test

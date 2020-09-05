@@ -46,7 +46,7 @@ public class TickerSymbolSearch {
      * Constructor.
      */
     public TickerSymbolSearch() {
-        tickerProviders = Arrays.asList(new NasdaqOmxNordic(),
+        tickerProviders = Arrays.asList(//new NasdaqOmxNordic(),
                                         new NordicGrowthMarket(),
                                         //new SpotlightStockMarket(),
                                         new Avanza());
