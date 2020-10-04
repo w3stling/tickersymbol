@@ -31,7 +31,7 @@ public class TickerSymbolSearchTest {
         assertTrue(tickers.isEmpty());
     }
 
-    @Ignore
+/*
     @Test
     public void testNasdaqOmxNordicSearchByIsin() {
         TickerSymbolSearch ts = new TickerSymbolSearch();
@@ -71,7 +71,7 @@ public class TickerSymbolSearchTest {
         assertEquals(Source.NORDIC_GROWTH_MARKET, ticker.getSource());
     }
 
-/*
+
     @Test
     public void testSpotlightStockMarketSearchByIsin() {
         TickerSymbolSearch ts = new TickerSymbolSearch();
