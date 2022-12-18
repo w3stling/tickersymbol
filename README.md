@@ -2,8 +2,8 @@ Ticker Symbol Search
 ====================
 
 [![Build](https://github.com/w3stling/tickersymbol/actions/workflows/build.yml/badge.svg)](https://github.com/w3stling/tickersymbol/actions/workflows/build.yml)
-[![Download](https://img.shields.io/badge/download-3.0.0-brightgreen.svg)](https://search.maven.org/artifact/com.apptasticsoftware/tickersymbol/3.0.0/jar)
-[![Javadoc](https://img.shields.io/badge/javadoc-3.0.0-blue.svg)](https://w3stling.github.io/tickersymbol/javadoc/3.0.0)
+[![Download](https://img.shields.io/badge/download-3.0.1-brightgreen.svg)](https://search.maven.org/artifact/com.apptasticsoftware/tickersymbol/3.0.1/jar)
+[![Javadoc](https://img.shields.io/badge/javadoc-3.0.1-blue.svg)](https://w3stling.github.io/tickersymbol/javadoc/3.0.1)
 [![License](http://img.shields.io/:license-MIT-blue.svg?style=flat-round)](http://apptastic-software.mit-license.org)   
 [![CodeQL](https://github.com/w3stling/tickersymbol/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/w3stling/tickersymbol/actions/workflows/codeql-analysis.yml)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=w3stling_tickersymbol&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=w3stling_tickersymbol)
@@ -47,7 +47,7 @@ Add dependency declaration:
         <dependency>
             <groupId>com.apptasticsoftware</groupId>
             <artifactId>tickersymbol</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.1</version>
         </dependency>
     </dependencies>
     ...
@@ -58,7 +58,7 @@ Add dependency declaration:
 Add dependency declaration:
 ```groovy
 dependencies {
-    implementation 'com.apptasticsoftware:tickersymbol:3.0.0'
+    implementation 'com.apptasticsoftware:tickersymbol:3.0.1'
 }
 ```
 
@@ -88,6 +88,6 @@ License
     SOFTWARE.
 
 
-[1]: https://search.maven.org/artifact/com.apptasticsoftware/tickersymbol/3.0.0/jar
+[1]: https://search.maven.org/artifact/com.apptasticsoftware/tickersymbol/3.0.1/jar
 [2]: https://maven.apache.org
 [3]: https://gradle.org
