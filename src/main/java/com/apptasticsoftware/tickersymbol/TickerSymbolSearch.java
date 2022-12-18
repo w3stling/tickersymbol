@@ -23,9 +23,7 @@
  */
 package com.apptasticsoftware.tickersymbol;
 
-import com.apptasticsoftware.lei.CusipValidator;
-import com.apptasticsoftware.lei.IsinCodeValidator;
-import com.apptasticsoftware.lei.SedolValidator;
+import com.apptasticsoftware.lei.*;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -33,6 +31,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.logging.Logger;
 
 /**
@@ -45,38 +44,61 @@ public class TickerSymbolSearch {
     private static final String SEARCH_BY_ISIN_URL = "https://stockmarketmba.com/lookupisinonopenfigi.php";
     private static final String SEARCH_BY_CUSIP_URL = "https://stockmarketmba.com/lookupcusiponopenfigi.php";
     private static final String SEARCH_BY_SEDOL_URL = "https://stockmarketmba.com/lookupsedolonopenfigi.php";
+    private final int cacheSize;
+    private final ConcurrentSkipListMap<String, List<TickerSymbol>> cache;
+    private static TickerSymbolSearch instance;
+
+    TickerSymbolSearch(int cacheSize) {
+        this.cacheSize = cacheSize;
+        cache = new ConcurrentSkipListMap<>();
+    }
+
+    /**
+     * Get instance for doing ticker symbol searches.
+     * @return instance
+     */
+    public static TickerSymbolSearch getInstance() {
+        return getInstance(100000);
+    }
+
+    /**
+     * Get instance for doing ticker symbol searches.
+     * @param cacheSize - number of LEI to hold in cache
+     * @return instance
+     */
+    public static TickerSymbolSearch getInstance(int cacheSize) {
+        if (instance != null && instance.cacheSize == cacheSize)
+            return instance;
+
+        instance = new TickerSymbolSearch(cacheSize);
+        return instance;
+    }
 
     public List<TickerSymbol> searchByIdentifier(String identifier) {
         if (!(IsinCodeValidator.isValid(identifier) || CusipValidator.isValid(identifier) || SedolValidator.isValid(identifier))) {
             return Collections.emptyList();
         }
 
-        List<TickerSymbol> list = searchByIdentifiers(identifier);
-        if (!list.isEmpty()) {
+        List<TickerSymbol> list = cache.get(identifier);
+        if (list != null) {
             return list;
         }
 
-        if (IsinCodeValidator.isValid(identifier)) {
+        list = searchByIdentifiers(identifier);
+
+        if (list.isEmpty() && IsinCodeValidator.isValid(identifier)) {
             list = searchByIsin(identifier);
-            if (!list.isEmpty()) {
-                return list;
-            }
         }
 
-        if (CusipValidator.isValid(identifier)) {
+        if (list.isEmpty() && CusipValidator.isValid(identifier)) {
             list = searchByCusip(identifier);
-            if (!list.isEmpty()) {
-                return list;
-            }
         }
 
-        if (SedolValidator.isValid(identifier)) {
+        if (list.isEmpty() && SedolValidator.isValid(identifier)) {
             list = searchBySedol(identifier);
-            if (!list.isEmpty()) {
-                return list;
-            }
         }
 
+        cacheSearchResult(identifier, list);
         return list;
     }
 
@@ -185,5 +207,15 @@ public class TickerSymbolSearch {
         }
 
         return text;
+    }
+
+    private void cacheSearchResult(String code, List<TickerSymbol> list) {
+        if (cache.containsKey(code)) {
+            return;
+        }
+        cache.put(code, list);
+        if (cache.size() > cacheSize) {
+            cache.pollLastEntry();
+        }
     }
 }

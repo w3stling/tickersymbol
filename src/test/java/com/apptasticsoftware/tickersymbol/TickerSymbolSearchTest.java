@@ -9,7 +9,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("java:S5976")
 class TickerSymbolSearchTest {
-    private final TickerSymbolSearch searchIdentifiersOnly = new TickerSymbolSearch() {
+    private static final int CACHE_SIZE = 50;
+
+    private final TickerSymbolSearch searchIdentifiersOnly = new TickerSymbolSearch(CACHE_SIZE) {
         @Override
         List<TickerSymbol> searchByIsin(String identifier) {
             return Collections.emptyList();
@@ -26,7 +28,7 @@ class TickerSymbolSearchTest {
         }
     };
 
-    private final TickerSymbolSearch searchIsinOnly = new TickerSymbolSearch() {
+    private final TickerSymbolSearch searchIsinOnly = new TickerSymbolSearch(CACHE_SIZE) {
         @Override
         List<TickerSymbol> searchByIdentifiers(String identifier) {
             return Collections.emptyList();
@@ -43,7 +45,7 @@ class TickerSymbolSearchTest {
         }
     };
 
-    private final TickerSymbolSearch searchCusipOnly = new TickerSymbolSearch() {
+    private final TickerSymbolSearch searchCusipOnly = new TickerSymbolSearch(CACHE_SIZE) {
         @Override
         List<TickerSymbol> searchByIdentifiers(String identifier) {
             return Collections.emptyList();
@@ -60,7 +62,7 @@ class TickerSymbolSearchTest {
         }
     };
 
-    private final TickerSymbolSearch searchSedolOnly = new TickerSymbolSearch() {
+    private final TickerSymbolSearch searchSedolOnly = new TickerSymbolSearch(CACHE_SIZE) {
         @Override
         List<TickerSymbol> searchByIdentifiers(String identifier) {
             return Collections.emptyList();
@@ -79,7 +81,7 @@ class TickerSymbolSearchTest {
 
     @Test
     void searchByIsin() {
-        var search = new TickerSymbolSearch();
+        var search = new TickerSymbolSearch(CACHE_SIZE);
         var list = search.searchByIdentifier("SE0000825820");
         assertFalse(list.isEmpty());
         assertNotNull(list.get(0).getSymbol());
@@ -88,7 +90,7 @@ class TickerSymbolSearchTest {
 
     @Test
     void searchByCusip() {
-        var search = new TickerSymbolSearch();
+        var search = TickerSymbolSearch.getInstance();
         var list = search.searchByIdentifier("38259P508");
         assertFalse(list.isEmpty());
         assertNotNull(list.get(0).getSymbol());
@@ -97,7 +99,7 @@ class TickerSymbolSearchTest {
 
     @Test
     void searchBySedol() {
-        var search = new TickerSymbolSearch();
+        var search = TickerSymbolSearch.getInstance(50);
         var list = search.searchByIdentifier("2000019");
         assertFalse(list.isEmpty());
         assertNotNull(list.get(0).getSymbol());
