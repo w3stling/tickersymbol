@@ -118,6 +118,7 @@ class TickerSymbolSearchTest {
     }
 
     @Disabled("Run manually")
+    @SuppressWarnings("java:S2925")
     @Test
     void perfTest() throws InterruptedException {
         var identifiers = List.of("CA09228F1036", "CA82509L1076", "US67066G1040", "US0079031078", "US2546871060",
@@ -166,6 +167,7 @@ class TickerSymbolSearchTest {
     }
 
     @Disabled("Run manually")
+    @SuppressWarnings("java:S2925")
     @Test
     void perfTestParallel() throws InterruptedException {
         var identifiers = List.of("CA09228F1036", "CA82509L1076", "US67066G1040", "US0079031078", "US2546871060",
