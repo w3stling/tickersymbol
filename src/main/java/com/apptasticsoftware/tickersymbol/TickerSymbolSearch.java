@@ -51,35 +51,33 @@ public class TickerSymbolSearch {
             return Collections.emptyList();
         }
 
-        List<TickerSymbol> list;
-
-        list = searchByIdentifiers(identifier);
-        if (list.size() > 0) {
+        List<TickerSymbol> list = searchByIdentifiers(identifier);
+        if (!list.isEmpty()) {
             return list;
         }
 
         if (IsinCodeValidator.isValid(identifier)) {
             list = searchByIsin(identifier);
-            if (list.size() > 0) {
+            if (!list.isEmpty()) {
                 return list;
             }
         }
 
         if (CusipValidator.isValid(identifier)) {
             list = searchByCusip(identifier);
-            if (list.size() > 0) {
+            if (!list.isEmpty()) {
                 return list;
             }
         }
 
         if (SedolValidator.isValid(identifier)) {
             list = searchBySedol(identifier);
-            if (list.size() > 0) {
+            if (!list.isEmpty()) {
                 return list;
             }
         }
 
-        return null;
+        return list;
     }
 
     List<TickerSymbol> searchByIdentifiers(String identifier) {

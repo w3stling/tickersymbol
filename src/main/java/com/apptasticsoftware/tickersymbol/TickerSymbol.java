@@ -41,13 +41,6 @@ public class TickerSymbol {
     private String sedol;
 
     /**
-     * Default constructor.
-     */
-    public TickerSymbol() {
-
-    }
-
-    /**
      * Get symbol name or short name for this tickers.
      * @return symbol
      */
