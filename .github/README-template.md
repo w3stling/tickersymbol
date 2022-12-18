@@ -2,8 +2,8 @@ Ticker Symbol Search
 ====================
 
 [![Build](https://github.com/w3stling/tickersymbol/actions/workflows/build.yml/badge.svg)](https://github.com/w3stling/tickersymbol/actions/workflows/build.yml)
-[![Download](https://img.shields.io/badge/download-3.0.0-brightgreen.svg)](https://search.maven.org/artifact/com.apptasticsoftware/tickersymbol/3.0.0/jar)
-[![Javadoc](https://img.shields.io/badge/javadoc-3.0.0-blue.svg)](https://w3stling.github.io/tickersymbol/javadoc/3.0.0)
+[![Download](https://img.shields.io/badge/download-%%version%%-brightgreen.svg)](https://search.maven.org/artifact/com.apptasticsoftware/tickersymbol/%%version%%/jar)
+[![Javadoc](https://img.shields.io/badge/javadoc-%%version%%-blue.svg)](https://w3stling.github.io/tickersymbol/javadoc/%%version%%)
 [![License](http://img.shields.io/:license-MIT-blue.svg?style=flat-round)](http://apptastic-software.mit-license.org)   
 [![CodeQL](https://github.com/w3stling/tickersymbol/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/w3stling/tickersymbol/actions/workflows/codeql-analysis.yml)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=w3stling_tickersymbol&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=w3stling_tickersymbol)
@@ -26,7 +26,7 @@ Requires at minimum Java 11.
 
 Examples
 --------
-### Search ticker symbol by security identifier ISIN, CUSIP, or SEDOL. 
+### Search ticker symbol by security identifier ISIN, CUSIP, or SEDOL.
 Same as example above but searching for Ericsson B with ISIN number.
 ```java
 TickerSymbolSearch tickerSymbol = new TickerSymbolSearch();
@@ -47,7 +47,7 @@ Add dependency declaration:
         <dependency>
             <groupId>com.apptasticsoftware</groupId>
             <artifactId>tickersymbol</artifactId>
-            <version>3.0.0</version>
+            <version>%%version%%</version>
         </dependency>
     </dependencies>
     ...
@@ -58,7 +58,7 @@ Add dependency declaration:
 Add dependency declaration:
 ```groovy
 dependencies {
-    implementation 'com.apptasticsoftware:tickersymbol:3.0.0'
+    implementation 'com.apptasticsoftware:tickersymbol:%%version%%'
 }
 ```
 
@@ -88,6 +88,6 @@ License
     SOFTWARE.
 
 
-[1]: https://search.maven.org/artifact/com.apptasticsoftware/tickersymbol/3.0.0/jar
+[1]: https://search.maven.org/artifact/com.apptasticsoftware/tickersymbol/%%version%%/jar
 [2]: https://maven.apache.org
 [3]: https://gradle.org
