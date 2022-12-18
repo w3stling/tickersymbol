@@ -21,7 +21,7 @@ A ticker symbol is an arrangement of characters (usually letters) representing a
 exchange or otherwise traded publicly. When a company issues securities to the public marketplace, it selects an
 available ticker symbol for its securities that investors use to place trade orders.
 
-This Java library makes it easier to automate ticker symbols lookup via Java stream API.
+This Java library makes it easier to automate ticker symbol lookups.
 Requires at minimum Java 11.
 
 Examples
