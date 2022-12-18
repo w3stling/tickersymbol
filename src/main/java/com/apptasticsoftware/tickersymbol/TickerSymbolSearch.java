@@ -134,7 +134,7 @@ public class TickerSymbolSearch {
 
             var document = response.parse();
             Elements table = document.select("table[id=searchtable]");
-            if (table.size() == 0) {
+            if (table.isEmpty()) {
                 table = document.select("table[id=results]");
             }
             Elements rows = table.get(0).select("tr");

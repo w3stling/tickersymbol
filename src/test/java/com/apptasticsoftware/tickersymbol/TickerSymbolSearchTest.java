@@ -7,6 +7,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("java:S5976")
 class TickerSymbolSearchTest {
     private final TickerSymbolSearch searchIdentifiersOnly = new TickerSymbolSearch() {
         @Override
