@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2020, Apptastic Software
+ * Copyright (c) 2022, Apptastic Software
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,12 +23,12 @@
  */
 
 /**
- * This modules defines the base APIs for ticker symbol.
+ * These modules define the base APIs for ticker symbol.
  */
-module com.apptastic.tickersymbol {
-    requires gson;
+module com.apptasticsoftware.tickersymbol {
+    requires org.jsoup;
     requires java.logging;
-    requires java.net.http;
+    requires com.apptasticsoftware.lei;
 
-    exports com.apptastic.tickersymbol;
+    exports com.apptasticsoftware.tickersymbol;
 }
