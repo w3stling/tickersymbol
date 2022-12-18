@@ -26,12 +26,12 @@ package com.apptasticsoftware.tickersymbol;
 import com.apptasticsoftware.lei.*;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 /**
@@ -47,6 +47,7 @@ public class TickerSymbolSearch {
     private final int cacheSize;
     private final ConcurrentSkipListMap<String, List<TickerSymbol>> cache;
     private static TickerSymbolSearch instance;
+    private final Session session = new Session();
 
     TickerSymbolSearch(int cacheSize) {
         this.cacheSize = cacheSize;
@@ -122,20 +123,23 @@ public class TickerSymbolSearch {
         List<TickerSymbol> list = new ArrayList<>();
 
         try {
-            Connection.Response searchForm = Jsoup.connect(url)
-                    .method(Connection.Method.GET)
-                    .userAgent(USER_AGENT)
-                    .header("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
-                    .header("accept-encoding", "gzip, deflate")
-                    .header("accept-language", "en-GB,en-US;q=0.9,en;q=0.8,sv;q=0.7")
-                    .followRedirects(true)
-                    .execute();
+            if (session.hasExpired()) {
+                Connection.Response searchForm = Jsoup.connect(url)
+                        .method(Connection.Method.GET)
+                        .userAgent(USER_AGENT)
+                        .header("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
+                        .header("accept-encoding", "gzip, deflate")
+                        .header("accept-language", "en-GB,en-US;q=0.9,en;q=0.8,sv;q=0.7")
+                        .followRedirects(true)
+                        .execute();
 
-            Document responseDocument = searchForm.parse();
-            Element action = responseDocument.select("input[name=action]").first();
-            String actionValue = action != null ? action.attr("value") : "";
-            Element version = responseDocument.select("input[name=version]").first();
-            String versionValue = version != null ? version.attr("value") : "";
+                var responseDocument = searchForm.parse();
+                var actionElement = responseDocument.select("input[name=action]").first();
+                var action = actionElement != null ? actionElement.attr("value") : "";
+                var versionElement = responseDocument.select("input[name=version]").first();
+                var version = versionElement != null ? versionElement.attr("value") : "";
+                session.refresh(action, version, searchForm.cookies());
+            }
 
             var response = Jsoup.connect(url)
                     .userAgent(USER_AGENT)
@@ -147,23 +151,30 @@ public class TickerSymbolSearch {
                     .header("referer", url)
                     .header("x-requested-with", "XMLHttpRequest")
                     .method(Connection.Method.POST)
-                    .data("action", actionValue)
-                    .data("version", versionValue)
+                    .data("action", session.getAction())
+                    .data("version", session.getVersion())
                     .data("search", identifier)
-                    .cookies(searchForm.cookies())
+                    .cookies(session.getCookies())
                     .followRedirects(true)
                     .execute();
 
+            session.incrementRequestCount();
+
             var document = response.parse();
-            Elements table = document.select("table[id=searchtable]");
+            var table = document.select("table[id=searchtable]");
             if (table.isEmpty()) {
                 table = document.select("table[id=results]");
             }
-            Elements rows = table.get(0).select("tr");
+
+            if (table.isEmpty()) {
+                return list; // identifier not found
+            }
+
+            var rows = table.get(0).select("tr");
 
             HashMap<String, Integer> headers = new HashMap<>();
-            Element headerRow = rows.get(0);
-            Elements headerCols = headerRow.select("th");
+            var headerRow = rows.get(0);
+            var headerCols = headerRow.select("th");
 
             for (int i = 0; i < headerCols.size(); ++i) {
                 var header = headerCols.get(i).text().toLowerCase().trim();
@@ -171,10 +182,10 @@ public class TickerSymbolSearch {
             }
 
             for (int i = 1; i < rows.size(); i++) {
-                Element row = rows.get(i);
-                Elements cols = row.select("td");
+                var row = rows.get(i);
+                var cols = row.select("td");
 
-                TickerSymbol ticker = new TickerSymbol();
+                var ticker = new TickerSymbol();
                 ticker.setSymbol(getColumnValue(cols, headers, "symbol"));
                 ticker.setDescription(getColumnValue(cols, headers, "description"));
                 ticker.setType(getColumnValue(cols, headers, "type"));
@@ -188,6 +199,7 @@ public class TickerSymbolSearch {
                 list.add(ticker);
             }
         } catch (Exception e) {
+            session.reset();
             var logger = Logger.getLogger(LOGGER);
             logger.severe(String.format("Search failed. URL: %s, identifier: %s, message: %s", url, identifier, e.getMessage()));
         }
@@ -216,6 +228,51 @@ public class TickerSymbolSearch {
         cache.put(code, list);
         if (cache.size() > cacheSize) {
             cache.pollLastEntry();
+        }
+    }
+
+    static class Session {
+        private String action;
+        private String version;
+        private long timestamp;
+        private int maxRequestCount = 50;
+        private final AtomicInteger requestCount = new AtomicInteger(0);
+        private Map<String, String> cookies;
+        private boolean reset;
+
+        public String getAction() {
+            return action;
+        }
+
+        public String getVersion() {
+            return version;
+        }
+
+        public int incrementRequestCount() {
+            return requestCount.incrementAndGet();
+        }
+
+        public boolean hasExpired() {
+            long now = System.currentTimeMillis();
+            return reset || (requestCount.get() % maxRequestCount) == 0 || TimeUnit.MILLISECONDS.toMinutes(now - timestamp) > 9;
+        }
+
+        public void refresh(String action, String version, Map<String, String> cookies) {
+            this.action = action;
+            this.version = version;
+            this.cookies = cookies;
+            timestamp = System.currentTimeMillis();
+            reset = false;
+            var r = new Random();
+            maxRequestCount = r.nextInt(100-75) + 75;
+        }
+
+        public void reset() {
+            reset = true;
+        }
+
+        public Map<String, String> getCookies() {
+            return cookies;
         }
     }
 }
