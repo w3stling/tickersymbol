@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -157,7 +158,7 @@ class TickerSymbolSearchTest {
                 System.out.println("Response time: " + responseTime + ", Avg: " + (totalResponseTime/count) + ", Min: " + minTime + ", Max: " + maxTime);
                 count++;
 
-                Thread.sleep(wait);
+                TimeUnit.MICROSECONDS.sleep(wait);
             }
         }
 
@@ -185,7 +186,7 @@ class TickerSymbolSearchTest {
         assertNotNull(first.get(0).getSymbol());
         assertNotNull(first.get(0).getDescription());
 
-        Thread.sleep(3000);
+        TimeUnit.MICROSECONDS.sleep(3000);
         System.out.println("Start");
 
         identifiers.stream().parallel()

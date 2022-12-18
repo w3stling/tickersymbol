@@ -28,6 +28,7 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.TimeUnit;
@@ -263,7 +264,7 @@ public class TickerSymbolSearch {
             this.cookies = cookies;
             timestamp = System.currentTimeMillis();
             reset = false;
-            var r = new Random();
+            var r = new SecureRandom();
             maxRequestCount = r.nextInt(100-75) + 75;
         }
 
