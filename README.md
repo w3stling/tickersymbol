@@ -26,7 +26,7 @@ Requires at minimum Java 11.
 
 Examples
 --------
-### Search ticker symbol by security identifier ISIN, CUSIP, or SEDOL. 
+### Search ticker symbol by security identifier ISIN, CUSIP, or SEDOL.
 Same as example above but searching for Ericsson B with ISIN number.
 ```java
 TickerSymbolSearch tickerSymbol = new TickerSymbolSearch();
