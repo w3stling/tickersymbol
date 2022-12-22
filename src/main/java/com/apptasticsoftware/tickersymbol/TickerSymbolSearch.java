@@ -28,13 +28,10 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
+import javax.net.ssl.*;
+import java.security.*;
+import java.security.cert.CertPathValidatorException;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -290,25 +287,42 @@ public class TickerSymbolSearch {
     }
 
     static private SSLSocketFactory socketFactory() {
-        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                return new X509Certificate[0];
-            }
-
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {
-            }
-
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {
-            }
-        }};
-
         try {
-            SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-            return sslContext.getSocketFactory();
-        } catch (NoSuchAlgorithmException | KeyManagementException e) {
-            var logger = Logger.getLogger(LOGGER);
-            logger.severe(String.format("Failed to create a SSL socket factory. Using default SSLSocketFactory.getDefault(). Message: %s", e.getMessage()));
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init((KeyStore) null);
+            TrustManager[] trustManagers = tmf.getTrustManagers();
+            final X509TrustManager origTrustManager = (X509TrustManager)trustManagers[0];
+            TrustManager[] wrappedTrustManagers = new TrustManager[]{
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return origTrustManager.getAcceptedIssuers();
+                    }
+
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+                        origTrustManager.checkClientTrusted(certs, authType);
+                    }
+
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+                        // Trust expired certificates
+                        try {
+                            origTrustManager.checkServerTrusted(certs, authType);
+                        } catch (CertificateException e) {
+                            if (e.getCause() instanceof CertPathValidatorException) {
+                                Throwable t = e.getCause();
+                                CertPathValidatorException.Reason reason = ((CertPathValidatorException) t).getReason();
+                                if (CertPathValidatorException.BasicReason.EXPIRED.equals(reason)) {
+                                    return;
+                                }
+                            }
+                            throw e;
+                        }
+                    }
+                }
+            };
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, wrappedTrustManagers, null);
+            return sc.getSocketFactory();
+        } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
             return (SSLSocketFactory) SSLSocketFactory.getDefault();
         }
     }
