@@ -110,7 +110,7 @@ class TickerSymbolSearchTest {
 
     @Test
     void searchBySedol() {
-        var search = TickerSymbolSearch.getInstance(50);
+        var search = TickerSymbolSearch.getInstance(49);
         var list = search.searchByIdentifier("2000019");
         assertFalse(list.isEmpty());
         assertNotNull(list.get(0).getSymbol());
@@ -200,6 +200,23 @@ class TickerSymbolSearchTest {
                 });
 
         System.out.println("Done!");
+    }
+
+    @SuppressWarnings("java:S2925")
+    @Test
+    void pendingRequests() {
+        var identifiers = List.of("CA09228F1036", "CA09228F1036", "CA09228F1036", "CA09228F1036", "CA09228F1036",
+                "CA09228F1036", "CA09228F1036", "CA09228F1036", "CA09228F1036", "CA09228F1036", "CA09228F1036"
+        );
+
+        var search = TickerSymbolSearch.getInstance(48);
+        identifiers.stream().parallel()
+                .forEach(id ->  {
+                    var list = search.searchByIdentifier(id);
+                    assertFalse(list.isEmpty());
+                    assertNotNull(list.get(0).getSymbol());
+                    assertNotNull(list.get(0).getDescription());
+                });
     }
 
     @Test

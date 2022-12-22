@@ -34,8 +34,7 @@ import java.security.cert.CertPathValidatorException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.*;
-import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
@@ -51,6 +50,7 @@ public class TickerSymbolSearch {
     private static final String SEARCH_BY_SEDOL_URL = "https://stockmarketmba.com/lookupsedolonopenfigi.php";
     private final int cacheSize;
     private final ConcurrentSkipListMap<String, List<TickerSymbol>> cache;
+    private final ConcurrentHashMap<String, PendingRequest> pendingRequests = new ConcurrentHashMap<>();
     private static TickerSymbolSearch instance;
     private final Session session = new Session();
     private static final SSLSocketFactory SOCKET_FACTORY = socketFactory();
@@ -91,6 +91,12 @@ public class TickerSymbolSearch {
             return list;
         }
 
+        var pendingRequest = getPendingRequest(identifier);
+        if (pendingRequest != null) {
+            return getPendingResult(identifier);
+        }
+
+        pendingRequest = pendingRequests.get(identifier);
         list = searchByIdentifiers(identifier);
 
         if (list.isEmpty() && IsinCodeValidator.isValid(identifier)) {
@@ -106,6 +112,8 @@ public class TickerSymbolSearch {
         }
 
         cacheSearchResult(identifier, list);
+        pendingRequest.done();
+        pendingRequests.remove(identifier);
         return list;
     }
 
@@ -258,8 +266,8 @@ public class TickerSymbolSearch {
             return version;
         }
 
-        public int incrementRequestCount() {
-            return requestCount.incrementAndGet();
+        public void incrementRequestCount() {
+            requestCount.incrementAndGet();
         }
 
         public boolean hasExpired() {
@@ -286,6 +294,76 @@ public class TickerSymbolSearch {
         }
     }
 
+    private List<TickerSymbol> getPendingResult(String request) {
+        var pendingRequest = pendingRequests.get(request);
+        if (pendingRequest != null) {
+            try {
+                return pendingRequest.get();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return Collections.emptyList();
+            } catch (ExecutionException e) {
+                return Collections.emptyList();
+            }
+        }
+
+        return null;
+    }
+
+    private PendingRequest getPendingRequest(String request) {
+        PendingRequest newPendingRequest = new PendingRequest(request);
+        PendingRequest pendingRequest = pendingRequests.computeIfAbsent(request, (k) -> newPendingRequest);
+
+        if (newPendingRequest != pendingRequest) {
+            return newPendingRequest;
+        }
+
+        return null;
+    }
+
+    private class PendingRequest implements Future<List<TickerSymbol>> {
+        private final CountDownLatch latch = new CountDownLatch(1);
+        private final String request;
+
+        public PendingRequest(String request) {
+            this.request = request;
+        }
+
+        @Override
+        public boolean cancel(boolean mayInterruptIfRunning) {
+            return false;
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return false;
+        }
+
+        @Override
+        public boolean isDone() {
+            return latch.getCount() == 0;
+        }
+
+        @Override
+        public List<TickerSymbol> get() throws InterruptedException, ExecutionException {
+            latch.await();
+            return cache.get(request);
+        }
+
+        @Override
+        public List<TickerSymbol> get(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException {
+            if (latch.await(timeout, unit)) {
+                return cache.get(request);
+            } else {
+                throw new TimeoutException();
+            }
+        }
+
+        void done() {
+            latch.countDown();
+        }
+    }
+
     static private SSLSocketFactory socketFactory() {
         try {
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
@@ -293,31 +371,31 @@ public class TickerSymbolSearch {
             TrustManager[] trustManagers = tmf.getTrustManagers();
             final X509TrustManager origTrustManager = (X509TrustManager)trustManagers[0];
             TrustManager[] wrappedTrustManagers = new TrustManager[]{
-                new X509TrustManager() {
-                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                        return origTrustManager.getAcceptedIssuers();
-                    }
+                    new X509TrustManager() {
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return origTrustManager.getAcceptedIssuers();
+                        }
 
-                    public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {
-                        origTrustManager.checkClientTrusted(certs, authType);
-                    }
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+                            origTrustManager.checkClientTrusted(certs, authType);
+                        }
 
-                    public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {
-                        // Trust expired certificates
-                        try {
-                            origTrustManager.checkServerTrusted(certs, authType);
-                        } catch (CertificateException e) {
-                            if (e.getCause() instanceof CertPathValidatorException) {
-                                Throwable t = e.getCause();
-                                CertPathValidatorException.Reason reason = ((CertPathValidatorException) t).getReason();
-                                if (CertPathValidatorException.BasicReason.EXPIRED.equals(reason)) {
-                                    return;
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+                            // Trust expired certificates
+                            try {
+                                origTrustManager.checkServerTrusted(certs, authType);
+                            } catch (CertificateException e) {
+                                if (e.getCause() instanceof CertPathValidatorException) {
+                                    Throwable t = e.getCause();
+                                    CertPathValidatorException.Reason reason = ((CertPathValidatorException) t).getReason();
+                                    if (CertPathValidatorException.BasicReason.EXPIRED.equals(reason)) {
+                                        return;
+                                    }
                                 }
+                                throw e;
                             }
-                            throw e;
                         }
                     }
-                }
             };
             SSLContext sc = SSLContext.getInstance("TLS");
             sc.init(null, wrappedTrustManagers, null);
