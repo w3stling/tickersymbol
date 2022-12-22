@@ -28,7 +28,11 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
-import java.security.SecureRandom;
+import javax.net.ssl.*;
+import java.security.*;
+import java.security.cert.CertPathValidatorException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.TimeUnit;
@@ -49,6 +53,7 @@ public class TickerSymbolSearch {
     private final ConcurrentSkipListMap<String, List<TickerSymbol>> cache;
     private static TickerSymbolSearch instance;
     private final Session session = new Session();
+    private static final SSLSocketFactory SOCKET_FACTORY = socketFactory();
 
     TickerSymbolSearch(int cacheSize) {
         this.cacheSize = cacheSize;
@@ -127,6 +132,8 @@ public class TickerSymbolSearch {
             if (session.hasExpired()) {
                 Connection.Response searchForm = Jsoup.connect(url)
                         .method(Connection.Method.GET)
+                        .ignoreHttpErrors(true)
+                        .sslSocketFactory(SOCKET_FACTORY)
                         .userAgent(USER_AGENT)
                         .header("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
                         .header("accept-encoding", "gzip, deflate")
@@ -143,6 +150,9 @@ public class TickerSymbolSearch {
             }
 
             var response = Jsoup.connect(url)
+                    .method(Connection.Method.POST)
+                    .ignoreHttpErrors(true)
+                    .sslSocketFactory(SOCKET_FACTORY)
                     .userAgent(USER_AGENT)
                     .header("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
                     .header("accept-encoding", "gzip, deflate")
@@ -151,7 +161,6 @@ public class TickerSymbolSearch {
                     .header("origin", "https://stockmarketmba.com")
                     .header("referer", url)
                     .header("x-requested-with", "XMLHttpRequest")
-                    .method(Connection.Method.POST)
                     .data("action", session.getAction())
                     .data("version", session.getVersion())
                     .data("search", identifier)
@@ -274,6 +283,47 @@ public class TickerSymbolSearch {
 
         public Map<String, String> getCookies() {
             return cookies;
+        }
+    }
+
+    static private SSLSocketFactory socketFactory() {
+        try {
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init((KeyStore) null);
+            TrustManager[] trustManagers = tmf.getTrustManagers();
+            final X509TrustManager origTrustManager = (X509TrustManager)trustManagers[0];
+            TrustManager[] wrappedTrustManagers = new TrustManager[]{
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return origTrustManager.getAcceptedIssuers();
+                    }
+
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+                        origTrustManager.checkClientTrusted(certs, authType);
+                    }
+
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+                        // Trust expired certificates
+                        try {
+                            origTrustManager.checkServerTrusted(certs, authType);
+                        } catch (CertificateException e) {
+                            if (e.getCause() instanceof CertPathValidatorException) {
+                                Throwable t = e.getCause();
+                                CertPathValidatorException.Reason reason = ((CertPathValidatorException) t).getReason();
+                                if (CertPathValidatorException.BasicReason.EXPIRED.equals(reason)) {
+                                    return;
+                                }
+                            }
+                            throw e;
+                        }
+                    }
+                }
+            };
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, wrappedTrustManagers, null);
+            return sc.getSocketFactory();
+        } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
+            return (SSLSocketFactory) SSLSocketFactory.getDefault();
         }
     }
 }
