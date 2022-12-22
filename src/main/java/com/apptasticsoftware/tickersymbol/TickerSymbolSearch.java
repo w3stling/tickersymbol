@@ -28,7 +28,14 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.TimeUnit;
@@ -49,6 +56,7 @@ public class TickerSymbolSearch {
     private final ConcurrentSkipListMap<String, List<TickerSymbol>> cache;
     private static TickerSymbolSearch instance;
     private final Session session = new Session();
+    private static final SSLSocketFactory SOCKET_FACTORY = socketFactory();
 
     TickerSymbolSearch(int cacheSize) {
         this.cacheSize = cacheSize;
@@ -127,6 +135,8 @@ public class TickerSymbolSearch {
             if (session.hasExpired()) {
                 Connection.Response searchForm = Jsoup.connect(url)
                         .method(Connection.Method.GET)
+                        .ignoreHttpErrors(true)
+                        .sslSocketFactory(SOCKET_FACTORY)
                         .userAgent(USER_AGENT)
                         .header("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
                         .header("accept-encoding", "gzip, deflate")
@@ -143,6 +153,9 @@ public class TickerSymbolSearch {
             }
 
             var response = Jsoup.connect(url)
+                    .method(Connection.Method.POST)
+                    .ignoreHttpErrors(true)
+                    .sslSocketFactory(SOCKET_FACTORY)
                     .userAgent(USER_AGENT)
                     .header("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
                     .header("accept-encoding", "gzip, deflate")
@@ -151,7 +164,6 @@ public class TickerSymbolSearch {
                     .header("origin", "https://stockmarketmba.com")
                     .header("referer", url)
                     .header("x-requested-with", "XMLHttpRequest")
-                    .method(Connection.Method.POST)
                     .data("action", session.getAction())
                     .data("version", session.getVersion())
                     .data("search", identifier)
@@ -274,6 +286,30 @@ public class TickerSymbolSearch {
 
         public Map<String, String> getCookies() {
             return cookies;
+        }
+    }
+
+    static private SSLSocketFactory socketFactory() {
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return new X509Certificate[0];
+            }
+
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
+
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
+        }};
+
+        try {
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            return sslContext.getSocketFactory();
+        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            var logger = Logger.getLogger(LOGGER);
+            logger.severe(String.format("Failed to create a SSL socket factory. Using default SSLSocketFactory.getDefault(). Message: %s", e.getMessage()));
+            return (SSLSocketFactory) SSLSocketFactory.getDefault();
         }
     }
 }
