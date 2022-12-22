@@ -307,12 +307,12 @@ public class TickerSymbolSearch {
             }
         }
 
-        return null;
+        return Collections.emptyList();
     }
 
     private PendingRequest getPendingRequest(String request) {
         PendingRequest newPendingRequest = new PendingRequest(request);
-        PendingRequest pendingRequest = pendingRequests.computeIfAbsent(request, (k) -> newPendingRequest);
+        PendingRequest pendingRequest = pendingRequests.computeIfAbsent(request, k -> newPendingRequest);
 
         if (newPendingRequest != pendingRequest) {
             return newPendingRequest;
@@ -364,7 +364,7 @@ public class TickerSymbolSearch {
         }
     }
 
-    static private SSLSocketFactory socketFactory() {
+    private static SSLSocketFactory socketFactory() {
         try {
             TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             tmf.init((KeyStore) null);
