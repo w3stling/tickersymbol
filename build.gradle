@@ -22,7 +22,7 @@ dependencies {
     implementation 'com.apptasticsoftware:lei:3.3.0'
     testImplementation(platform('org.junit:junit-bom:5.9.1'))
     testImplementation('org.junit.jupiter:junit-jupiter:5.9.1')
-    testImplementation('nl.jqno.equalsverifier:equalsverifier:3.12.3')
+    testImplementation('nl.jqno.equalsverifier:equalsverifier:3.13')
 }
 
 test {
