@@ -2,7 +2,7 @@ Ticker Symbol Search
 ====================
 
 [![Build](https://github.com/w3stling/tickersymbol/actions/workflows/build.yml/badge.svg)](https://github.com/w3stling/tickersymbol/actions/workflows/build.yml)
-[![Download](https://img.shields.io/badge/download-3.1.1-brightgreen.svg)](https://search.maven.org/artifact/com.apptasticsoftware/tickersymbol/3.1.1/jar)
+[![Download](https://img.shields.io/badge/download-3.1.1-brightgreen.svg)](https://central.sonatype.com/artifact/com.apptasticsoftware/tickersymbol/3.1.1/overview)
 [![Javadoc](https://img.shields.io/badge/javadoc-3.1.1-blue.svg)](https://w3stling.github.io/tickersymbol/javadoc/3.1.1)
 [![License](http://img.shields.io/:license-MIT-blue.svg?style=flat-round)](http://apptastic-software.mit-license.org)   
 [![CodeQL](https://github.com/w3stling/tickersymbol/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/w3stling/tickersymbol/actions/workflows/codeql-analysis.yml)
@@ -88,6 +88,6 @@ License
     SOFTWARE.
 
 
-[1]: https://search.maven.org/artifact/com.apptasticsoftware/tickersymbol/3.1.1/jar
+[1]: https://central.sonatype.com/artifact/com.apptasticsoftware/tickersymbol/3.1.1/overview
 [2]: https://maven.apache.org
 [3]: https://gradle.org
