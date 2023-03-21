@@ -2,8 +2,8 @@ Ticker Symbol Search
 ====================
 
 [![Build](https://github.com/w3stling/tickersymbol/actions/workflows/build.yml/badge.svg)](https://github.com/w3stling/tickersymbol/actions/workflows/build.yml)
-[![Download](https://img.shields.io/badge/download-3.1.2-brightgreen.svg)](https://central.sonatype.com/artifact/com.apptasticsoftware/tickersymbol/3.1.2/overview)
-[![Javadoc](https://img.shields.io/badge/javadoc-3.1.2-blue.svg)](https://w3stling.github.io/tickersymbol/javadoc/3.1.2)
+[![Download](https://img.shields.io/badge/download-3.1.3-brightgreen.svg)](https://central.sonatype.com/artifact/com.apptasticsoftware/tickersymbol/3.1.3/overview)
+[![Javadoc](https://img.shields.io/badge/javadoc-3.1.3-blue.svg)](https://w3stling.github.io/tickersymbol/javadoc/3.1.3)
 [![License](http://img.shields.io/:license-MIT-blue.svg?style=flat-round)](http://apptastic-software.mit-license.org)   
 [![CodeQL](https://github.com/w3stling/tickersymbol/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/w3stling/tickersymbol/actions/workflows/codeql-analysis.yml)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=w3stling_tickersymbol&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=w3stling_tickersymbol)
@@ -47,7 +47,7 @@ Add dependency declaration:
         <dependency>
             <groupId>com.apptasticsoftware</groupId>
             <artifactId>tickersymbol</artifactId>
-            <version>3.1.2</version>
+            <version>3.1.3</version>
         </dependency>
     </dependencies>
     ...
@@ -58,7 +58,7 @@ Add dependency declaration:
 Add dependency declaration:
 ```groovy
 dependencies {
-    implementation 'com.apptasticsoftware:tickersymbol:3.1.2'
+    implementation 'com.apptasticsoftware:tickersymbol:3.1.3'
 }
 ```
 
@@ -67,7 +67,7 @@ License
 
     MIT License
     
-    Copyright (c) 2022, Apptastic Software
+    Copyright (c) 2023, Apptastic Software
     
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -88,6 +88,6 @@ License
     SOFTWARE.
 
 
-[1]: https://central.sonatype.com/artifact/com.apptasticsoftware/tickersymbol/3.1.2/overview
+[1]: https://central.sonatype.com/artifact/com.apptasticsoftware/tickersymbol/3.1.3/overview
 [2]: https://maven.apache.org
 [3]: https://gradle.org
