@@ -81,6 +81,11 @@ public class TickerSymbolSearch {
         return instance;
     }
 
+    /**
+     * Search ticker symbol by identifier
+     * @param identifier identifier
+     * @return list of ticker symbols
+     */
     public List<TickerSymbol> searchByIdentifier(String identifier) {
         if (!(IsinCodeValidator.isValid(identifier) || CusipValidator.isValid(identifier) || SedolValidator.isValid(identifier))) {
             return Collections.emptyList();
