@@ -2,8 +2,8 @@ Ticker Symbol Search
 ====================
 
 [![Build](https://github.com/w3stling/tickersymbol/actions/workflows/build.yml/badge.svg)](https://github.com/w3stling/tickersymbol/actions/workflows/build.yml)
-[![Download](https://img.shields.io/badge/download-3.1.4-brightgreen.svg)](https://central.sonatype.com/artifact/com.apptasticsoftware/tickersymbol/3.1.4/overview)
-[![Javadoc](https://img.shields.io/badge/javadoc-3.1.4-blue.svg)](https://w3stling.github.io/tickersymbol/javadoc/3.1.4)
+[![Download](https://img.shields.io/badge/download-3.1.5-brightgreen.svg)](https://central.sonatype.com/artifact/com.apptasticsoftware/tickersymbol/3.1.5/overview)
+[![Javadoc](https://img.shields.io/badge/javadoc-3.1.5-blue.svg)](https://w3stling.github.io/tickersymbol/javadoc/3.1.5)
 [![License](http://img.shields.io/:license-MIT-blue.svg?style=flat-round)](http://apptastic-software.mit-license.org)   
 [![CodeQL](https://github.com/w3stling/tickersymbol/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/w3stling/tickersymbol/actions/workflows/codeql-analysis.yml)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=w3stling_tickersymbol&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=w3stling_tickersymbol)
@@ -47,7 +47,7 @@ Add dependency declaration:
         <dependency>
             <groupId>com.apptasticsoftware</groupId>
             <artifactId>tickersymbol</artifactId>
-            <version>3.1.4</version>
+            <version>3.1.5</version>
         </dependency>
     </dependencies>
     ...
@@ -58,7 +58,7 @@ Add dependency declaration:
 Add dependency declaration:
 ```groovy
 dependencies {
-    implementation 'com.apptasticsoftware:tickersymbol:3.1.4'
+    implementation 'com.apptasticsoftware:tickersymbol:3.1.5'
 }
 ```
 
@@ -88,6 +88,6 @@ License
     SOFTWARE.
 
 
-[1]: https://central.sonatype.com/artifact/com.apptasticsoftware/tickersymbol/3.1.4/overview
+[1]: https://central.sonatype.com/artifact/com.apptasticsoftware/tickersymbol/3.1.5/overview
 [2]: https://maven.apache.org
 [3]: https://gradle.org
