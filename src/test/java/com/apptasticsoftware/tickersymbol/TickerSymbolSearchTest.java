@@ -102,7 +102,7 @@ class TickerSymbolSearchTest {
     @Test
     void searchByCusip() {
         var search = TickerSymbolSearch.getInstance();
-        var list = search.searchByIdentifier("38259P508");
+        var list = search.searchByIdentifier("037833100");
         assertFalse(list.isEmpty());
         assertNotNull(list.get(0).getSymbol());
         assertNotNull(list.get(0).getDescription());
