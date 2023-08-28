@@ -1,1 +1,1 @@
-moduleSearchIndex = [{"l":"com.apptasticsoftware.tickersymbol"}]
+moduleSearchIndex = [{"l":"com.apptasticsoftware.tickersymbol"}];updateSearchResults();
