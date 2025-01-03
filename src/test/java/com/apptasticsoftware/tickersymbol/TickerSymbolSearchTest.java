@@ -202,6 +202,7 @@ class TickerSymbolSearchTest {
         System.out.println("Done!");
     }
 
+    @Disabled("Run manually")
     @SuppressWarnings("java:S2925")
     @Test
     void pendingRequests() {

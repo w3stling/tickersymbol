@@ -24,19 +24,23 @@
 package com.apptasticsoftware.tickersymbol;
 
 import com.apptasticsoftware.lei.*;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.select.Elements;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
-import javax.net.ssl.*;
-import java.security.*;
-import java.security.cert.CertPathValidatorException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 /**
  * Class for searching ticker symbols.
@@ -44,20 +48,22 @@ import java.util.logging.Logger;
 public class TickerSymbolSearch {
     private static final String LOGGER = "com.apptasticsoftware.tickersymbol";
     private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
-    private static final String SEARCH_BY_IDENTIFIERS_URL = "https://stockmarketmba.com/symbollookupusingidentifier.php";
-    private static final String SEARCH_BY_ISIN_URL = "https://stockmarketmba.com/lookupisinonopenfigi.php";
-    private static final String SEARCH_BY_CUSIP_URL = "https://stockmarketmba.com/lookupcusiponopenfigi.php";
-    private static final String SEARCH_BY_SEDOL_URL = "https://stockmarketmba.com/lookupsedolonopenfigi.php";
+    private static final String BASE_URL = "https://api.openfigi.com";
+    @SuppressWarnings("java:S5998")
+    private static final Pattern COLUMN_PATTERN = Pattern.compile(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
     private final int cacheSize;
     private final ConcurrentSkipListMap<String, List<TickerSymbol>> cache;
     private final ConcurrentHashMap<String, PendingRequest> pendingRequests = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Exchange> exchangeByExchangeCode = new ConcurrentHashMap<>();
+    private final HttpClient client = HttpClient.newHttpClient();
     private static TickerSymbolSearch instance;
-    private final Session session = new Session();
-    private static final SSLSocketFactory SOCKET_FACTORY = socketFactory();
 
     TickerSymbolSearch(int cacheSize) {
         this.cacheSize = cacheSize;
         cache = new ConcurrentSkipListMap<>();
+         getExchangesFromFile().forEach(
+                 exchange -> exchangeByExchangeCode.put(exchange.getExchangeCode(), exchange)
+         );
     }
 
     /**
@@ -123,125 +129,76 @@ public class TickerSymbolSearch {
     }
 
     List<TickerSymbol> searchByIdentifiers(String identifier) {
-        return getTickerSymbols(SEARCH_BY_IDENTIFIERS_URL, identifier);
+        return getTickerSymbols(getIdType(identifier).orElse(null), identifier);
     }
 
     List<TickerSymbol> searchByIsin(String isin) {
-        return getTickerSymbols(SEARCH_BY_ISIN_URL, isin);
+        return getTickerSymbols("ID_ISIN", isin);
     }
 
     List<TickerSymbol> searchByCusip(String cusip) {
-        return getTickerSymbols(SEARCH_BY_CUSIP_URL, cusip);
+        return getTickerSymbols("ID_CUSIP", cusip);
     }
 
     List<TickerSymbol> searchBySedol(String sedol) {
-        return getTickerSymbols(SEARCH_BY_SEDOL_URL, sedol);
+        return getTickerSymbols("ID_SEDOL", sedol);
     }
 
-    private List<TickerSymbol> getTickerSymbols(String url, String identifier) {
+    private Optional<String> getIdType(String identifier) {
+        if (IsinCodeValidator.isValid(identifier)) {
+            return Optional.of("ID_ISIN");
+        } else if (CusipValidator.isValid(identifier)) {
+            return Optional.of("ID_CUSIP");
+        } else if (SedolValidator.isValid(identifier)) {
+            return Optional.of("ID_SEDOL");
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private List<TickerSymbol> getTickerSymbols(String identifierType, String identifier) {
         List<TickerSymbol> list = new ArrayList<>();
 
         try {
-            if (session.hasExpired()) {
-                Connection.Response searchForm = Jsoup.connect(url)
-                        .method(Connection.Method.GET)
-                        .ignoreHttpErrors(true)
-                        .sslSocketFactory(SOCKET_FACTORY)
-                        .userAgent(USER_AGENT)
-                        .header("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
-                        .header("accept-encoding", "gzip, deflate")
-                        .header("accept-language", "en-GB,en-US;q=0.9,en;q=0.8,sv;q=0.7")
-                        .followRedirects(true)
-                        .execute();
-
-                var responseDocument = searchForm.parse();
-                var actionElement = responseDocument.select("input[name=action]").first();
-                var action = actionElement != null ? actionElement.attr("value") : "";
-                var versionElement = responseDocument.select("input[name=version]").first();
-                var version = versionElement != null ? versionElement.attr("value") : "";
-                session.refresh(action, version, searchForm.cookies());
+            String body = String.format("[{\"idType\": \"%s\", \"idValue\": \"%s\"}]", identifierType, identifier);
+            var response = makePostApiCall("/v3/mapping", body, null);
+            var tickerSymbol = parseResponse(response);
+            if (tickerSymbol != null) {
+                return List.of(tickerSymbol);
             }
-
-            var response = Jsoup.connect(url)
-                    .method(Connection.Method.POST)
-                    .ignoreHttpErrors(true)
-                    .sslSocketFactory(SOCKET_FACTORY)
-                    .userAgent(USER_AGENT)
-                    .header("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
-                    .header("accept-encoding", "gzip, deflate")
-                    .header("accept-language", "en-GB,en-US;q=0.9,en;q=0.8,sv;q=0.7")
-                    .header("content-type", "application/x-www-form-urlencoded")
-                    .header("origin", "https://stockmarketmba.com")
-                    .header("referer", url)
-                    .header("x-requested-with", "XMLHttpRequest")
-                    .data("action", session.getAction())
-                    .data("version", session.getVersion())
-                    .data("search", identifier)
-                    .cookies(session.getCookies())
-                    .followRedirects(true)
-                    .execute();
-
-            session.incrementRequestCount();
-
-            var document = response.parse();
-            var table = document.select("table[id=searchtable]");
-            if (table.isEmpty()) {
-                table = document.select("table[id=results]");
-            }
-
-            if (table.isEmpty()) {
-                return list; // identifier not found
-            }
-
-            var rows = table.get(0).select("tr");
-
-            HashMap<String, Integer> headers = new HashMap<>();
-            var headerRow = rows.get(0);
-            var headerCols = headerRow.select("th");
-
-            for (int i = 0; i < headerCols.size(); ++i) {
-                var header = headerCols.get(i).text().toLowerCase().trim();
-                headers.put(header, i);
-            }
-
-            for (int i = 1; i < rows.size(); i++) {
-                var row = rows.get(i);
-                var cols = row.select("td");
-
-                var ticker = new TickerSymbol();
-                ticker.setSymbol(getColumnValue(cols, headers, "symbol"));
-                ticker.setDescription(getColumnValue(cols, headers, "description"));
-                ticker.setType(getColumnValue(cols, headers, "type"));
-                ticker.setCountry(getColumnValue(cols, headers, "country"));
-                ticker.setExchange(getColumnValue(cols, headers, "exchange"));
-                ticker.setExchangeCountry(getColumnValue(cols, headers, "exchange country"));
-                ticker.setCategory1(getColumnValue(cols, headers, "category1"));
-                ticker.setCategory2(getColumnValue(cols, headers, "category2"));
-                ticker.setCategory3(getColumnValue(cols, headers, "category3"));
-                ticker.setSedol(getColumnValue(cols, headers, "sedol"));
-                list.add(ticker);
-            }
-        } catch (Exception e) {
-            session.reset();
-            var logger = Logger.getLogger(LOGGER);
-            logger.severe(String.format("Search failed. URL: %s, identifier: %s, message: %s", url, identifier, e.getMessage()));
-        }
+        } catch (Exception ignored) { } // NOSONAR
 
         return list;
     }
 
-    private String getColumnValue(Elements cols, Map<String, Integer> headers, String name) {
-        Integer index = headers.get(name);
-        if (index == null || index > cols.size()) {
-            return null;
+    private TickerSymbol parseResponse(String jsonData) {
+        Gson gson = new Gson();
+        JsonArray jsonArray = gson.fromJson(jsonData, JsonArray.class);
+
+        if (jsonArray != null && !jsonArray.isEmpty()) {
+            JsonObject firstElement = jsonArray.get(0).getAsJsonObject();
+
+            if (firstElement.has("data")) {
+                JsonArray dataArray = firstElement.getAsJsonArray("data");
+
+                if (dataArray != null && !dataArray.isEmpty()) {
+                    JsonObject firstDataElement = dataArray.get(0).getAsJsonObject();
+                    TickerData tickerData = gson.fromJson(firstDataElement, TickerData.class);
+                    var tickerSymbol = new TickerSymbol();
+                    tickerSymbol.setSymbol(tickerData.ticker);
+                    tickerSymbol.setDescription(tickerData.name);
+                    tickerSymbol.setType(tickerData.securityType);
+                    tickerSymbol.setCountry(Optional.ofNullable(exchangeByExchangeCode.get(tickerData.exchCode)).map(Exchange::getCountryCode).orElse(null));
+                    tickerSymbol.setExchange(Optional.ofNullable(exchangeByExchangeCode.get(tickerData.exchCode)).map(Exchange::getExchangeName).orElse(null));
+                    tickerSymbol.setExchangeCountry(Optional.ofNullable(exchangeByExchangeCode.get(tickerData.exchCode)).map(Exchange::getCountryCode).orElse(null));
+                    tickerSymbol.setCategory1(tickerData.securityType2);
+                    tickerSymbol.setCategory2(tickerData.securityDescription);
+                    return tickerSymbol;
+                }
+            }
         }
 
-        var text = cols.get(index).text().trim();
-        if (text.isEmpty()) {
-            text = null;
-        }
-
-        return text;
+        return null;
     }
 
     private void cacheSearchResult(String code, List<TickerSymbol> list) {
@@ -251,51 +208,6 @@ public class TickerSymbolSearch {
         cache.put(code, list);
         if (cache.size() > cacheSize) {
             cache.pollLastEntry();
-        }
-    }
-
-    static class Session {
-        private String action;
-        private String version;
-        private long timestamp;
-        private int maxRequestCount = 50;
-        private final AtomicInteger requestCount = new AtomicInteger(0);
-        private Map<String, String> cookies;
-        private boolean reset;
-
-        public String getAction() {
-            return action;
-        }
-
-        public String getVersion() {
-            return version;
-        }
-
-        public void incrementRequestCount() {
-            requestCount.incrementAndGet();
-        }
-
-        public boolean hasExpired() {
-            long now = System.currentTimeMillis();
-            return reset || (requestCount.get() % maxRequestCount) == 0 || TimeUnit.MILLISECONDS.toMinutes(now - timestamp) > 9;
-        }
-
-        public void refresh(String action, String version, Map<String, String> cookies) {
-            this.action = action;
-            this.version = version;
-            this.cookies = cookies;
-            timestamp = System.currentTimeMillis();
-            reset = false;
-            var r = new SecureRandom();
-            maxRequestCount = r.nextInt(100-75) + 75;
-        }
-
-        public void reset() {
-            reset = true;
-        }
-
-        public Map<String, String> getCookies() {
-            return cookies;
         }
     }
 
@@ -369,44 +281,93 @@ public class TickerSymbolSearch {
         }
     }
 
-    private static SSLSocketFactory socketFactory() {
-        try {
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            tmf.init((KeyStore) null);
-            TrustManager[] trustManagers = tmf.getTrustManagers();
-            final X509TrustManager origTrustManager = (X509TrustManager)trustManagers[0];
-            TrustManager[] wrappedTrustManagers = new TrustManager[]{
-                    new X509TrustManager() {
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                            return origTrustManager.getAcceptedIssuers();
-                        }
+    public String makePostApiCall(String path, String body, String apiKey) throws URISyntaxException, IOException, InterruptedException {
+        var requestBuilder = HttpRequest.newBuilder()
+                .uri(new URI(BASE_URL + path))
+                .header("Content-Type", "application/json")
+                .header("User-Agent", USER_AGENT)
+                .POST(HttpRequest.BodyPublishers.ofString(body));
 
-                        public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {
-                            origTrustManager.checkClientTrusted(certs, authType);
-                        }
+        if (apiKey != null) {
+            requestBuilder = requestBuilder.header("X-OPENFIGI-APIKEY", apiKey);
+        }
 
-                        public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {
-                            // Trust expired certificates
-                            try {
-                                origTrustManager.checkServerTrusted(certs, authType);
-                            } catch (CertificateException e) {
-                                if (e.getCause() instanceof CertPathValidatorException) {
-                                    Throwable t = e.getCause();
-                                    CertPathValidatorException.Reason reason = ((CertPathValidatorException) t).getReason();
-                                    if (CertPathValidatorException.BasicReason.EXPIRED.equals(reason)) {
-                                        return;
-                                    }
-                                }
-                                throw e;
-                            }
-                        }
-                    }
-            };
-            SSLContext sc = SSLContext.getInstance("TLS");
-            sc.init(null, wrappedTrustManagers, null);
-            return sc.getSocketFactory();
-        } catch (NoSuchAlgorithmException | KeyStoreException | KeyManagementException e) {
-            return (SSLSocketFactory) SSLSocketFactory.getDefault();
+        var request = requestBuilder.build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.body();
+    }
+
+    private List<Exchange> getExchangesFromFile() {
+        List<Exchange> exchanges = new ArrayList<>();
+
+        try (
+                final var inputStream = getClass().getResourceAsStream("/OpenFIGI_Exchange_Codes.csv");
+                final var reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
+        ) {
+            var firstLine = reader.readLine();
+            String[] headers = toColumns(firstLine);
+            if (headers.length != 7) {
+                throw new IllegalArgumentException("Expected 7 columns but was " + headers.length + ".");
+            }
+
+            var line = reader.readLine();
+            while (line != null) {
+                var columns = toColumns(line);
+                if (columns[0].length() == 2) {
+                    var exchange = new Exchange(columns[0].trim(), columns[6].trim(), columns[4].trim());
+                    exchanges.add(exchange);
+                }
+                line = reader.readLine();
+            }
+        }
+        catch (IOException e) {
+            var logger = Logger.getLogger(LOGGER);
+            logger.severe(e.getMessage());
+        }
+
+        return exchanges;
+    }
+
+    private static String[] toColumns(String text) {
+        return COLUMN_PATTERN.split(text, -1);
+    }
+
+
+    @SuppressWarnings("java:S1068")
+    private static class TickerData {
+        private String figi;
+        private String name;
+        private String ticker;
+        private String exchCode;
+        private String compositeFIGI;
+        private String securityType;
+        private String marketSector;
+        private String shareClassFIGI;
+        private String securityType2;
+        private String securityDescription;
+    }
+
+    private static class Exchange {
+        private final String exchangeCode;
+        private final String exchangeName;
+        private final String countryCode;
+
+        public Exchange(String exchangeCode, String exchangeName, String countryCode) {
+            this.exchangeCode = exchangeCode;
+            this.exchangeName = exchangeName;
+            this.countryCode = countryCode;
+        }
+
+        public String getExchangeCode() {
+            return exchangeCode;
+        }
+
+        public String getExchangeName() {
+            return exchangeName;
+        }
+
+        public String getCountryCode() {
+            return countryCode;
         }
     }
 }
