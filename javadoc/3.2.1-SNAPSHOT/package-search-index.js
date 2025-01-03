@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"com.apptasticsoftware.tickersymbol","l":"com.apptasticsoftware.tickersymbol"}];updateSearchResults();
