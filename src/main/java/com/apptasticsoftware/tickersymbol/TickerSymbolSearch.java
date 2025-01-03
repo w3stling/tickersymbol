@@ -281,7 +281,7 @@ public class TickerSymbolSearch {
         }
     }
 
-    public String makePostApiCall(String path, String body, String apiKey) throws URISyntaxException, IOException, InterruptedException {
+    private String makePostApiCall(String path, String body, String apiKey) throws URISyntaxException, IOException, InterruptedException {
         var requestBuilder = HttpRequest.newBuilder()
                 .uri(new URI(BASE_URL + path))
                 .header("Content-Type", "application/json")
