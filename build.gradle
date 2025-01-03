@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jsoup:jsoup:1.17.1'
+    implementation 'org.jsoup:jsoup:1.18.3'
     implementation 'com.apptasticsoftware:lei:3.3.6'
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
