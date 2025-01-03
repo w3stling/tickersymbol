@@ -32,6 +32,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -280,7 +281,7 @@ public class TickerSymbolSearch {
         }
     }
 
-    public String makePostApiCall(String path, String body, String apiKey) throws Exception {
+    public String makePostApiCall(String path, String body, String apiKey) throws URISyntaxException, IOException, InterruptedException {
         var requestBuilder = HttpRequest.newBuilder()
                 .uri(new URI(BASE_URL + path))
                 .header("Content-Type", "application/json")
