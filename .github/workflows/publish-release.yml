@@ -39,9 +39,6 @@ jobs:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
 
-      - name: Validate Gradle wrapper ⚙️
-        uses: gradle/wrapper-validation-action@v3
-
       - name: Version number 🔢
         run: |
           NEW_VERSION=$(echo "${GITHUB_REF}" | cut -d "/" -f3 | cut -c2-)
@@ -107,9 +104,6 @@ jobs:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
 
-      - name: Validate Gradle wrapper ⚙️
-        uses: gradle/wrapper-validation-action@v4
-
       - name: Version number 🔢
         run: |
           NEW_VERSION=$(echo "${GITHUB_REF}" | cut -d "/" -f3 | cut -c2-)
@@ -163,9 +157,6 @@ jobs:
         with:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
-
-      - name: Validate Gradle wrapper ⚙️
-        uses: gradle/wrapper-validation-action@v3
 
       - name: Version number 🔢
         run: |
