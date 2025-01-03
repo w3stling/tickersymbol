@@ -26,9 +26,10 @@
  * These modules define the base APIs for ticker symbol.
  */
 module com.apptasticsoftware.tickersymbol {
-    requires org.jsoup;
     requires java.logging;
     requires com.apptasticsoftware.lei;
+    requires java.net.http;
+    requires com.google.gson;
 
     exports com.apptasticsoftware.tickersymbol;
 }
