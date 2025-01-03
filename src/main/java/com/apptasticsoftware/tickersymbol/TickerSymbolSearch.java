@@ -48,11 +48,13 @@ public class TickerSymbolSearch {
     private static final String LOGGER = "com.apptasticsoftware.tickersymbol";
     private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
     private static final String BASE_URL = "https://api.openfigi.com";
+    @SuppressWarnings("java:S5998")
     private static final Pattern COLUMN_PATTERN = Pattern.compile(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
     private final int cacheSize;
     private final ConcurrentSkipListMap<String, List<TickerSymbol>> cache;
     private final ConcurrentHashMap<String, PendingRequest> pendingRequests = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<String, Exchange> exchangeByExchangeCode = new ConcurrentHashMap<>();
+    private final HttpClient client = HttpClient.newHttpClient();
     private static TickerSymbolSearch instance;
 
     TickerSymbolSearch(int cacheSize) {
@@ -163,7 +165,7 @@ public class TickerSymbolSearch {
             if (tickerSymbol != null) {
                 return List.of(tickerSymbol);
             }
-        } catch (Exception ignored) { }
+        } catch (Exception ignored) { } // NOSONAR
 
         return list;
     }
@@ -181,7 +183,6 @@ public class TickerSymbolSearch {
                 if (dataArray != null && !dataArray.isEmpty()) {
                     JsonObject firstDataElement = dataArray.get(0).getAsJsonObject();
                     TickerData tickerData = gson.fromJson(firstDataElement, TickerData.class);
-                    System.out.println(tickerData);
                     var tickerSymbol = new TickerSymbol();
                     tickerSymbol.setSymbol(tickerData.ticker);
                     tickerSymbol.setDescription(tickerData.name);
@@ -279,7 +280,7 @@ public class TickerSymbolSearch {
         }
     }
 
-    public static String makePostApiCall(String path, String body, String apiKey) throws Exception {
+    public String makePostApiCall(String path, String body, String apiKey) throws Exception {
         var requestBuilder = HttpRequest.newBuilder()
                 .uri(new URI(BASE_URL + path))
                 .header("Content-Type", "application/json")
@@ -291,7 +292,7 @@ public class TickerSymbolSearch {
         }
 
         var request = requestBuilder.build();
-        HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         return response.body();
     }
 
@@ -331,6 +332,7 @@ public class TickerSymbolSearch {
     }
 
 
+    @SuppressWarnings("java:S1068")
     private static class TickerData {
         private String figi;
         private String name;
