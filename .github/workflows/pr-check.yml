@@ -12,6 +12,9 @@ jobs:
     name: 🛂 Pull Request Check
     timeout-minutes: 20
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
 
     steps:
       - name: Checkout repository ⚙️
@@ -20,10 +23,10 @@ jobs:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
 
-      - name: Setup Java 17 ⚙️
+      - name: Setup Java 21 ⚙️
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       - name: Setup Gradle dependencies cache ⚙️
@@ -39,7 +42,7 @@ jobs:
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
 
       - name: Validate Gradle wrapper 🔎
-        uses: gradle/wrapper-validation-action@v3
+        uses: gradle/wrapper-validation-action@v4
 
       - name: Build and test 🏗
         run: ./gradlew test jacocoTestReport sonar
@@ -47,10 +50,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Archive build and test reports 🗃️
-        uses: actions/upload-artifact@v4
-        if: success() || failure()
+      - name: Publish Test Results 🚦
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
         with:
-          name: test-results
-          path: ./**/build/test-results/test/*.xml
-          retention-days: 7
+          files: |
+            build/test-results/test/*.xml

@@ -21,10 +21,10 @@ jobs:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
 
-      - name: Setup Java 17 ⚙️
+      - name: Setup Java 21 ⚙️
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       - name: Setup Gradle dependencies cache ⚙️
@@ -89,10 +89,10 @@ jobs:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
 
-      - name: Setup Java 17 ⚙️
+      - name: Setup Java 21 ⚙️
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       - name: Setup Gradle dependencies cache ⚙️
@@ -108,7 +108,7 @@ jobs:
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
 
       - name: Validate Gradle wrapper ⚙️
-        uses: gradle/wrapper-validation-action@v3
+        uses: gradle/wrapper-validation-action@v4
 
       - name: Version number 🔢
         run: |
@@ -146,10 +146,10 @@ jobs:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
 
-      - name: Setup Java 17 ⚙️
+      - name: Setup Java 21 ⚙️
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
       - name: Setup Gradle dependencies cache ⚙️
