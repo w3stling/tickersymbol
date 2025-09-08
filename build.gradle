@@ -20,7 +20,7 @@ dependencies {
     implementation 'com.apptasticsoftware:lei:3.3.8'
     testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation('nl.jqno.equalsverifier:equalsverifier:4.0.7')
+    testImplementation('nl.jqno.equalsverifier:equalsverifier:4.1')
 }
 
 test {
