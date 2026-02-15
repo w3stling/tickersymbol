@@ -50,6 +50,9 @@ jobs:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
 
+      - name: Validate Gradle wrapper 🔎
+        uses: gradle/actions/wrapper-validation@f29f5a9d7b09a7c6b29859002d29d24e1674c884 # v5.0.1
+
       - name: Build and test 🏗
         run: ./gradlew test jacocoTestReport sonar
         env:
