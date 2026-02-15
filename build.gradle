@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     implementation 'com.google.code.gson:gson:2.13.1'
-    implementation 'com.apptasticsoftware:lei:3.3.8'
+    implementation 'com.apptasticsoftware:lei:3.3.9'
     testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation('nl.jqno.equalsverifier:equalsverifier:4.0.7')
