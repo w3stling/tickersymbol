@@ -47,7 +47,18 @@ import java.util.regex.Pattern;
  */
 public class TickerSymbolSearch {
     private static final String LOGGER = "com.apptasticsoftware.tickersymbol";
-    private static final String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36";
+    private static final String[] HTTP_USER_AGENTS = {
+            // Chrome
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+            // Firefox
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:147.0) Gecko/20100101 Firefox/147.0",
+            "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0",
+            // Safari
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_7_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.3 Safari/605.1.15"
+    };
+    @SuppressWarnings("java:S2245")
+    private static final Random RANDOM = new Random();
     private static final String BASE_URL = "https://api.openfigi.com";
     @SuppressWarnings("java:S5998")
     private static final Pattern COLUMN_PATTERN = Pattern.compile(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
@@ -285,7 +296,8 @@ public class TickerSymbolSearch {
         var requestBuilder = HttpRequest.newBuilder()
                 .uri(new URI(BASE_URL + path))
                 .header("Content-Type", "application/json")
-                .header("User-Agent", USER_AGENT)
+                .header("User-Agent", getUserAgent())
+                .header("Accept-Encoding", "gzip")
                 .POST(HttpRequest.BodyPublishers.ofString(body));
 
         if (apiKey != null) {
@@ -293,8 +305,31 @@ public class TickerSymbolSearch {
         }
 
         var request = requestBuilder.build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return response.body();
+        HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+
+        // Check if response is gzip compressed
+        String contentEncoding = response.headers().firstValue("Content-Encoding").orElse("");
+        if ("gzip".equalsIgnoreCase(contentEncoding)) {
+            return decompressGzip(response.body());
+        } else {
+            return new String(response.body(), StandardCharsets.UTF_8);
+        }
+    }
+
+    private String decompressGzip(byte[] compressed) throws IOException {
+        try (var gzipInputStream = new java.util.zip.GZIPInputStream(new java.io.ByteArrayInputStream(compressed));
+             var reader = new BufferedReader(new InputStreamReader(gzipInputStream, StandardCharsets.UTF_8))) {
+            var result = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+            }
+            return result.toString();
+        }
+    }
+
+    private static String getUserAgent() {
+        return HTTP_USER_AGENTS[RANDOM.nextInt(HTTP_USER_AGENTS.length)];
     }
 
     private List<Exchange> getExchangesFromFile() {
